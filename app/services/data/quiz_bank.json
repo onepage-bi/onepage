@@ -1,0 +1,1757 @@
+[
+ {
+  "day": 1,
+  "t": "Trust calibration",
+  "q": "For twenty weeks straight the AI assistant has built the formulas for your weekly report without a single mistake. This week the layout of the data export changed, and the formula quietly produced a total anyway. How do you decide whether to check it?",
+  "o": [
+   "Trust the track record: twenty clean weeks is exactly the kind of reliability evidence that matters for this task",
+   "Ignore the streak and look at what changed and what a mistake would cost: with a new layout, checking is a must",
+   "Check only if the number is noticeably different from last week's; if the total looks similar, the formula is fine",
+   "Spot-check a couple of rows: with a record like this, reconciling the whole total is no longer worth the effort"
+  ],
+  "a": 1,
+  "e": "A streak of successes tells you nothing about a new situation: the formula stayed the same, but the data underneath it changed, and that is exactly how errors slip through unnoticed. Whether to check comes down to two things: what changed in the task, and what a mistake would cost in this particular report.",
+  "id": 46,
+  "sec": 90,
+  "i18n": {
+   "zh-HK": {
+    "t": "信任校準",
+    "q": "連續二十個星期，AI助理為每週報表編的公式都沒有出錯。本週匯出檔的結構變了，公式卻不聲不響地算出了一個結果。該怎樣判斷要不要核對？",
+    "o": [
+     "依靠這段紀錄：二十週無錯，本身就是這類任務累積下來的可靠度統計",
+     "不要看連勝紀錄，要看出錯的代價和任務有甚麼改變：結構一變，核對就是必須的",
+     "只在數字與上週明顯不同時才核對，結果相近就當公式運作正常",
+     "抽查兩三行即可：有這樣的準確紀錄，全面核對總數已顯得不太值得"
+    ],
+    "e": "連勝紀錄說明不了新情況：公式沒變，底下的數據卻變了——錯誤正是這樣不聲不響地通過。要不要核對取決於兩件事：任務改變了甚麼，以及在這份報表裏出錯的代價有多大。"
+   },
+   "ru": {
+    "q": "Двадцать недель подряд ИИ-ассистент собирал формулы для еженедельного отчёта без ошибок. На этой неделе структура выгрузки изменилась, а формула молча выдала итог. Как решить, проверять ли её?",
+    "o": [
+     "Положиться на серию: двадцать недель без ошибок — это и есть накопленная статистика надёжности по такой задаче",
+     "Смотреть не на серию удач, а на цену ошибки и на то, что в задаче изменилось: при новой структуре проверка обязательна",
+     "Проверять, только если число заметно отличается от прошлой недели, а при похожем итоге считать формулу рабочей",
+     "Проверить выборочно пару строк: при такой истории точности полная сверка итога уже не выглядит оправданной"
+    ],
+    "e": "Серия удач ничего не говорит о новой ситуации: формула осталась прежней, а данные под ней изменились — так ошибка и проходит молча. Решение проверять принимается по двум вещам: что изменилось в задаче и чем обойдётся ошибка именно в этом отчёте.",
+    "t": "Калибровка доверия"
+   }
+  }
+ },
+ {
+  "day": 1,
+  "t": "Delegation",
+  "q": "Your manager wants one rule for checking the AI assistant's output across the department: right now one person verifies everything and another hardly anything. What rule do you propose?",
+  "o": [
+   "Make the person who checks everything the model: the strictest existing practice can't possibly hurt the department",
+   "Set one common minimum for every task: a single standard is easier to follow and doesn't depend on anyone's mood",
+   "Leave it to each person, but have everyone describe their approach and compare notes at a monthly team meeting",
+   "Scale checking to risk: anything that feeds a decision or leaves the team is checked fully, personal drafts lightly"
+  ],
+  "a": 3,
+  "e": "A single standard either slows down low-stakes tasks or falls short on high-stakes ones, and “the strictest practice” is the first rule people quietly drop. A rule that works tells tasks apart: the depth of checking matches what a mistake would cost.",
+  "id": 47,
+  "sec": 90,
+  "i18n": {
+   "zh-HK": {
+    "t": "委派",
+    "q": "主管想為整個部門定一條統一的AI助理答案核對規則：目前一位同事事事核對，另一位幾乎從不核對。該提出哪條規則？",
+    "o": [
+     "以事事核對的那位為標準：現行最嚴格的做法，肯定不會給部門帶來問題",
+     "為所有任務設一個共同下限：統一標準較易執行，也不受同事情緒影響",
+     "交由各人自行決定，但要求各自說明做法，每月在例會上互相對照",
+     "核對力度按風險而定：進入決策或對外的全面核對，自用草稿則抽查"
+    ],
+    "e": "統一標準要麼拖慢了低風險任務，要麼對高風險任務仍然不足；而「最嚴格的做法」往往是最先被放棄的規則。可行的規則會區分任務：核對的力度與出錯的代價成比例。"
+   },
+   "ru": {
+    "q": "Руководитель просит одно правило проверки ответов ИИ-ассистента на весь отдел: сейчас один сотрудник сверяет всё, другой почти ничего. Какое правило предложить?",
+    "o": [
+     "Взять за образец того, кто сверяет всё: самая строгая из существующих практик точно не создаст отделу проблем",
+     "Ввести общий минимум на все задачи: одинаковая норма проще в исполнении и не зависит от настроения сотрудника",
+     "Оставить на усмотрение каждого, но попросить описать свой подход и раз в месяц сверять эти подходы между собой на общей встрече",
+     "Привязать объём проверки к риску: что идёт в решения и наружу — сверяется полностью, черновики для себя — выборочно"
+    ],
+    "e": "Единая норма либо тормозит дешёвые задачи, либо недостаточна для дорогих, а «самая строгая практика» — это первое правило, которое перестанут соблюдать. Рабочее правило различает задачи: проверка пропорциональна тому, чем обернётся ошибка.",
+    "t": "Делегирование"
+   }
+  }
+ },
+ {
+  "day": 1,
+  "t": "Discernment",
+  "q": "Your report now has an anomaly-flagging rule that the AI assistant wrote from your description of the columns. In a month it hasn't raised a single alert. What do you do?",
+  "o": [
+   "Ask the AI assistant to reread the rule's logic and confirm that it is correct and covers every case",
+   "Take a quiet month as a good sign: the rule works, and there simply were no anomalies in that period",
+   "Feed the rule a deliberately bad case built from made-up data and confirm that the alert actually fires",
+   "Loosen the threshold until alerts start appearing, then tune it based on how often it gets triggered"
+  ],
+  "a": 2,
+  "e": "Silence means one of two things: either there are no anomalies, or the rule doesn't work, and simply watching can't tell you which. What you need is a test case that must trigger an alert, and made-up data is enough for that. Adjusting the threshold or rereading the logic doesn't answer the question.",
+  "id": 48,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "辨識",
+    "q": "報表中新增了一條異常標示規則，由AI助理按你對欄位的描述編寫。一個月來它一次警示都沒有發出。",
+    "o": [
+     "請AI助理重讀規則邏輯，確認它編得沒有錯誤而且覆蓋完整",
+     "把一個月沒有警示視為好跡象：規則有效，期內只是剛好沒有異常",
+     "用一組虛構數據中明顯有問題的個案輸入規則，確認警示真的會觸發",
+     "放寬閾值讓警示開始出現，再按觸發的次數繼續調整"
+    ],
+    "e": "沒有警示只有兩個可能：沒有異常，或規則失效，而單憑觀察無法分辨。需要的是一個必定會觸發警示的對照個案——虛構數據已足夠。調整閾值和重讀邏輯都回答不了這個問題。"
+   },
+   "ru": {
+    "q": "В отчёте появилось правило подсветки аномалий, которое по вашему описанию колонок составил ИИ-ассистент. За месяц оно не подняло ни одной тревоги.",
+    "o": [
+     "Попросить ИИ-ассистента перечитать логику правила и подтвердить, что оно составлено без ошибок и полно",
+     "Считать месяц без тревог хорошим признаком: правило работает, а аномалий в этот период просто не было",
+     "Подать в правило заведомо плохой случай из придуманного набора и убедиться, что тревога срабатывает",
+     "Ослабить порог, чтобы тревоги начали появляться, и дальше настраивать его по количеству срабатываний"
+    ],
+    "e": "Тишина означает одно из двух: аномалий нет или правило не работает, и наблюдением эти случаи не различить. Нужен контрольный случай, который обязан вызвать тревогу, — для этого хватает придуманных данных. Порог и повторная вычитка логики на вопрос не отвечают.",
+    "t": "Различение"
+   }
+  }
+ },
+ {
+  "day": 2,
+  "t": "Trust calibration",
+  "q": "The AI assistant once suggested the wrong grouping in a pivot table. A colleague announced he no longer trusts it with that kind of task and went back to building every table by hand.",
+  "o": [
+   "Suggest a compromise: use the AI assistant for simple tables and always build the complex ones by hand",
+   "Back his decision: a grouping error distorts every calculation downstream, and nothing justifies that risk",
+   "Look at how often it has got this type of task right, and weigh that against the cost of doing it by hand",
+   "Suggest trying the AI assistant again in a month, by which time it will be noticeably better at such tasks"
+  ],
+  "a": 2,
+  "e": "One error is one data point, and abandoning the tool because of it is as poorly grounded as blind trust: neither is based on a count. What matters is the success rate on this type of task and the cost of the manual alternative. The tool itself won't change in a month.",
+  "id": 49,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "信任校準",
+    "q": "AI助理曾有一次在樞紐分析表中建議了錯誤的分組。同事宣布不再把這類任務交給它，改為全部表格人手製作。",
+    "o": [
+     "提出折衷：簡單表格用AI助理，複雜的則一律只用人手製作",
+     "支持這個決定：分組出錯會扭曲之後所有計算，這種風險毫無理由承擔",
+     "看它過往處理這類任務的成功頻率，再與每次人手製作的代價相比",
+     "建議一個月後再用AI助理：屆時它在這類任務上會可靠得多"
+    ],
+    "e": "一次出錯只是一個觀察，單憑它就棄用，代價與盲目信任其實相同：兩者都不是建立在計數之上。決定因素是這類任務的成功比例，以及人手替代方案的代價。工具本身不會在一個月內改變。"
+   },
+   "ru": {
+    "q": "ИИ-ассистент один раз предложил неверную группировку в сводной таблице. Коллега объявил, что больше не доверяет ему такие задачи, и вернулся к ручной сборке всех таблиц.",
+    "o": [
+     "Предложить компромисс: пользоваться ИИ-ассистентом для простых таблиц, а сложные всегда собирать только руками",
+     "Поддержать решение: ошибка в группировке искажает все дальнейшие расчёты, и такой риск ничем не оправдан",
+     "Посмотреть, как часто он справлялся с задачами этого типа, и сравнить это с ценой ручной сборки каждый раз",
+     "Предложить вернуться к ИИ-ассистенту через месяц: за это время он успеет стать заметно надёжнее в таких задачах"
+    ],
+    "e": "Одна ошибка — это одно наблюдение, и отказ по нему стоит ровно столько же, сколько слепое доверие: ни то ни другое не опирается на счёт. Решает доля удач в задачах этого типа и цена ручной альтернативы. Сам по себе инструмент за месяц не меняется.",
+    "t": "Калибровка доверия"
+   }
+  }
+ },
+ {
+  "day": 2,
+  "t": "Discernment",
+  "q": "A colleague spotted a made-up citation of a study in a text from the AI assistant and proposes banning the team from using it for any writing at all.",
+  "o": [
+   "Agree to a one-month ban, then test on a small task whether the problem with sources comes back",
+   "Agree: if it invents citations, it can't be trusted with any text until that flaw has been fixed",
+   "Keep using it, but require every paragraph to carry a note saying exactly where it came from",
+   "Separate the tasks: always check sources and facts; rewording your own text isn't affected"
+  ],
+  "a": 3,
+  "e": "The error belongs to one type of work: claims about the outside world that weren't in the request. Rewording your own text adds nothing from outside, so that risk doesn't arise there. A blanket ban takes away the team's benefit precisely where it is safe.",
+  "id": 50,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "辨識",
+    "q": "同事在AI助理寫的文字中發現一個憑空編造的研究引用，提議禁止組內用它處理任何文字。",
+    "o": [
+     "同意禁用一個月，之後再用一個小任務測試來源錯誤會否再出現",
+     "同意：既然它會編造引用，在這個毛病修好之前任何文字都不能信它",
+     "保留文字用途，但要求每一段旁邊註明這段文字究竟取自何處",
+     "區分任務：來源和事實一律核實，而改寫你自己的文字不受這個錯誤影響"
+    ],
+    "e": "這個錯誤只屬於一類工作——提出提問中本來沒有的、關於外部世界的說法。改寫你自己的文字不會加入任何外部內容，那裏並不存在這種風險。全面禁用只會在安全的地方剝奪組員的得益。"
+   },
+   "ru": {
+    "q": "Коллега увидел в тексте от ИИ-ассистента выдуманную ссылку на исследование и предлагает запретить группе использовать его для любых текстов.",
+    "o": [
+     "Согласиться с запретом на месяц, а потом проверить на небольшой задаче, повторяется ли ошибка с источниками снова",
+     "Согласиться: если он выдумывает ссылки, доверять ему текст нельзя нигде, пока эта особенность не будет исправлена",
+     "Оставить тексты, но требовать, чтобы рядом с каждым абзацем стояло указание, откуда именно он взят в этом виде",
+     "Разделить задачи: источники и факты проверяются всегда, а перефразирование своего текста этой ошибкой не затронуто"
+    ],
+    "e": "Ошибка относится к одному типу работы — утверждениям о внешнем мире, которых не было в запросе. Перефразирование вашего же текста ничего извне не добавляет, и там этот риск не возникает. Общий запрет отнимает у группы пользу там, где она безопасна.",
+    "t": "Различение"
+   }
+  }
+ },
+ {
+  "day": 2,
+  "t": "Delegation",
+  "q": "The AI assistant proposed a method for calculating a forecast. On two periods you checked, it did worse than your manual method. What do you do next?",
+  "o": [
+   "Average the two forecasts: a blend of two methods is usually more stable than either one on its own",
+   "Find out why the results differ, adjust the method accordingly and rerun the test on the same two periods",
+   "Drop the proposed method: your manual one did better on both of the periods you happened to check",
+   "Ask the AI assistant for a different method and compare that instead: trying options beats digging for causes"
+  ],
+  "a": 1,
+  "e": "A proposal can be edited, and that is what sets it apart from a finished answer: once you know why the results differ, you either improve the method or rule it out for good. A new method without that diagnosis will repeat the same mistake, and averaging mixes the tested with the untested.",
+  "id": 51,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "委派",
+    "q": "AI助理提出了一套預測計算方法。在兩個已驗證的期間裏，它的表現都比你人手的差。下一步該怎樣做？",
+    "o": [
+     "把兩個預測取平均：兩種方法組合起來通常比各自單用更穩定",
+     "找出差異的原因，據此修正方法，再在同樣那兩個期間重新量度",
+     "放棄這套方法：你人手的方法在你驗證過的兩個期間都表現更好",
+     "向AI助理另要一套方法再作比較：試不同版本比追究原因更快"
+    ],
+    "e": "建議是可以修改的——這正是它與成品答案的分別：差異的原因查明後，方法要麼得到改善，要麼可以徹底放棄。不查原因就換新方法，只會重犯同一個錯誤；取平均則是把已驗證的與未驗證的混在一起。"
+   },
+   "ru": {
+    "q": "ИИ-ассистент предложил метод расчёта прогноза. На двух проверенных периодах он оказался хуже вашего ручного. Что сделать дальше?",
+    "o": [
+     "Усреднить оба прогноза: комбинация двух методов обычно устойчивее, чем каждый из них по отдельности",
+     "Найти причину расхождения, поправить метод по этой причине и повторить замер на тех же двух периодах",
+     "Отказаться от предложенного метода: ваш ручной показал себя лучше на всех периодах, которые вы проверяли",
+     "Попросить у ИИ-ассистента другой метод и сравнить уже его: перебор вариантов быстрее, чем разбор причины"
+    ],
+    "e": "Предложение можно править — именно это отличает его от готового ответа: разобранная причина расхождения либо улучшает метод, либо окончательно его закрывает. Новый метод без разбора повторит ту же ошибку, а усреднение смешивает проверенное с непроверенным.",
+    "t": "Делегирование"
+   }
+  }
+ },
+ {
+  "day": 3,
+  "t": "Delegation",
+  "q": "You ask the AI assistant first to rewrite an email more politely, and then to explain why sales fell in one of the regions. Both answers read fluently and confidently.",
+  "o": [
+   "Accept the explanation as a working version and ask the AI assistant to rate its own confidence in it",
+   "Reject both: if the explanation is unreliable, the rewritten email deserves just as careful a check",
+   "Accept both: the quality of the email shows it understood the context and the situation in that region",
+   "Accept the email, but treat the explanation as general reasoning that isn't grounded in your data"
+  ],
+  "a": 3,
+  "e": "These are different kinds of task: everything the email needs is in the request, while the reasons for the drop are not, yet the text is equally polished in both cases. So the style of the answer can't tell them apart, and a self-assessed confidence score adds no data to a guess.",
+  "id": 52,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "委派",
+    "q": "你先請AI助理把一封郵件改得客氣些，再請它解釋某個地區的銷售為何下跌。兩個回覆都寫得通順而自信。",
+    "o": [
+     "把解釋當作初步版本接受，並請AI助理評估它自己對這個解釋有多肯定",
+     "兩者都不接受：既然解釋不可靠，改過的郵件也同樣需要仔細核查",
+     "兩者都接受：郵件的質素顯示AI助理既理解上下文，也理解該地區的情況",
+     "接受郵件，但對解釋另眼看待：它建立在一般推理上，而非你的數據上"
+    ],
+    "e": "這是兩種性質不同的任務：郵件的全部內容都在提問之內，下跌的原因則不在，而兩者的文字同樣流暢。所以回覆的形式無助於分辨兩者，而讓它自評信心也不會為猜測增添任何數據。"
+   },
+   "ru": {
+    "q": "Вы просите ИИ-ассистента сначала переписать письмо вежливее, а потом объяснить, почему в одном из регионов упали продажи. Оба ответа выходят складными и уверенными.",
+    "o": [
+     "Принять объяснение как рабочую версию и попросить ИИ-ассистента оценить, насколько он сам в ней уверен",
+     "Отказаться от обоих: если объяснение ненадёжно, то и правка письма требует такой же тщательной проверки",
+     "Принять оба: качество письма показывает, что ИИ-ассистент хорошо понял и контекст, и ситуацию в этом конкретном регионе",
+     "Принять письмо, а к объяснению отнестись иначе: оно построено на общих соображениях, а не на ваших данных"
+    ],
+    "e": "Это задачи разной природы: письмо целиком содержится в запросе, а причины падения — нет, при том что гладкость текста одинаковая. Поэтому форма ответа не помогает отличить одно от другого, а самооценка уверенности не добавляет к догадке данных.",
+    "t": "Делегирование"
+   }
+  }
+ },
+ {
+  "day": 3,
+  "t": "Discernment",
+  "q": "The AI assistant wrote an excellent process guide. A planner concludes it will be just as good at choosing a method for calculating safety stock.",
+  "o": [
+   "Drop the idea: choosing a calculation method is simply not something the AI assistant can do",
+   "Ask it whether it can handle choosing the method, and decide based on what it says",
+   "Agree: the guide required understanding the process, so calculations about it are within reach",
+   "Test it on a small example with a known answer rather than assume success carries over"
+  ],
+  "a": 3,
+  "e": "Success in one area doesn't predict success in a neighbouring one, and asking the tool is pointless: its self-assessment is just as much a guess. There's no reason to rule it out in advance either; a quick trial on an example with a known answer costs less.",
+  "id": 53,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "辨識",
+    "q": "AI助理把流程說明寫得很出色。計劃員由此推斷，它挑選安全庫存的計算方法也會同樣出色。",
+    "o": [
+     "放棄這個念頭：挑選計算方法根本不是AI助理能夠應付的任務",
+     "請它自己評估能否應付方法的選擇，再按這個回答決定下一步",
+     "同意：寫說明需要理解流程，那麼按這個流程計算也在它能力之內",
+     "用一個已知答案的小例子驗證，而不是把一項任務的成功套到另一項上"
+    ],
+    "e": "一個領域的成功不能預測相鄰領域的成功，而問工具自己也沒有意義：它的評估同樣只是猜測。預先拒絕也沒有必要——用一個已知答案的例子做一次簡短試算，代價更低。"
+   },
+   "ru": {
+    "q": "ИИ-ассистент отлично написал инструкцию по процессу. Планировщик делает вывод, что метод расчёта страхового запаса он выберет не хуже.",
+    "o": [
+     "Отказаться от затеи: выбор метода расчёта — не та задача, с которой ИИ-ассистент в принципе может справиться",
+     "Попросить его самого оценить, справится ли он с выбором метода, и действовать дальше по этому ответу",
+     "Согласиться: инструкция требовала понимания процесса, а значит и расчёт по этому процессу ему по силам",
+     "Проверить это на небольшом примере с известным ответом, а не переносить удачу с одной задачи на другую"
+    ],
+    "e": "Успех в одной области не предсказывает успеха в соседней, а спрашивать об этом сам инструмент бессмысленно: оценка будет такой же догадкой. Заранее отказываться тоже незачем — дешевле поставить короткий пробный расчёт на примере, где ответ известен.",
+    "t": "Различение"
+   }
+  }
+ },
+ {
+  "day": 3,
+  "t": "Description",
+  "q": "What is the most reliable sign that a task you're about to hand to the AI assistant is beyond what it can do?",
+  "o": [
+   "The task looks complex and has several steps that are hard to describe in one short request",
+   "The task is in a field you know better than you know how to write requests for a model",
+   "The answer comes out too smooth and confident, which usually means the model is missing something",
+   "The answer depends on what's not in the request: internal rules, data, past decisions"
+  ],
+  "a": 3,
+  "e": "Multi-step tasks are often handled well, and knowing the subject yourself only helps you check the answer. Answers sound equally smooth either way, so smoothness is no signal. The limit lies where the answer depends on something that wasn't, and couldn't be, in the request.",
+  "id": 54,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "描述",
+    "q": "要判斷你打算交給AI助理的任務超出了它的能力範圍，最可靠的標誌是甚麼？",
+    "o": [
+     "任務看來複雜，需要多個步驟，難以用一段簡短的文字提問說清楚",
+     "任務屬於某個領域，而你對該領域的認識多於對擬寫提問的認識",
+     "回覆顯得過於流暢自信，而這通常意味着模型有些東西並不知道",
+     "答案取決於提問中沒有的東西：內部規則、數據數值、你過往的決策"
+    ],
+    "e": "多步驟的任務往往處理得不錯，而你對課題的了解只會更有助核對答案。流暢程度在兩種情況下都一樣，並不構成標誌。界線在於：答案是否由提問中沒有、也不可能有的東西所決定。"
+   },
+   "ru": {
+    "q": "По какому признаку надёжнее всего понять, что задача, которую вы собираетесь поручить ИИ-ассистенту, лежит за границей его возможностей?",
+    "o": [
+     "Задача выглядит сложной и требует нескольких шагов, которые трудно описать в одном коротком текстовом запросе",
+     "Задача относится к области, в которой вы разбираетесь лучше, чем в формулировании запросов к модели",
+     "Ответ получается слишком гладким и уверенным, а это обычно и означает, что модель чего-то не знает",
+     "Ответ зависит от того, чего в запросе нет: внутренних правил, значений данных, вашей истории решений"
+    ],
+    "e": "Многошаговые задачи часто решаются хорошо, а ваше знание предмета только помогает проверить ответ. Гладкость одинакова в обоих случаях и признаком не является. Граница проходит там, где ответ определяется тем, чего в запросе не было и быть не могло.",
+    "t": "Описание"
+   }
+  }
+ },
+ {
+  "day": 4,
+  "t": "Diligence",
+  "q": "You're convinced the AI assistant has made your work faster. You've never timed it, though, and checking and reworking take up part of every day.",
+  "o": [
+   "Time the full cycle on a few tasks, from request to checking to edits, and compare it with before",
+   "Compare how many tasks you finish in a week: if the number has gone up, you really are faster",
+   "Trust your sense of it: it's built on many tasks and usually reflects reality quite accurately",
+   "Measure the time it takes to get a draft, since that's exactly the part the AI assistant speeds up"
+  ],
+  "a": 0,
+  "e": "The feeling of speed comes from how fast the draft appears, and the time spent checking and editing doesn't register. Counting tasks doesn't settle it either, because tasks vary. A number you can compare only comes from timing the full cycle of the same work, measured rather than remembered.",
+  "id": 55,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "盡責",
+    "q": "你確信用了AI助理之後工作變快了。你沒有計時，但核對和重做每天都佔去一部分時間。",
+    "o": [
+     "為幾項任務記下完整周期的用時：提問、核對、修改，再與以往比較",
+     "比較一週完成的任務數量：數量多了，就說明速度確實提升了",
+     "相信感覺：它由許多任務累積而成，通常能相當好地反映實際情況",
+     "量度拿到草稿所需的時間：正是這部分工作因AI助理而加快了"
+    ],
+    "e": "速度感來自草稿出現的那一刻，而核對和修改的代價並不計入其中。任務數量也不是答案：任務的難度各有不同。可比較的數字只能來自同一項工作的完整周期，而且要量度，不能靠回憶。"
+   },
+   "ru": {
+    "q": "Вы уверены, что с ИИ-ассистентом стали работать быстрее. Время вы не засекали, но проверка и переделки занимают часть каждого дня.",
+    "o": [
+     "Засечь полный цикл на нескольких задачах: запрос, проверка, правки — и сравнить с тем, как было раньше",
+     "Сравнить число сделанных за неделю задач: если их стало больше, значит скорость действительно выросла",
+     "Довериться ощущению: оно складывается из многих задач и обычно неплохо отражает реальное положение дел",
+     "Замерить время до получения черновика: именно эта часть работы и ускорилась благодаря ИИ-ассистенту"
+    ],
+    "e": "Ощущение скорости создаётся моментом, когда появился черновик, а стоимость проверки и правок в него не попадает. Количество задач тоже не ответ: задачи бывают разные. Сравнимое число даёт только полный цикл одной и той же работы, замеренный, а не вспомненный.",
+    "t": "Добросовестность"
+   }
+  }
+ },
+ {
+  "day": 4,
+  "t": "Delegation",
+  "q": "The team is deciding whether to switch the weekly report build to working with the AI assistant. How should that decision be made?",
+  "o": [
+   "See how the neighbouring team has set it up and adopt their approach along with their view of the benefits",
+   "Keep a simple log for two weeks: the time spent and the number of edits needed under each approach",
+   "Try it for a month and keep it if nobody complains, since no complaints is the clearest sign it helps",
+   "Ask the people involved whether it feels easier: they're the ones who know if it helps or gets in the way"
+  ],
+  "a": 1,
+  "e": "Convenience and real benefit easily diverge: work feels easier where there's less effort, not necessarily where there's less time and fewer edits. No complaints only means nobody was counting, and the neighbouring team's experience rests on their tasks. Two weeks of records give you numbers you can compare.",
+  "id": 56,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "委派",
+    "q": "團隊正在考慮是否把每週報表的製作轉為用AI助理完成。這個決定該怎樣作？",
+    "o": [
+     "看鄰組是怎樣做的，連同他們對成效的結論一併照搬過來",
+     "用兩星期做簡單記錄：兩種做法各自花了多少時間、需要多少次修改",
+     "試行一個月，沒有人投訴就保留：沒有投訴正是成效的主要標誌",
+     "問參與者是否覺得方便了：只有他們知道AI助理在這項工作中是幫忙還是添亂"
+    ],
+    "e": "方便與成效很容易分道揚鑣：感覺好的通常是省力的地方，而不是省時、少改的地方。沒有投訴只說明沒有人在計數，而鄰組的經驗建立在他們的任務之上。兩星期的記錄才能給出可比較的數字。"
+   },
+   "ru": {
+    "q": "Команда решает, переводить ли сборку еженедельного отчёта на работу с ИИ-ассистентом. Как принять это решение?",
+    "o": [
+     "Посмотреть, как это устроено у соседней команды, и перенять их решение вместе с их выводами о пользе",
+     "Две недели вести простой учёт: сколько времени ушло и сколько правок потребовалось в каждом из вариантов",
+     "Попробовать месяц и оставить, если никто не пожалуется: отсутствие жалоб и есть главный признак пользы",
+     "Спросить участников, стало ли им удобнее: именно они знают, помогает им ИИ-ассистент в этой работе или только мешает"
+    ],
+    "e": "Удобство и польза расходятся легко: приятнее обычно там, где меньше усилий, а не там, где меньше времени и правок. Отсутствие жалоб означает лишь, что никто не считал, а опыт соседней команды построен на их задачах. Две недели учёта дают сравнимые числа.",
+    "t": "Делегирование"
+   }
+  }
+ },
+ {
+  "day": 4,
+  "t": "Discernment",
+  "q": "An experienced analyst spends time weeding out the AI assistant's mediocre suggestions. A newcomer working on the same topic says it saved his day.",
+  "o": [
+   "Accept that the gain depends on knowing the task: for an expert, sifting suggestions costs more",
+   "Conclude that the newcomer uses the AI assistant better and adopt his whole approach to these tasks",
+   "Conclude that the analyst is biased: the habit of doing things himself blinds him to the tool's value",
+   "Conclude that the AI assistant only helps newcomers and isn't worth using in experienced hands"
+  ],
+  "a": 0,
+  "e": "The same mediocre answer is a foothold for a newcomer and extra sifting for an expert; that isn't bias, it's a different cost of evaluation. “Only for newcomers” is wrong too: experts benefit at other stages, where checking is cheap.",
+  "id": 57,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "辨識",
+    "q": "一位資深分析師花時間篩掉AI助理那些中等水平的建議。同一課題的新人卻說AI助理幫他省了一整天。",
+    "o": [
+     "承認收益取決於當事人對任務的認識：對熟手而言，篩選建議的代價更高",
+     "認為新人用AI助理的方式更正確，並把他擬寫這類任務的做法整套學過來",
+     "認為資深分析師有偏見：習慣了自己動手，令他看不到工具的價值",
+     "得出結論：AI助理只對新人有用，在熟手手上並沒有使用的意義"
+    ],
+    "e": "同一個中等水平的答案，對新人是依靠，對熟手卻是篩選的工作量，而這不是偏見，而是判讀成本不同。「只對新人有用」同樣不對：對熟手而言，它在核對成本低的其他環節仍然有用。"
+   },
+   "ru": {
+    "q": "Опытный аналитик тратит время на отбраковку средних предложений ИИ-ассистента. Новичок в той же теме говорит, что ИИ-ассистент спас ему день.",
+    "o": [
+     "Признать, что выигрыш зависит от знаний человека в задаче: у знающего разбор предложенного стоит дороже",
+     "Считать, что новичок пользуется ИИ-ассистентом правильнее, и перенять его подход к постановке подобных задач целиком",
+     "Считать, что опытный аналитик предвзят: привычка делать самому мешает ему увидеть пользу инструмента",
+     "Сделать вывод, что ИИ-ассистент полезен только новичкам, а в опытных руках его применять не имеет смысла"
+    ],
+    "e": "Один и тот же ответ среднего качества для новичка — опора, а для знающего — работа по отбраковке, и это не предвзятость, а разная цена разбора. Вывод «только для новичков» тоже неверен: знающему он полезен на других этапах, где проверка дешёвая.",
+    "t": "Различение"
+   }
+  }
+ },
+ {
+  "day": 5,
+  "t": "Skill",
+  "q": "An intern is preparing for an internal spreadsheet assessment. He works through practice tasks with the AI assistant, which hands him finished solutions. In practice, everything goes well.",
+  "o": [
+   "Expect him to do worse without the AI assistant: the ready answers replaced the practice itself",
+   "Expect a good result: he has worked through many tasks and seen the right solution to each",
+   "Expect results to vary by topic: the AI assistant is strong on formulas but weaker on layout",
+   "Expect a good result as long as he reviews the worked solutions once more before the test"
+  ],
+  "a": 0,
+  "e": "Skill comes from the effort you put in yourself, and reading a finished solution takes no such effort; hence the gap between practice and the assessment. Reviewing someone else's solutions won't close it, and it has nothing to do with which topics the tool knows better.",
+  "id": 58,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "技能",
+    "q": "實習生正準備表格操作的內部考核：他用AI助理做練習題，而AI助理直接給出完整解法。練習時一切順利。",
+    "o": [
+     "預期沒有AI助理時成績會較差：完整解法取代了練習本身",
+     "預期成績不錯：他做過很多題目，也看過每題的正確解法",
+     "預期各題目成績不一：AI助理擅長公式，表格排版則較弱",
+     "預期成績不錯，只要他考核前把看過的解法再溫習一遍"
+    ],
+    "e": "技能來自人自己付出的努力，而閱讀現成解法並不需要這種努力——練習與考核之間的落差正由此而來。重溫別人的解法補不了這個落差，問題也不在於工具對哪些題目更熟。"
+   },
+   "ru": {
+    "q": "Стажёр готовится к внутренней аттестации по работе с таблицами: решает тренировочные задачи с ИИ-ассистентом, который выдаёт готовые решения. На тренировках всё получается.",
+    "o": [
+     "Ожидать, что без ИИ-ассистента результат будет хуже: готовое решение подменило саму тренировку",
+     "Ожидать хорошего результата: он разобрал много задач и видел правильное решение каждой из них",
+     "Ожидать разного результата по темам: ИИ-ассистент силён в формулах и слабее в оформлении таблиц",
+     "Ожидать хорошего результата, если перед аттестацией он повторит разобранные решения ещё раз"
+    ],
+    "e": "Навык появляется от усилия, которое человек прикладывает сам, а чтение готового решения такого усилия не требует — отсюда и разрыв между тренировкой и аттестацией. Повторение чужих решений его не закрывает, и дело не в том, какие темы инструмент знает лучше.",
+    "t": "Навык"
+   }
+  }
+ },
+ {
+  "day": 5,
+  "t": "Description",
+  "q": "The same intern wants to prepare with the AI assistant in a way that actually builds the skill. How should he set up the task?",
+  "o": [
+   "Ask for the solution with a detailed explanation of every step, so he fully understands the logic",
+   "Ask for several ways to solve it at once, then pick the clearest one and commit it to memory",
+   "Ask for hints instead of the solution, then have it check his own answer and point out mistakes",
+   "Ask for the solution, then redo a similar task on his own without looking back at the answer"
+  ],
+  "a": 2,
+  "e": "An explanation, or even reproducing a solution from memory, still leaves the hardest part, finding the solution, done for him. Hints and a check of his own attempt keep that effort with him, and the tool plays the role where it genuinely helps.",
+  "id": 59,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "描述",
+    "q": "同一位實習生想用AI助理來準備，使技能真正形成。他該怎樣提出任務？",
+    "o": [
+     "要求給出解法，並附每一步的詳細解釋，以便完整掌握解題邏輯",
+     "一次要求多種解法，從中挑最容易明白的一種記下來",
+     "不要解法，而要引導性的問題，以及對他自己解法的檢查和錯處指正",
+     "先要解法，然後在一道相似的題目上自己重做一次，不偷看已看過的解法"
+    ],
+    "e": "解釋，甚至憑記憶重做一次，都把最關鍵的努力——尋找解法——替他做了。引導性的問題加上檢查他自己的嘗試，保住了這份努力，而工具則擔起它真正有用的角色。"
+   },
+   "ru": {
+    "q": "Тот же стажёр хочет готовиться с ИИ-ассистентом так, чтобы навык действительно появился. Как ему сформулировать задачу?",
+    "o": [
+     "Просить решение вместе с подробным объяснением каждого шага, чтобы разобраться в логике решения целиком",
+     "Просить сразу несколько способов решения, чтобы выбрать из них самый понятный и запомнить его",
+     "Просить не решение, а наводящие вопросы и проверку его собственного решения с указанием, где ошибка",
+     "Просить решение, а затем воспроизвести его самому на похожей задаче, не подглядывая в разобранное"
+    ],
+    "e": "Объяснение и даже повторение по памяти оставляют главное усилие — поиск решения — сделанным за него. Наводящие вопросы и проверка его собственной попытки это усилие сохраняют, а инструмент берёт на себя роль, в которой он действительно полезен.",
+    "t": "Описание"
+   }
+  }
+ },
+ {
+  "day": 5,
+  "t": "Delegation",
+  "q": "A team lead wants newcomers to master pivot tables and is discussing a rule for using the AI assistant during their training period.",
+  "o": [
+   "Ban the AI assistant during training, then lift the restriction entirely once the assessment is passed",
+   "Allow the AI assistant for complex cases, while newcomers always build the simple tables themselves",
+   "Newcomers do first drafts themselves; the AI assistant explains what's unclear and checks the work",
+   "Allow it everywhere: modern tools are part of the job, and it's best to get used to them right away"
+  ],
+  "a": 2,
+  "e": "Unrestricted use removes the effort exactly where the skill is formed, and a full ban takes away a good explainer. Splitting by complexity sounds sensible, but complex cases are where people learn. What works is the order: your own version first, then explanation and a check.",
+  "id": 60,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "委派",
+    "q": "組長希望新人掌握樞紐分析表的製作，正在商議培訓期間使用AI助理的規則。",
+    "o": [
+     "培訓期間禁用AI助理，考核通過後則完全並永久解除限制",
+     "複雜情況可用AI助理，簡單的表格一律由新人自己製作",
+     "初稿由新人自己做，AI助理則負責解答不明白之處並檢查完成的作品",
+     "全面允許使用AI助理：現代工具本就是工作的一部分，應該立即習慣"
+    ],
+    "e": "全面開放會在最能形成技能的地方抽走努力；全面禁止則失去一位好的講解者。按難度劃分聽起來合理，但人恰恰是在複雜的情況中學會的。可行的是次序：先有自己的版本，然後才是講解和檢查。"
+   },
+   "ru": {
+    "q": "Руководитель группы хочет, чтобы новички освоили сборку сводных таблиц, и обсуждает правило работы с ИИ-ассистентом на период обучения.",
+    "o": [
+     "Запретить ИИ-ассистента на период обучения, а после аттестации снять ограничение полностью и навсегда",
+     "Разрешить ИИ-ассистента для сложных случаев, а простые таблицы новичок собирает всегда самостоятельно",
+     "Первые версии новичок делает сам, а ИИ-ассистент объясняет непонятное и проверяет уже готовую работу",
+     "Разрешить ИИ-ассистента везде: современные инструменты — часть работы, и привыкать к ним надо сразу же"
+    ],
+    "e": "Полный доступ убирает усилие там, где оно и формирует навык, полный запрет отнимает хорошего объясняющего. Деление по сложности звучит разумно, но учатся как раз на сложном. Работает порядок: сначала своя версия, потом объяснение и проверка.",
+    "t": "Делегирование"
+   }
+  }
+ },
+ {
+  "day": 6,
+  "t": "Skill",
+  "q": "An analyst put a complex formula built by the AI assistant into a report. A month later the formula broke, and he can't explain how its parts work.",
+  "o": [
+   "Go back to the AI assistant every time the formula breaks: that's faster than working it out",
+   "Ask for a simpler formula: nobody on the team could maintain a complex one anyway",
+   "Ask for an explanation of each part as soon as you get the formula, not when it breaks",
+   "Keep the original request: you can always use it to work out what the formula should do"
+  ],
+  "a": 2,
+  "e": "The request preserves the intent but not the understanding, and simplifying doesn't always work, because some tasks are complex by nature. Going back every time it breaks means the formula will never really be yours. Ask for the explanation before you use it, while the questions are still fresh.",
+  "id": 61,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "技能",
+    "q": "分析師把AI助理寫好的複雜公式放進報告。一個月後公式失效，而他無法解釋公式各部分的作用。",
+    "o": [
+     "每次公式失效就重新找AI助理：這比自己拆解來得快",
+     "要求簡單一點的公式：複雜的公式團隊裡始終沒人維護得了",
+     "在收到公式時就要求解釋，而不是等到它失效的那一刻",
+     "把原來的要求一併保存：憑它隨時可以還原公式應有的作用"
+    ],
+    "e": "原來的要求保留了意圖，卿保留不了理解；而簡化也並非總是可行：有些任務本質上就複雜。每次失效才去拆解，等於這條公式永遠是別人的。解釋應在使用之前就要，趡疑問還在你這邊。"
+   },
+   "ru": {
+    "q": "Аналитик вставил в отчёт сложную формулу, которую собрал ИИ-ассистент. Через месяц формула перестала работать, и объяснить её части он не может.",
+    "o": [
+     "Обращаться к ИИ-ассистенту заново каждый раз, когда формула ломается: это быстрее, чем разбор",
+     "Просить формулу попроще: сложную всё равно никто в команде потом не сможет поддерживать",
+     "Просить объяснение сразу при получении формулы, а не в тот момент, когда она сломалась",
+     "Хранить рядом исходный запрос: по нему всегда можно восстановить, что формула должна делать"
+    ],
+    "e": "Запрос сохраняет замысел, но не понимание, а упрощение помогает не всегда: задача бывает сложной по сути. Разбор при каждой поломке означает, что формула навсегда остаётся чужой. Объяснение стоит просить до применения, пока вопросы ещё есть у вас.",
+    "t": "Навык"
+   }
+  }
+ },
+ {
+  "day": 6,
+  "t": "Description",
+  "q": "Two people ask the AI assistant for a macro. What's the difference between “write a macro” and “write a macro, explain each block and list the cases it doesn't handle”?",
+  "o": [
+   "The second gives a more accurate answer: a detailed request always produces better code",
+   "With the second, the person understands the logic and knows where the macro will fail",
+   "The second answer is longer to read, but it looks better reasoned and more complete",
+   "It's only about readability: the macro itself comes out essentially the same either way"
+  ],
+  "a": 1,
+  "e": "The code may well be identical; what changes is what the person walks away with: an understanding of each block and an explicit list of unhandled cases. That list is what saves a day later, when the data turns up something the macro was never designed for.",
+  "id": 62,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "描述",
+    "q": "兩個人都請AI助理寫一個巨集。「寫個巨集」和「寫個巨集，解釋每一段，並指出它未涵蓋的情況」這兩個要求有甚麼分別？",
+    "o": [
+     "第二個的答案更準確：要求愝詳細，寫出來的程式碼質量就愝高",
+     "第二個讓人保留了對邏輯的理解，以及一份巨集會失效的情況清單",
+     "第二個答案較長、要花多些時間讀，但看來更有依據、更完整",
+     "分別只在於閱讀是否方便：兩種情況下巨集本身實質上都一樣"
+    ],
+    "e": "程式碼可能完全一樣——改變的不是它，而是人所保留下來的東西：對各段邏輯的理解，以及一份明確的未涵蓋情況清單。日後數據中出現巨集從未約定過的東西時，正是這份清單省下一整天。"
+   },
+   "ru": {
+    "q": "Двое просят ИИ-ассистента собрать макрос. Чем различаются запросы «напиши макрос» и «напиши макрос, объясни каждый блок и назови случаи, которые он не покрывает»?",
+    "o": [
+     "Во втором ответ получается точнее: подробный запрос всегда даёт более качественный код",
+     "Во втором у человека остаётся понимание логики и список мест, где макрос откажет",
+     "Во втором ответ длиннее и дольше читается, зато выглядит более обоснованным и полным",
+     "Разница только в удобстве чтения: сам макрос в обоих случаях выйдет одинаковым по сути"
+    ],
+    "e": "Код может выйти одинаковым — меняется не он, а то, что остаётся у человека: понимание блоков и явный список непокрытых случаев. Именно этот список потом экономит день, когда в данные попадёт что-то, о чём макрос не договаривался.",
+    "t": "Описание"
+   }
+  }
+ },
+ {
+  "day": 6,
+  "t": "Discernment",
+  "q": "An error turns up in a calculation. One colleague tells the AI assistant “fix it”; another asks it to help him understand the cause and fixes it himself. What's the difference?",
+  "o": [
+   "The second keeps his ability to find such errors; the first gets a fixed file and the same blind spot",
+   "There's no difference: the error gets fixed either way, and how it was fixed doesn't affect the result",
+   "The second takes more risk: manual fixes introduce new errors more often than the model's answer does",
+   "The first is more efficient: the result is the same, and far less time goes into digging for the cause"
+  ],
+  "a": 0,
+  "e": "Both paths end in the same corrected file, so the file won't show any difference. It shows up next time: a cause you have worked through once you'll recognise in minutes. That's why diagnosis is worth doing yourself even when a ready fix is at hand.",
+  "id": 63,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "辨識",
+    "q": "計算中發現了一個錯誤。一位同事向AI助理寫「幫我改」，另一位請AI助理幫他理解錯誤的成因，然後自己動手改。分別在哪？",
+    "o": [
+     "第二位保留了找出這類錯誤的能力；第一位得到的是改好的檔案和同一個盲點",
+     "沒有分別：兩種做法都把錯誤改好了，而怎樣改已不影響結果",
+     "第二位風險更大：人手改動引入新錯誤的機會，比照模型現成答案改要高",
+     "第一位效率更高：結果一樣，而花在追究成因上的時間明顯更少"
+    ],
+    "e": "改好的檔案是兩條路徑相同的結果，從它身上看不出分別。分別會在下一次顯現：拆解過一次的成因，日後幾分鐘就認得出。所以即使現成的修正就在手邊，診断這一步也值得留給自己。"
+   },
+   "ru": {
+    "q": "В расчёте нашлась ошибка. Один коллега пишет ИИ-ассистенту «исправь», другой просит помочь понять, из-за чего она возникла, и правит сам. В чём разница?",
+    "o": [
+     "У второго остаётся умение находить такие ошибки, у первого — исправленный файл и та же слепая зона",
+     "Разницы нет: в обоих случаях ошибка исправлена, а способ её устранения на результат уже не влияет",
+     "Второй рискует больше: правка руками вносит новые ошибки чаще, чем правка по готовому ответу модели",
+     "Первый действует эффективнее: результат тот же, а времени на разбор причины уходит заметно меньше"
+    ],
+    "e": "Исправленный файл — одинаковый итог обоих путей, и по нему разница незаметна. Она проявится в следующий раз: причина, разобранная однажды, узнаётся потом за минуты. Поэтому диагностику стоит оставлять себе даже тогда, когда готовая правка под рукой.",
+    "t": "Различение"
+   }
+  }
+ },
+ {
+  "day": 7,
+  "t": "Discernment",
+  "q": "Before asking the AI assistant why a metric dropped, a manager jots down three hypotheses of his own. What is this step for?",
+  "o": [
+   "To record his own contribution: the note shows later that the idea was his and not the tool's",
+   "So the first convincing answer doesn't become the only frame he keeps thinking within",
+   "To make the request more detailed: listing hypotheses makes the answer sharper and more useful",
+   "To compare them with the answer afterwards and go with the one that they both landed on"
+  ],
+  "a": 1,
+  "e": "It's not about taking credit or adding detail to the request; in fact, your own hypotheses are better left out of it, or the answer will just echo them. Written down beforehand, they stop the first neat explanation from crowding out all the others before you've even considered them.",
+  "id": 64,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "辨識",
+    "q": "在向AI助理詢問某指標下跌的原因之前，經理先在筆記上寫下自己的三個推測。這一步有甚麼作用？",
+    "o": [
+     "為了記下自己的貢獻：日後憑筆記可見這個想法屬於你，而不是工具",
+     "為了不讓第一個有說服力的答案成為你之後思考的唯一框架",
+     "為了把要求寫得更詳細：列出這些推測會令答案更準確、更有用",
+     "為了之後把自己的推測與它的答案對照，採用雙方一致的那個"
+    ],
+    "e": "重點不在記功，也不在要求是否詳細——恰恰相反，自己的推測最好不要寫進要求，否則答案只會把它們重複一遍。預先寫下來，是為了不讓第一個順理成章的解釋，在你還未逐一考慮之前就擠走其餘所有可能。"
+   },
+   "ru": {
+    "q": "Перед тем как спросить ИИ-ассистента о причинах падения показателя, менеджер записывает в заметку три своих версии. Зачем нужен этот шаг?",
+    "o": [
+     "Чтобы зафиксировать свой вклад: по заметке потом видно, что идея принадлежала именно вам",
+     "Чтобы первый убедительный ответ не стал единственной рамкой, в которой вы дальше думаете",
+     "Чтобы составить запрос подробнее: перечисленные версии сделают ответ точнее и полезнее",
+     "Чтобы потом сверить свои версии с его ответом и взять ту, которая совпала у вас обоих"
+    ],
+    "e": "Дело не в учёте идей и не в подробности запроса — наоборот, свои версии в запрос лучше не вставлять, иначе ответ их же и повторит. Записанные заранее, они не дают первому складному объяснению вытеснить все остальные ещё до того, как вы их рассмотрели.",
+    "t": "Различение"
+   }
+  }
+ },
+ {
+  "day": 7,
+  "t": "Description",
+  "q": "The AI assistant has given you a convincing conclusion, and you'd like to pass it straight on. What should your next request be?",
+  "o": [
+   "Ask it to restate the conclusion more briefly and clearly, so readers have no questions",
+   "Ask it to rate its confidence in the conclusion and pass it on if the score is high",
+   "Ask it to re-check the conclusion and confirm its reasoning has no obvious weak spots",
+   "Ask for the strongest arguments against it, then pick one and check that yourself"
+  ],
+  "a": 3,
+  "e": "Asking it to re-check or rate its confidence gets you the same agreement in new packaging. You need a request that works against the conclusion: strong counterarguments either expose a hole or make the conclusion more solid. Then you check the one argument you picked yourself.",
+  "id": 65,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "描述",
+    "q": "AI助理給出了一個很有說服力的結論，你想立刻把它轉發出去。下一個要求應該怎樣寫？",
+    "o": [
+     "請它把結論寫得更簡短清楚，讓收件人讀完不會有疑問",
+     "請它按信心程度為結論評分，如果分數高就直接發出去",
+     "請它重新核對結論，並確認其推理中沒有留下明顯的弱點",
+     "請它提出最有力的反方論據，並挑其中一個自己去核實"
+    ],
+    "e": "請它重新核對，或請它評估信心程度，換來的只是同一份認同的新包裝。需要的是一個與結論對立的要求：有力的反方論據，要麼找出漏洞，要麼令結論更穩固。挑出的那一個論據，之後由你自己去核實。"
+   },
+   "ru": {
+    "q": "ИИ-ассистент выдал убедительный вывод, и его хочется сразу отправить дальше. Как построить следующий запрос?",
+    "o": [
+     "Попросить изложить вывод короче и понятнее, чтобы получатели прочитали его без вопросов",
+     "Попросить оценить вывод по шкале уверенности и отправить, если оценка окажется высокой",
+     "Попросить перепроверить вывод и подтвердить, что в его рассуждении не осталось явных слабых мест",
+     "Попросить самые сильные доводы против вывода и выбрать один из них для собственной проверки"
+    ],
+    "e": "Просьба перепроверить и оценка уверенности возвращают то же согласие в новой упаковке. Нужен запрос, который работает против вывода: сильные доводы «против» либо находят дыру, либо делают вывод прочнее. Один выбранный довод вы потом проверяете сами.",
+    "t": "Описание"
+   }
+  }
+ },
+ {
+  "day": 7,
+  "t": "Diligence",
+  "q": "A team adopts a rule: nothing produced with the AI assistant goes out without a line saying the author checked it personally. What makes the rule work rather than become a ritual?",
+  "o": [
+   "The line is required on all material without exception, including internal working drafts",
+   "The line is written not by the author but by a second person who read the material first",
+   "The line names the specific check that was done and what it found, not just “checked”",
+   "The line goes prominently at the very top, so the recipient notices it straight away"
+  ],
+  "a": 2,
+  "e": "Where the line appears and how widely the rule applies make no difference as long as it can be written without looking. A second reader is a different, more expensive process. The rule starts working when the line can be verified: it names the check and what it showed.",
+  "id": 66,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "盡責",
+    "q": "團隊訂立規則：凡與AI助理一起完成的材料，發出前必須附上一行說明作者已自行核實。能真正發揮作用的規則，與流於形式的分別在哪？",
+    "o": [
+     "這一行適用於所有材料，毫無例外，連內部工作草稿也包括在內",
+     "這一行不由作者寫，而由發出前讀過該材料的第二個人來寫",
+     "這一行寫明做過哪項具體核實及其結果，而不是只寫「已核實」",
+     "這一行放在材料開頭的顯眼位置，讓收件人一眼就看到"
+    ],
+    "e": "只要那行字可以不看內容就寫得出來，它放在哪裡、規則覆蓋多廣都無關重要。由第二個人來讀是另一套成本更高的程序。規則要發揮作用，那行字必須可供查証：寫明做了哪項核實，也寫明結果如何。"
+   },
+   "ru": {
+    "q": "Команда вводит правило: материал, сделанный с ИИ-ассистентом, не уходит без строки о том, что автор проверил сам. Что отличает работающее правило от ритуала?",
+    "o": [
+     "Строка обязательна для всех материалов без исключений, включая внутренние рабочие черновики",
+     "Строку пишет не автор, а второй человек, который читал материал перед отправкой",
+     "Строка называет конкретную проверку и её результат, а не содержит слово «проверено»",
+     "Строка стоит на видном месте в начале материала, чтобы получатель заметил её сразу"
+    ],
+    "e": "Место строки и охват правила ничего не добавляют, пока её содержание можно написать не глядя. Второй читатель — это другая, более дорогая процедура. Правило начинает работать, когда строка проверяема: названа проверка и названо, что она показала.",
+    "t": "Добросовестность"
+   }
+  }
+ },
+ {
+  "day": 8,
+  "t": "Trust calibration",
+  "q": "You notice that in a subject you don't know, you accept the AI assistant's answers almost without question, while in your own field you argue with every word. What should you do?",
+  "o": [
+   "Even it out: check everything with the same care, however well you know the subject",
+   "In unfamiliar subjects, ask for simpler answers: the clearer the answer, the easier an error is to spot",
+   "Check harder precisely in the unfamiliar subject: that's where you have the least to catch errors with",
+   "Accept it as natural: you see the detail in your own field, and elsewhere it makes sense to trust the tool"
+  ],
+  "a": 2,
+  "e": "Where you have nothing to go on, you have nothing to catch an error with, so checking matters more, not less, even though it feels the other way round. A simple answer guarantees nothing: a clear false statement is just as convincing. Checking everything equally spends effort where the risk isn't.",
+  "id": 67,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "信任校準",
+    "q": "你發現：在自己不熟悉的題目上，AI助理的答案幾乎不經質疑就被接受；在自己的專業上卿字字爭輩。該怎麼辦？",
+    "o": [
+     "統一做法：不訖自己對該題目了解多少，一律同樣仔細地核查",
+     "不熟悉的題目要求答案簡單些：答案愝易懂，就愝容易發現其中的錯誤",
+     "正是在不熟悉的題目上要加強核查：那裡你最沒有依據去察覺錯誤",
+     "視之為自然：自己的題目你看得到細節，別人的題目交給工具也合理"
+    ],
+    "e": "沒有依據的地方，錯誤無從捕捉——所以核查應該更強而不是更弱，儘管感覺剛好相反。答案簡單並不保証甚麼：一句易懂的錯誤陳述同樣有說服力。平均用力核查，只會把精力花在風險不在的地方。"
+   },
+   "ru": {
+    "q": "Вы заметили: в незнакомой вам теме ответы ИИ-ассистента принимаются почти без вопросов, а в своей вы спорите с каждым словом. Что с этим делать?",
+    "o": [
+     "Выровнять подход: проверять всё одинаково внимательно, независимо от своего знания предмета",
+     "В незнакомой теме просить ответы попроще: чем понятнее ответ, тем легче заметить в нём ошибку",
+     "Усилить проверку именно в незнакомой теме: там у вас меньше всего опоры, чтобы заметить ошибку",
+     "Считать это естественным: в своей теме вы видите детали, а в чужой разумно довериться инструменту"
+    ],
+    "e": "Там, где опоры нет, ошибку нечем поймать — значит проверка нужна сильнее, а не слабее, хотя ощущается наоборот. Простота ответа ничего не гарантирует: понятное неверное утверждение так же убедительно. Равномерная проверка тратит силы не там, где риск.",
+    "t": "Калибровка доверия"
+   }
+  }
+ },
+ {
+  "day": 8,
+  "t": "Delegation",
+  "q": "You've been given a subject you've never worked in, and a report is due. Where do you start so the AI assistant helps rather than leads you astray?",
+  "o": [
+   "Start with the AI assistant: it gets you into the subject fast, and you can sort out details as you write",
+   "Draw up a short list of terms and questions, check them in internal documents, then go to the AI assistant",
+   "Start with colleagues who know the subject, and turn to the AI assistant only if their answers fall short",
+   "Ask the AI assistant for a ready-made report outline on the subject and fill it in, learning as you go"
+  ],
+  "a": 1,
+  "e": "Without some footing of your own, every answer looks equally plausible, so the first half hour is best spent on terms and questions checked against internal documents. Colleagues help, but their time is more expensive, and someone else's outline sets the frame before you understand the subject.",
+  "id": 68,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "委派",
+    "q": "你被派到一個從未做過的題目，而且要交一份報告。怎樣開始，才能讓AI助理幫上忙而不是把你帶偏？",
+    "o": [
+     "從AI助理開始：它能快速帶你入門，細節在準備報告的過程中再弄清楚",
+     "先列一份簡短的術語和問題清單，用內部文件核對，然後才找AI助理",
+     "先找熟悉這個題目的同事，只有在他們的答覆不足時才找AI助理",
+     "向AI助理要一份這個題目的現成報告結構，然後邊填寫邊弄懂內容"
+    ],
+    "e": "沒有自己的依據，任何答案看來都同樣可信，因此第一個半小時值得用來整理術語和問題，並以內部文件核對。同事有用，但他們的時間更貴；而別人給的結構，會在你理解之前先把框架定下。"
+   },
+   "ru": {
+    "q": "Вам поручили тему, в которой вы раньше не работали, и нужен отчёт. С чего начать, чтобы ИИ-ассистент помог, а не увёл в сторону?",
+    "o": [
+     "Начать с ИИ-ассистента: он быстро введёт в тему, а детали вы уточните по ходу подготовки самого отчёта",
+     "Собрать короткий список терминов и вопросов, проверить их по внутренним документам, потом идти к ИИ-ассистенту",
+     "Начать с коллег, которые знают тему, и обращаться к ИИ-ассистенту только если их ответов окажется мало",
+     "Попросить у ИИ-ассистента готовую структуру отчёта по этой теме и заполнять её, разбираясь уже на ходу"
+    ],
+    "e": "Без собственной опоры любой ответ выглядит одинаково правдоподобно, поэтому первые полчаса стоит потратить на термины и вопросы, проверенные по внутренним документам. Коллеги полезны, но их время дороже, а чужая структура задаёт рамку до понимания.",
+    "t": "Делегирование"
+   }
+  }
+ },
+ {
+  "day": 8,
+  "t": "Discernment",
+  "q": "A colleague says: “It answers confidently, so it must know.” What does a confident tone actually tell you?",
+  "o": [
+   "How the answer was phrased for this request, and nothing about how reliable it is",
+   "That the request gave enough context, which is why the answer needed no caveats",
+   "That the task is simple: on hard questions, caveats appear in the answer on their own",
+   "That the answer draws on common, well-established information rather than rare sources"
+  ],
+  "a": 0,
+  "e": "Tone is a property of the text, not of knowledge: an accurate answer and a guess sound equally confident, and caveats appear where they were asked for, not where the risk is higher. So you can't judge by the form of the answer; the content has to be checked whatever the tone.",
+  "id": 69,
+  "sec": 60,
+  "i18n": {
+   "zh-HK": {
+    "t": "辨識",
+    "q": "同事說：「它答得這麼肯定，想必是知道的。」肯定的語氣實際上說明了甚麼？",
+    "o": [
+     "只說明了為配合提問而選用的表述方式，與內容本身是否可靠無關",
+     "說明要求中有足夠的背景資料，所以答案不需要任何保留說明",
+     "說明題目簡單：遇到複雜問題時，答案自然會出現保留說明",
+     "說明答案建立在穩定、常見的資訊上，而不是罕見的材料上"
+    ],
+    "e": "語氣是文字的特性，而非知識的特性：準確的答案和猜測都可以說得很肯定，而保留說明只出現在被要求的地方，而不是風險較高的地方。所以不能憑答案的形式判断，無論語氣如何，都得核查內容。"
+   },
+   "ru": {
+    "q": "Коллега говорит: «он отвечает уверенно, значит знает». Что на самом деле показывает уверенный тон ответа?",
+    "o": [
+     "Манеру изложения, выбранную под запрос, и ничего о надёжности самого содержания",
+     "Что в запросе нашлось достаточно контекста и потому ответ обошёлся без всяких оговорок",
+     "Что задача простая: на сложных вопросах оговорки появляются в ответе сами собой",
+     "Что ответ построен на устойчивых, часто встречающихся сведениях, а не на редких"
+    ],
+    "e": "Тон — свойство текста, а не знания: уверенно звучат и точный ответ, и догадка, а оговорки появляются там, где их просили, а не там, где выше риск. Поэтому судить по форме ответа нельзя, и проверять приходится содержание, каким бы тоном оно ни было сказано.",
+    "t": "Различение"
+   }
+  }
+ },
+ {
+  "day": 9,
+  "t": "Discernment",
+  "q": "Working from a description of the columns, the AI assistant drafted a calculation rule, and you ran it on your side. Which check catches the most errors in the least time?",
+  "o": [
+   "Check properties of the result: parts add up to the total, the row count is unchanged, no negatives",
+   "Eyeball the first and last rows of the output: obvious distortions usually show up there right away",
+   "Recalculate the whole result using a second, independent method and compare the two totals",
+   "Ask the AI assistant to reread its rule and confirm it calculates exactly what you described"
+  ],
+  "a": 0,
+  "e": "A full recalculation is reliable but costs as much as the work itself, eyeballing rows only catches crude errors, and rereading the rule never touches the data. Checking properties of the result takes minutes and rules out a whole class of errors: lost rows, double counting, a flipped sign.",
+  "id": 70,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "辨識",
+    "q": "AI助理按你對欄位的描述訂出了一條計算規則，你在自己這邊執行了。哪一種核查能在更短時間內抓到更多錯誤？",
+    "o": [
+     "核對結果的屬性：各部分之和等於總數、行數沒有改變、沒有負值",
+     "用眼看一遍結果的頭幾行和尾幾行：明顯的異常通常一眼就能看出",
+     "用第二種獨立方法把結果完整重算一次，再把兩個總數互相比較",
+     "請AI助理重讀自己訂的規則，確認它算的正是你所描述的內容"
+    ],
+    "e": "完整重算可靠，但成本等同把工作再做一遍；看幾行只抓得到粗糙的錯誤；而重讀規則根本沒碰到數據。結果的屬性幾分鐘就核對完，並能排除一整類錯誤：行數遺失、重複計算、正負號弄錯。"
+   },
+   "ru": {
+    "q": "ИИ-ассистент по описанию колонок составил правило расчёта, вы запустили его у себя. Какая проверка поймает больше ошибок за меньшее время?",
+    "o": [
+     "Сверить свойства итога: сумма частей равна общему, число строк не изменилось, отрицательных значений нет",
+     "Просмотреть глазами первые и последние строки результата: явные искажения обычно заметны сразу по ним",
+     "Пересчитать результат вторым, независимым способом целиком и сравнить два полученных итога между собой",
+     "Попросить ИИ-ассистента перечитать своё правило и подтвердить, что оно считает именно то, что вы описали"
+    ],
+    "e": "Полный пересчёт надёжен, но стоит как сама работа, просмотр строк ловит только грубое, а повторная вычитка правила вообще не касается данных. Свойства итога проверяются за минуты и отсекают целый класс ошибок: потерянные строки, двойной счёт, перепутанный знак.",
+    "t": "Различение"
+   }
+  }
+ },
+ {
+  "day": 9,
+  "t": "Description",
+  "q": "You want to test a calculation on a few made-up test cases. Which set is most useful?",
+  "o": [
+   "Three extreme cases: if the calculation survives those, it certainly won't fail on normal data",
+   "Three ordinary cases of different sizes: they're closest to what comes up in everyday work",
+   "A single case, but one that matches the structure of a real export exactly, in every column",
+   "A typical case, an empty one and an extreme one: that tests normal running and the edges"
+  ],
+  "a": 3,
+  "e": "Errors live at the edges, but testing only the edges lets mistakes in ordinary calculations through, while three similar cases test the same thing three times. A typical, an empty and an extreme case cover different ways of failing and take a few minutes to prepare.",
+  "id": 71,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "描述",
+    "q": "你想用幾個自己構造的測試案例檢驗一項計算。哪一組更有用？",
+    "o": [
+     "三個極端案例：計算若能撐得住它們，在一般數據上更不會出問題",
+     "三個不同規模的一般案例：它們最接近日常工作中會遇到的情況",
+     "一個案例，但它在所有欄位上都與真實匯出的結構完全一致",
+     "一般、空白和極端各一個：既檢驗正常運作，也檢驗邊界上的表現"
+    ],
+    "e": "錯誤多出現在邊界，但只檢驗邊界會漏掉一般計算中的失誤，而三個相似的案例只是把同一件事驗三次。「一般、空白、極端」這一組涵蓋不同的失效機制，準備起來也只需幾分鐘。"
+   },
+   "ru": {
+    "q": "Вы хотите проверить расчёт на нескольких придуманных контрольных случаях. Какой набор полезнее?",
+    "o": [
+     "Три крайних случая: если расчёт выдерживает их, на обычных данных он тем более уже не подведёт",
+     "Три обычных случая разного размера: они ближе всего к тому, что встречается в работе каждый день",
+     "Один случай, зато полностью совпадающий по структуре с настоящей выгрузкой во всех колонках",
+     "Обычный случай, пустой и крайний: так проверяются и нормальная работа, и поведение на границах"
+    ],
+    "e": "Ошибки живут на границах, но проверка только границ пропускает промахи в обычном счёте, а три похожих случая проверяют одно и то же трижды. Набор «обычный, пустой, крайний» покрывает разные механизмы отказа и готовится за несколько минут.",
+    "t": "Описание"
+   }
+  }
+ },
+ {
+  "day": 9,
+  "t": "Diligence",
+  "q": "A calculation result looks plausible, there's no time to recalculate, and it has to go out today. What should you do before sending it?",
+  "o": [
+   "Send it as is: the result looking plausible is itself the outcome of a quick sanity check",
+   "Check the order of magnitude: what would a value twice as high or half as low mean here?",
+   "Send it marked “preliminary” and recalculate it properly tomorrow, without time pressure",
+   "Compare it with last period: being close to the usual level confirms there's no big error"
+  ],
+  "a": 1,
+  "e": "Plausibility is a feeling, not a check, and a “preliminary” label won't stop someone basing a decision on the figure today. Similarity to the last period hides an error if it's systematic. A rough order-of-magnitude check catches mistakes that are off by a multiple.",
+  "id": 72,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "盡責",
+    "q": "計算結果看來合理，已沒時間重算，而今天就要發出。發出之前該做甚麼？",
+    "o": [
+     "照原樣發出：結果看來合理，本身就是那種快速目測評估的成果",
+     "評估數量級：如果這個數值大一倍或小一倍，對這項工作意味著甚麼",
+     "標上「初步」後發出，第二天在沒有時間壓力的情況下再重算",
+     "與上一期比較：接近慣常水平即可確認這裡沒有嚴重錯誤"
+    ],
+    "e": "看來合理是一種感覺，而不是核查；而標上「初步」也不會阻止決定今天就倪重這個數字。若錯誤是系統性的，與上一期接近只會把它掩蓋。粗略估算數量級，能抓到成倍的失誤。"
+   },
+   "ru": {
+    "q": "Итог расчёта выглядит правдоподобно, пересчитывать некогда, а отправлять надо сегодня. Что сделать перед отправкой?",
+    "o": [
+     "Отправить как есть: правдоподобность итога и есть результат той самой быстрой оценки на глаз",
+     "Оценить порядок величины: что означало бы для этой работы значение вдвое больше или вдвое меньше",
+     "Отправить с пометкой «предварительно» и пересчитать в спокойном режиме уже на следующий день",
+     "Сверить итог с прошлым периодом: близость к привычному уровню подтвердит, что серьёзной ошибки здесь нет"
+    ],
+    "e": "Правдоподобность — это ощущение, а не проверка, и пометка «предварительно» не мешает решению опереться на число уже сегодня. Близость к прошлому периоду маскирует ошибку, если она систематическая. Грубая оценка порядка величины ловит промахи в разы.",
+    "t": "Добросовестность"
+   }
+  }
+ },
+ {
+  "day": 10,
+  "t": "Discernment",
+  "q": "You ask the AI assistant to tag every statement in a draft by where it came from: your context or the model's general knowledge. What do you do with the tags?",
+  "o": [
+   "Delete everything tagged as general knowledge and keep only what came from your own context",
+   "Treat the tags as enough: knowing where a claim came from already removes most of the risk",
+   "Personally check everything tagged as general knowledge: those are the claims you didn't supply",
+   "Check everything tagged as your context: retelling your own text is where meaning gets distorted"
+  ],
+  "a": 2,
+  "e": "Tagging doesn't verify anything; it sorts. Claims from general knowledge are the ones that weren't in your request, and checking each of them is your job. There's no need to delete them outright, as they're often useful. The retelling of your own context can be spot-checked, much faster.",
+  "id": 73,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "辨識",
+    "q": "你請AI助理在草稿中標示每一項陳述：它是來自你提供的背景，還是來自模型的一般知識。這份標示該怎麼用？",
+    "o": [
+     "把標為一般知識的內容全部從草稿中刪去，只保留你自己提供的背景",
+     "視標示本身已足夠：既已標明出處，出錯的主要風險就已消除",
+     "親自核查所有標為一般知識的內容：正是這些陳述並非你提供的",
+     "核查所有標為你提供背景的內容：轉述你自己的文字最易扭曲原意"
+    ],
+    "e": "標示不是核查，而是分類：來自一般知識的陳述正是要求中沒有的東西，每一項都是你的工作。不必把它們整批刪去，它們往往很有用。至於對你自己背景的轉述，抽樣核查就夠，而且快得多。"
+   },
+   "ru": {
+    "q": "Вы просите ИИ-ассистента разметить в черновике каждое утверждение: взято оно из вашего контекста или из общих знаний модели. Что делать с этой разметкой?",
+    "o": [
+     "Удалить из черновика всё, помеченное как общие знания, и оставить только ваш собственный контекст",
+     "Считать разметку достаточной: указанное происхождение уже снимает основную часть риска ошибки",
+     "Проверить самому всё, помеченное как общие знания: именно этих утверждений вы ему не давали",
+     "Проверить всё, помеченное как ваш контекст: в пересказе вашего текста легче всего исказить смысл"
+    ],
+    "e": "Разметка не проверяет, а сортирует: утверждения из общих знаний — это то, чего в запросе не было, и каждое из них ваша работа. Удалять их целиком необязательно, они часто полезны. А пересказ вашего же контекста проверяется выборочно и гораздо быстрее.",
+    "t": "Различение"
+   }
+  }
+ },
+ {
+  "day": 10,
+  "t": "Description",
+  "q": "You've given the AI assistant only a description of the situation and are asking for a conclusion. Which line is most useful to add to the request?",
+  "o": [
+   "“Base the conclusion only on what I've written, and don't bring in anything from outside.”",
+   "“Double-check your conclusion and give me the final version with no caveats or conditions.”",
+   "“If there isn't enough to go on, tell me what's missing instead of filling the gap yourself.”",
+   "“If you're unsure of the conclusion, flag it as an assumption and explain what you doubt.”"
+  ],
+  "a": 2,
+  "e": "Forbidding outside input doesn't say what to do about a gap, and an “assumption” label leaves the guess in the text. Asking it to name what's missing turns the gap into your next step: you find what's needed on your side and get a real conclusion instead of a well-built story.",
+  "id": 74,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "描述",
+    "q": "你只向AI助理提供了情況的描述，並請它給出結論。在要求中加上哪一句最有用？",
+    "o": [
+     "「只根據我寫的內容作結論，不要用任何其他外部資料」",
+     "「把結論核對兩次，寫出最終版本，不要保留說明和多餘條件」",
+     "「如果資料不足以作結論，就說明具體缺甚麼，而不要自行補足」",
+     "「如果對結論沒有把握，就標為推測，並說明你在哪裡存疑」"
+    ],
+    "e": "禁止使用外部資料並沒有交代遇到空白時該怎麼辦，而標為「推測」則把猜測留在文字裡。請它說出缺甚麼，就把空白變成你的下一步：你在自己這邊找到所需的東西，得到的是結論，而不是一個好看的版本。"
+   },
+   "ru": {
+    "q": "Вы дали ИИ-ассистенту только описание ситуации и просите вывод. Какую фразу полезнее всего добавить в запрос?",
+    "o": [
+     "«Делай вывод только на основании того, что я написал, и не используй больше ничего постороннего»",
+     "«Проверь свой вывод дважды и напиши окончательную версию без оговорок и лишних условий»",
+     "«Если для вывода не хватает информации, скажи, чего именно, вместо того чтобы додумывать»",
+     "«Если не уверен в выводе, помечай его как предположение и объясняй, в чём сомневаешься»"
+    ],
+    "e": "Запрет на лишнее не подсказывает, что делать с пробелом, а пометка «предположение» оставляет догадку в тексте. Просьба назвать, чего не хватает, превращает пробел в ваш следующий шаг: нужное вы находите у себя и получаете вывод, а не красивую версию.",
+    "t": "Описание"
+   }
+  }
+ },
+ {
+  "day": 10,
+  "t": "Diligence",
+  "q": "The AI assistant added an industry benchmark to your draft report. You asked it to name the source, and it did.",
+  "o": [
+   "Keep the benchmark and cite the source in a footnote: responsibility for the figure moves to the source",
+   "Treat the named source as a lead: the benchmark isn't confirmed until you've opened it yourself",
+   "Consider it settled: a source has been named, so the claim rests on external, verifiable data",
+   "Drop the benchmark and avoid outside comparisons: checking every such source takes too long"
+  ],
+  "a": 1,
+  "e": "The named source is part of the same answer, and only a person can verify it, by opening the original. A footnote doesn't shift responsibility: your name is on the report. Nor do you need to give up on comparisons; checking a single benchmark takes a few minutes.",
+  "id": 75,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "盡責",
+    "q": "AI助理在報告草稿中加入了一個行業參考值。你要求它說出來源，它也說了。",
+    "o": [
+     "保留參考值並在註腰列出來源：這樣這個數字的責任就轉移到該來源",
+     "把它說出的來源當作一種說法：在你親自查閱之前，參考值未算確認",
+     "視問題已解決：來源既已說明，該陳述便建立在可查証的外部數據上",
+     "刪去參考值，不作外部比較：逐一核查這類來源太費時間"
+    ],
+    "e": "它說出的來源是同一個答案的一部分，只有人翻開原始出處才能核實。註腰並不轉移責任：報告是你署名的。也不必因此放棄比較——核查一個參考值只需幾分鐘。"
+   },
+   "ru": {
+    "q": "ИИ-ассистент вставил в черновик отчёта отраслевой ориентир. Вы попросили назвать источник, и он его назвал.",
+    "o": [
+     "Оставить ориентир, указав источник в сноске: так ответственность за цифру переходит к этому источнику",
+     "Отнестись к названному источнику как к версии: пока вы не открыли его сами, ориентир не подтверждён",
+     "Считать вопрос решённым: источник назван, а значит утверждение опирается на внешние проверяемые данные",
+     "Убрать ориентир и обойтись без внешних сравнений: проверять каждый такой источник слишком долго"
+    ],
+    "e": "Названный источник — часть того же ответа, и проверить его может только человек, открыв первоисточник. Сноска ответственности не передаёт: отчёт подписан вами. Отказываться от сравнений тоже не нужно — проверка одного ориентира занимает несколько минут.",
+    "t": "Добросовестность"
+   }
+  }
+ },
+ {
+  "day": 11,
+  "t": "Discernment",
+  "q": "You ask the AI assistant the same methodology question three times. Two answers agree; the third differs on a key assumption.",
+  "o": [
+   "Go with the answer whose assumption looks more cautious: it's the safer choice for a management report",
+   "Start your check with that assumption: the disagreement shows where the answer is least solid",
+   "Ask the question a few more times and go with the version that comes up most often",
+   "Go with the answer that came up twice: two matching runs out of three settle the question"
+  ],
+  "a": 1,
+  "e": "A vote across runs measures how often a wording appears, not whether it's right, and more runs only sharpen the frequency. A cautious assumption is no sign of truth either. The value of the disagreement is elsewhere: it points to where to check first.",
+  "id": 76,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "辨識",
+    "q": "同一條方法上的問題，你向AI助理問了三次。兩個答覆一致，第三個在一項關鍵假設上不同。",
+    "o": [
+     "選假設看來較保守的那個答覆：向管理層匯報時比較安全",
+     "就從這項假設開始查核：分歧顯示答覆在哪裏最站不住腳",
+     "再多問幾次，取出現次數比其他版本多的那個版本",
+     "取重複出現了兩次的答覆：三次中有兩次一致，問題就定了"
+    ],
+    "e": "多次運行的「投票」量度的是某個說法出現的頻率，不是它的正確性，而多跑幾次只是把頻率算得更細。假設保守也不代表是真話。分歧的價值在別處：它指出應該最先查核的地方。"
+   },
+   "ru": {
+    "q": "Один и тот же вопрос по методике вы задали ИИ-ассистенту трижды. Два ответа совпали, третий отличается в ключевом допущении.",
+    "o": [
+     "Выбрать ответ, где допущение выглядит осторожнее: он безопаснее для отчёта руководству",
+     "Начать проверку с этого допущения: расхождение показывает, где ответ держится слабее всего",
+     "Задать вопрос ещё несколько раз и взять версию, которая будет встречаться чаще других",
+     "Взять ответ, который повторился дважды: совпадение двух прогонов из трёх решает вопрос"
+    ],
+    "e": "Голосование прогонов измеряет частоту формулировки, а не её верность, и дополнительные прогоны лишь уточняют частоту. Осторожность допущения тоже не признак правды. Польза расхождения в другом: оно указывает место, которое надо проверить первым.",
+    "t": "Различение"
+   }
+  }
+ },
+ {
+  "day": 11,
+  "t": "Trust calibration",
+  "q": "You asked the same question three times and got the same answer each time. A colleague thinks that settles it. How should you see it?",
+  "o": [
+   "Agree: three matches out of three is reliable enough confirmation",
+   "Agree if the question is simple, and check only where the wording varied",
+   "It shows the answer is stable, not right: a repeated error looks the same",
+   "Ask a fourth time in different words: if that matches too, it's settled for good"
+  ],
+  "a": 2,
+  "e": "Repetition tests how stable an answer is, not whether it matches reality: a systematic error repeats just as readily as a correct answer, and rewording doesn't change that. A disagreement is a useful hint, but agreement is no substitute for checking.",
+  "id": 77,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "信任校準",
+    "q": "你問了三次，三次都得到同一個答覆。同事認為問題已經有定論。該怎樣看？",
+    "o": [
+     "同意：三次中三次一致，已是相當可靠的確證",
+     "若問題簡單就同意，只在說法有分歧的地方才查核",
+     "顯示的是穩定，不是正確：重複出現的錯誤看起來一模一樣",
+     "換個說法再問第四次：這次也一致，問題就徹底定了"
+    ],
+    "e": "重複問只檢驗答覆是否穩定，不檢驗它是否符合實際：系統性的錯誤和正確答覆一樣樂於重現，換個說法也不會改變這點。分歧可作提示，但一致並不能代替查核。"
+   },
+   "ru": {
+    "q": "Вы задали вопрос трижды и получили один и тот же ответ. Коллега считает, что вопрос закрыт. Как к этому отнестись?",
+    "o": [
+     "Согласиться: три совпадения из трёх — это уже достаточно надёжное подтверждение",
+     "Согласиться, если вопрос простой, и проверять только там, где формулировки разошлись",
+     "Устойчивость показана, правильность нет: повторяющаяся ошибка выглядит точно так же",
+     "Задать вопрос в четвёртый раз другими словами: совпадение и здесь закроет его окончательно"
+    ],
+    "e": "Повтор проверяет устойчивость ответа, а не его соответствие действительности: систематическая ошибка воспроизводится так же охотно, как верный ответ, и переформулировка этого не меняет. Расхождение полезно как подсказка, но совпадение проверки не заменяет.",
+    "t": "Калибровка доверия"
+   }
+  }
+ },
+ {
+  "day": 11,
+  "t": "Description",
+  "q": "You want checking the AI assistant's conclusion to take less time. What is it useful to ask it for separately?",
+  "o": [
+   "To point out which parts of the conclusion it considers most open to objection",
+   "To lay out the conclusion in more detail, with every intermediate step in order",
+   "To cut the conclusion to one dense paragraph, since short texts are always quicker to check",
+   "To list the assumptions the conclusion rests on, separately from the conclusion itself"
+  ],
+  "a": 3,
+  "e": "Detailed reasoning or a short paragraph changes the length, not how checkable it is, and a self-assessment of weak spots is the same answer in a different form. A list of assumptions is different: you can confirm each one as true for your business or flag it as false on the spot.",
+  "id": 78,
+  "sec": 60,
+  "i18n": {
+   "zh-HK": {
+    "t": "描述",
+    "q": "你想令查核AI助理的結論花少些時間。另外該請它做甚麼？",
+    "o": [
+     "指出結論中哪些部分，它認為最容易招致反對和批評",
+     "把結論寫得更詳細，按次序列出推理的每一個中間步驟",
+     "把結論壓成一段紮實的文字：短文總比長文查得快",
+     "把結論所依據的假設，另立一份清單列出，與結論分開"
+    ],
+    "e": "詳細的推理和精簡的一段只改變篇幅，不改變可查核性；而它自評哪裏薄弱，只是同一個答覆換個形式。假設清單則不同：每一項你都能認出對你的業務是否成立，不成立的當下就能標出。"
+   },
+   "ru": {
+    "q": "Вы хотите, чтобы проверка вывода ИИ-ассистента занимала меньше времени. О чём полезно попросить его отдельно?",
+    "o": [
+     "Указать, какие части вывода он считает наиболее уязвимыми для возражений и критики",
+     "Изложить вывод подробнее, со всеми промежуточными шагами рассуждения по порядку",
+     "Сократить вывод до одного плотного абзаца: короткий текст всегда проверяется быстрее длинного",
+     "Перечислить допущения, на которых держится вывод, отдельным списком от самого вывода"
+    ],
+    "e": "Подробное рассуждение и короткий абзац меняют объём, а не проверяемость, а самооценка уязвимости — тот же ответ в другой форме. Список допущений — другое дело: каждое из них вы либо узнаёте как верное для вашего бизнеса, либо сразу отмечаете как ложное.",
+    "t": "Описание"
+   }
+  }
+ },
+ {
+  "day": 12,
+  "t": "Description",
+  "q": "Two people ask the AI assistant to prepare a report template. One writes the request straight away; the other first writes down three criteria for a good result. What does that extra step give?",
+  "o": [
+   "A more detailed request, so the very first answer lands closer to what is needed",
+   "The ability to compare several answers against each other and pick the best one",
+   "Time savings: the criteria can go into the request instead of a full task description",
+   "A basis for accepting the work: without criteria, checking comes down to taste"
+  ],
+  "a": 3,
+  "e": "Criteria for a good result aren't there to make the request detailed or to choose between answers: they turn acceptance into something you can verify. Written down before the work, they don't bend to whatever came out; written afterwards, they bend without you noticing.",
+  "id": 79,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "描述",
+    "q": "兩個人都請AI助理草擬一份報告範本。一個直接寫請求，另一個先寫下三項「合格結果」的標誌。第二步帶來甚麼？",
+    "o": [
+     "請求寫得更詳細，於是第一個答覆也更接近你需要的結果",
+     "可以把幾個答覆互相比較，從中挑出最好的那一個",
+     "省時間：標誌可以直接放進請求，不用把任務整個用文字描述",
+     "有了驗收的依據：沒有標誌，查核就只剩「喜歡或不喜歡」"
+    ],
+    "e": "「合格結果」的標誌不是為了讓請求更詳細，也不是為了在幾個答覆之間取捨：它們把驗收變成可查核的動作。在動手之前寫下來，它們還不會遷就最後做出來的東西——事後才寫，就會不知不覺地遷就。"
+   },
+   "ru": {
+    "q": "Двое просят ИИ-ассистента подготовить шаблон отчёта. Один пишет запрос сразу, другой сначала записывает три признака годного результата. Что даёт второй шаг?",
+    "o": [
+     "Запрос получается подробнее, а значит и первый ответ окажется ближе к нужному результату",
+     "Появляется возможность сравнить несколько ответов между собой и выбрать лучший из них",
+     "Экономится время: признаки можно вставить в запрос и не описывать задачу словами целиком",
+     "Появляется, по чему принимать работу: без признаков проверка сводится к «нравится или нет»"
+    ],
+    "e": "Признаки годного результата нужны не для подробности запроса и не для выбора между ответами: они превращают приёмку в проверяемое действие. Записанные до работы, они ещё и не подстраиваются под то, что получилось, — а записанные после, подстраиваются незаметно.",
+    "t": "Описание"
+   }
+  }
+ },
+ {
+  "day": 12,
+  "t": "Delegation",
+  "q": "The task is difficult, and you can't yet define what a good result looks like. What should you do?",
+  "o": [
+   "Have the AI assistant ask you questions about the goal, audience and constraints, and answer them yourself",
+   "Put the task off until you've talked to whoever requested it: starting without clear requirements is pointless",
+   "Ask the AI assistant to define the criteria for a good result for you, and work to them from then on",
+   "Start with a draft and refine the requirements as you go: the criteria will emerge from the finished text"
+  ],
+  "a": 0,
+  "e": "The criteria are your own knowledge of the task, and handing their definition to a tool means handing it the sign-off. But there's no need to wait either: it asks good questions about goal, audience and constraints, and you know the answers better than you think until someone asks.",
+  "id": 80,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "委派",
+    "q": "任務複雜，「合格結果」的標誌你暫時還寫不出來。該怎樣做？",
+    "o": [
+     "請AI助理就目標、對象和限制提出澄清問題，而答案由你自己給",
+     "把任務押後，先跟提出要求的人談：要求不清楚，開工沒有意義",
+     "請AI助理代你寫出「合格結果」的標誌，之後就照它來做",
+     "先寫初稿，邊做邊釐清要求：標誌會在成品上自然浮現"
+    ],
+    "e": "標誌是你對任務的認識；把它的寫法交給工具，等於把驗收也交出去。但也不必等：關於目標、對象和限制的問題，它問得很好，而答案你知道的比想像中多——只是一直沒人問起。"
+   },
+   "ru": {
+    "q": "Задача сложная, и признаки годного результата вы сформулировать пока не можете. Что сделать?",
+    "o": [
+     "Попросить ИИ-ассистента задать уточняющие вопросы о цели, аудитории и ограничениях, а ответы дать самому",
+     "Отложить задачу до разговора с заказчиком: без ясных требований начинать работу бессмысленно",
+     "Попросить ИИ-ассистента сформулировать признаки годного результата за вас и дальше работать по ним",
+     "Начать с черновика и уточнять требования по ходу: признаки проявятся сами на готовом тексте"
+    ],
+    "e": "Признаки — это ваше знание задачи, и передать их формулировку инструменту значит отдать ему приёмку. Но и ждать не нужно: вопросы о цели, аудитории и ограничениях он задаёт хорошо, а ответы вы знаете лучше, чем кажется, пока их никто не спросил.",
+    "t": "Делегирование"
+   }
+  }
+ },
+ {
+  "day": 12,
+  "t": "Skill",
+  "q": "The first answer missed the mark. Which is better: rewriting the request from scratch, or working out which criterion it was missing?",
+  "o": [
+   "Working it out: the gap you find improves this request and every later one for the same task",
+   "Start over if the task is simple, and work it out if it has already taken more than half a day",
+   "They're equivalent: either way you send a new request and get a new answer back",
+   "Starting over: fresh wording is free of the unlucky phrases that threw the answer off once"
+  ],
+  "a": 0,
+  "e": "Rewriting throws away what was already working and explains nothing, so by the third attempt you're back where you started. A named gap is both a fix now and a ready-made piece for similar tasks. What decides it isn't the size of the task but whether it will come up again.",
+  "id": 81,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "技能",
+    "q": "第一個答覆不合用。哪一種做法更有力：把請求從頭重寫，還是弄清楚請求裏缺了哪一項標誌？",
+    "o": [
+     "弄清楚：找到的缺口既改善這個請求，也改善同類任務的後續請求",
+     "任務簡單就從頭重寫，花了超過半天就去弄清楚缺了甚麼",
+     "兩者等價：兩種做法都是發出新請求，再收到一個新答覆",
+     "從頭重寫：新的寫法不帶那些曾經一次把答覆帶偏的字詞"
+    ],
+    "e": "重寫會丟掉本來已經有效的部分，又解釋不了任何事，所以到第三次嘗試，你還在原地。指出缺口，既是當下的修正，也是同類任務的現成部件。決定因素不是任務大小，而是這任務會不會再出現。"
+   },
+   "ru": {
+    "q": "Первый ответ не подошёл. Что сильнее: переписать запрос с нуля или разобраться, какого признака в нём не хватало?",
+    "o": [
+     "Разбор: найденный пропуск улучшает и этот запрос, и все следующие по той же задаче",
+     "Запрос с нуля, если задача простая, и разбор, если она заняла больше половины дня",
+     "Это равноценно: в обоих случаях вы отправляете новый запрос и получаете новый ответ",
+     "Запрос с нуля: новая формулировка свободна от неудачных слов, которые уже один раз сбили ответ"
+    ],
+    "e": "Переписывание теряет то, что уже работало, и ничего не объясняет, поэтому на третьей попытке вы оказываетесь там же. Названный пропуск — это и правка сейчас, и готовый элемент для похожих задач. Решает здесь не размер задачи, а то, повторится ли она.",
+    "t": "Навык"
+   }
+  }
+ },
+ {
+  "day": 13,
+  "t": "Description",
+  "q": "A colleague tweaks his request at random, changing words to see whether something better comes out. What would you suggest instead?",
+  "o": [
+   "Change one thing at a time and note what shifted in the answer after each change",
+   "Describe the task in as much detail as possible: detailed requests rarely need trial and error",
+   "Borrow a request template from someone who already gets this task right, and stick to it",
+   "Change several things at once: that finds a good combination of wording faster"
+  ],
+  "a": 0,
+  "e": "Several changes at once leave you unable to tell which one worked, and someone else's template works only as long as your task matches theirs. Detail helps, but it doesn't tell you what was getting in the way. Changing one thing at a time turns trial and error into observation.",
+  "id": 82,
+  "sec": 60,
+  "i18n": {
+   "zh-HK": {
+    "t": "描述",
+    "q": "同事在亂改請求：換幾個字，看看結果會不會好一點。可以建議他改做甚麼？",
+    "o": [
+     "一次只改一個元素，並記下每次修改之後答覆有甚麼變化",
+     "把任務描述得盡量詳細：請求夠詳細，通常就不必靠試錯",
+     "向已經做得出這項任務的人要一份現成的請求範本，照着用",
+     "一次改幾個元素：這樣更快找到合適的措辭組合"
+    ],
+    "e": "一次改幾處，就看不出是哪一處起了作用；而別人的範本只在任務與他相同時才有效。詳細有幫助，但答不了「到底是甚麼在礙事」。一次只改一個元素，試錯就變成觀察。"
+   },
+   "ru": {
+    "q": "Коллега правит запрос наугад: меняет слова и смотрит, не выйдет ли лучше. Что предложить вместо этого?",
+    "o": [
+     "Менять по одному элементу за раз и отмечать, что изменилось в ответе после каждой правки",
+     "Описывать задачу как можно подробнее: при подробном запросе перебор обычно не требуется",
+     "Взять готовый шаблон запроса у того, у кого эта задача уже получается, и работать по нему",
+     "Менять сразу несколько элементов: так быстрее найти удачное сочетание формулировок"
+    ],
+    "e": "Несколько правок одновременно не дают понять, какая сработала, а чужой шаблон работает, пока задача совпадает с чужой. Подробность помогает, но не отвечает на вопрос, что именно мешало. Правка по одному элементу превращает перебор в наблюдение.",
+    "t": "Описание"
+   }
+  }
+ },
+ {
+  "day": 13,
+  "t": "Discernment",
+  "q": "A manager writes to the AI assistant “you know what I mean”, the way he would to an assistant who has worked with him for a year.",
+  "o": [
+   "The phrase works worse than a direct instruction, but on simple tasks the result is usually fine",
+   "The phrase helps: it sets an informal tone that makes the answers livelier and more human",
+   "The AI assistant has no shared history with him: all it knows is what this request contains",
+   "The phrase is harmless: the AI assistant will just skip it and work with the rest of the request"
+  ],
+  "a": 2,
+  "e": "Expecting what you'd expect from someone who knows you is exactly where the disappointment comes from: the tool has no context from past tasks. Nor is the phrase harmless: it takes the place of an explanation you would otherwise have written, and the answer ends up built on guesswork.",
+  "id": 83,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "辨識",
+    "q": "一位主管給AI助理寫道「你知道我意思的嘛」，就像寫給一位已共事一年的助手那樣。",
+    "o": [
+     "這種說法不如直接指示有效，但在簡單任務上結果通常還可以接受",
+     "這句話有用：它定下非正式的語氣，答覆會寫得更生動、更有人味",
+     "AI助理並沒有跟你共事的積累：它知道的就只有這個請求裏的內容",
+     "這句話無害：AI助理只會略過它，用請求其餘的部分來工作"
+    ],
+    "e": "像對待一個認識你的人那樣去期待，正是失望的來源：工具沒有過去任務的脈絡。這句話也並非無害——它佔去了本該寫下的那段說明的位置，於是答覆只能靠猜測拼出來。"
+   },
+   "ru": {
+    "q": "Руководитель пишет ИИ-ассистенту «ты же понимаешь, что я имею в виду», как написал бы помощнику, который работает с ним уже год.",
+    "o": [
+     "Такая фраза работает хуже прямого указания, но в простых задачах результат обычно приемлем",
+     "Фраза полезна: она задаёт неформальный тон, в котором ответы получаются живее и человечнее",
+     "Накопленного опыта работы с вами у ИИ-ассистента нет: он знает ровно то, что есть в этом запросе",
+     "Фраза безвредна: ИИ-ассистент просто пропустит её и будет работать с остальной частью запроса"
+    ],
+    "e": "Ожидание как от человека, который вас знает, и есть источник разочарования: контекста прошлых задач у инструмента нет. Безвредной фраза тоже не остаётся — она занимает место объяснения, которое пришлось бы написать, и ответ собирается по догадке.",
+    "t": "Различение"
+   }
+  }
+ },
+ {
+  "day": 13,
+  "t": "Diligence",
+  "q": "A particular way of phrasing a request once produced an excellent result, and an employee now uses it for every task. On a new task, the result was off the mark.",
+  "o": [
+   "Drop the technique: since it let you down, the success was luck and it can't be relied on",
+   "Keep using it and fix the bad results by hand: on average it still saves time",
+   "Develop it until it works for every task, then make it the team's shared standard",
+   "Work out why it worked back then, and use it only where that condition still holds"
+  ],
+  "a": 3,
+  "e": "A technique that works usually does so because of a specific condition: a format, an audience, a type of task. Until that condition is named, reusing it is a lottery: it won't become universal, and dropping it would be a waste. Understanding why it works turns it into a tool with known limits.",
+  "id": 84,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "盡責",
+    "q": "某種請求寫法有一次帶來極好的結果，於是同事把它套用到所有任務上。在一項新任務上，結果卻不合用。",
+    "o": [
+     "放棄這個做法：既然失手，當初就是碰巧，不能再倚靠它",
+     "繼續套用，不合用的結果就自己動手改：平均而言仍然省時",
+     "把這個做法改良到一次適用於所有任務，並定為通用標準",
+     "弄清楚它當初為何有效，只把它用到具備那個條件的地方"
+    ],
+    "e": "成功的做法通常靠某個具體條件起效——格式、對象、任務類型。條件沒有說清楚，照搬就是碰運氣：它不會變得通用，放棄又可惜。弄明白原因，它就變成一件有適用邊界的工具。"
+   },
+   "ru": {
+    "q": "Одна формулировка запроса однажды дала отличный результат, и сотрудник применяет её ко всем задачам. На новой задаче результат оказался неуместным.",
+    "o": [
+     "Отказаться от приёма: раз он подвёл, значит удача была случайной и опираться на него нельзя",
+     "Применять его и дальше, а неуместный результат править руками: в среднем он всё равно экономит",
+     "Доработать приём так, чтобы он подходил ко всем задачам сразу, и закрепить как общий стандарт",
+     "Понять, за счёт чего приём сработал тогда, и переносить его только туда, где это условие есть"
+    ],
+    "e": "Удачный приём обычно работает за счёт конкретного условия — формата, аудитории, типа задачи. Пока условие не названо, перенос остаётся лотереей: универсальным приём не станет, а отказываться жаль. Понятая причина превращает его в инструмент с границами.",
+    "t": "Добросовестность"
+   }
+  }
+ },
+ {
+  "day": 14,
+  "t": "Delegation",
+  "q": "A report for management goes through these stages: goal, structure, calculations, wording, conclusions, decision. How do you split them with the AI assistant?",
+  "o": [
+   "Structure and wording to it; goal and conclusions to you; calculations in-house; decision to management",
+   "Let it do a first pass on every stage, then go through the report yourself and fix what needs fixing",
+   "Hand it everything except calculations: data can't be shared, and it does the rest better than we do",
+   "Hand it only the wording: every stage of the report that carries meaning should stay with a person"
+  ],
+  "a": 0,
+  "e": "The line runs through the task, not around it: the tool can propose a structure and polish the text, but the report's goal and its conclusions are the reason it exists at all. A first pass on everything looks efficient until the whole framing has to be redone.",
+  "id": 85,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "委派",
+    "q": "給管理層的報告要經過幾個階段：目標、結構、計算、措辭、結論、決定。怎樣與AI助理分工？",
+    "o": [
+     "結構和措辭交給它，目標和結論歸你，計算自己做，決定由管理層作",
+     "把所有階段的第一遍交給它，然後自己通讀報告，該改的改",
+     "除計算以外全部交出：資料不能傳，其餘的它做得比我們好",
+     "只交出措辭：報告中所有涉及意義的階段都應完全由人來做"
+    ],
+    "e": "界線在任務之內，而不是把任務整個劃分：提出結構、打磨文字，工具都能做；但報告的目標和結論決定了它為甚麼要寫。「全部交出第一遍」看來省事，直到要重做整個框架。"
+   },
+   "ru": {
+    "q": "Отчёт для руководства проходит этапы: цель, структура, расчёты, формулировки, выводы, решение. Как разделить их с ИИ-ассистентом?",
+    "o": [
+     "Структура и формулировки — ему, цель и выводы — вам, расчёты у себя, решение за руководством",
+     "Отдать первый проход по всем этапам, а потом пройти отчёт самому и поправить, что потребуется",
+     "Отдать всё, кроме расчётов: данные передавать нельзя, а с остальным он справляется лучше нас",
+     "Отдать только формулировки: все смысловые этапы отчёта должны остаться целиком за человеком"
+    ],
+    "e": "Граница проходит внутри задачи, а не по задаче целиком: предложить структуру и отшлифовать текст инструмент может, но цель отчёта и вывод определяют, зачем он вообще написан. Первый проход «по всему» выглядит экономным, пока не приходится переделывать рамку.",
+    "t": "Делегирование"
+   }
+  }
+ },
+ {
+  "day": 14,
+  "t": "Description",
+  "q": "A planner wants the AI assistant to “do the thinking” when choosing between several suppliers. What makes sense to hand over?",
+  "o": [
+   "The criteria and the questions worth asking, keeping the scoring and the choice himself",
+   "A description of each option's risks, after which the planner sets the criteria himself",
+   "A reasoned recommendation, which he can then rely on if the reasoning is convincing",
+   "A full comparison with a final recommendation, which the planner then simply double-checks"
+  ],
+  "a": 0,
+  "e": "The AI assistant is good at widening the range of considerations: criteria, questions, overlooked risks. But scoring against the criteria depends on your data and context, which it doesn't have, so any recommendation is built from generalities, and double-checking it means redoing the work.",
+  "id": 86,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "描述",
+    "q": "一位規劃人員希望在幾家供應商之間選擇時，由AI助理「代他思考」。可以合理交給它做甚麼？",
+    "o": [
+     "比較的準則，以及值得提出的問題；評分和選擇留給自己",
+     "逐個方案的風險描述，準則由規劃人員讀完之後再自己定",
+     "附理由的建議：日後若理由足夠有說服力，就可以照它來做",
+     "完整的比較加上最終建議，規劃人員之後只需覆核一遍"
+    ],
+    "e": "AI助理很擅長擴充要考慮的事項：準則、問題、被忽略的風險。但按準則評分要靠你的數據和你的處境，而這些它沒有，於是建議只能用泛泛之談拼出來；而「覆核一遍」等於把工作重做一次。"
+   },
+   "ru": {
+    "q": "Планировщик хочет, чтобы ИИ-ассистент «подумал за него» при выборе поставщика из нескольких. Что разумно ему поручить?",
+    "o": [
+     "Критерии сравнения и вопросы, которые стоит задать, а оценку и выбор оставить за собой",
+     "Описание рисков по каждому варианту, а критерии планировщик сформулирует после прочтения",
+     "Рекомендацию с обоснованием: дальше можно опираться на неё, если обоснование убедительно",
+     "Полное сравнение с итоговой рекомендацией, которую планировщик затем просто перепроверит"
+    ],
+    "e": "ИИ-ассистент хорошо расширяет перечень соображений: критерии, вопросы, забытые риски. Но оценка по критериям опирается на ваши данные и ваш контекст, которых у него нет, поэтому рекомендация собирается из общих мест, а «перепроверить» её — значит сделать работу заново.",
+    "t": "Описание"
+   }
+  }
+ },
+ {
+  "day": 14,
+  "t": "Diligence",
+  "q": "An employee had the AI assistant draft a reply to a client and sent it without reading it: “I'd have written much the same.” What was lost here?",
+  "o": [
+   "Time: a check would have caught the issue at once, and now a second email is needed",
+   "Quality: without a human edit, a reply almost always sounds formulaic and generic",
+   "The moment of reading it as the recipient would, and taking the text on as his own",
+   "Context: the AI assistant doesn't know the history of the relationship with this client"
+  ],
+  "a": 2,
+  "e": "The text may well have been good, the history may not have mattered, and no second email may be needed at all. What was lost is something else: the reply went out under the name of someone who hadn't read it. Reading it through the recipient's eyes is exactly the moment you take responsibility for it.",
+  "id": 87,
+  "sec": 60,
+  "i18n": {
+   "zh-HK": {
+    "t": "盡責",
+    "q": "同事讓AI助理寫了一封給客戶的回覆，看都沒看就發了：「我也差不多會這樣寫」。這裏失去了甚麼？",
+    "o": [
+     "時間：查核一下就會立刻發現要改的地方，現在得再發一封",
+     "文字質素：沒有人手修改，回覆幾乎總是顯得公式化",
+     "那一刻：有人以收件人的身份讀過這段文字，並把它認作自己的",
+     "關係的脈絡：AI助理並不了解與這位收件人的往來歷史"
+    ],
+    "e": "文字可能寫得很好，往來歷史可能根本不需要，第二封信也未必要發。失去的是另一樣：這封回覆以一個沒讀過它的人的名義發了出去。用收件人的眼睛讀一遍，正是承擔責任的那一刻。"
+   },
+   "ru": {
+    "q": "Сотрудник поручил ИИ-ассистенту написать ответ клиенту и отправил, не читая: «я бы написал примерно так же». Что здесь потеряно?",
+    "o": [
+     "Время: при проверке правка нашлась бы сразу, а теперь нужно второе письмо",
+     "Качество текста: без правки человеком ответ почти всегда звучит шаблонно",
+     "Момент, когда человек прочитал текст как адресат и принял его на себя",
+     "Контекст отношений: ИИ-ассистент не знает истории переписки с этим адресатом"
+    ],
+    "e": "Текст мог выйти хорошим, история переписки могла не понадобиться, второго письма может и не потребоваться. Потеряно другое: ответ ушёл за подписью человека, который его не читал. Прочитать глазами адресата — это и есть момент принятия ответственности.",
+    "t": "Добросовестность"
+   }
+  }
+ },
+ {
+  "day": 15,
+  "t": "Skill",
+  "q": "An employee notices that writing an analytical text has become harder for him without the AI assistant. What is the most practical response?",
+  "o": [
+   "Treat it as unimportant: writing without tools simply won't be needed in this job anymore",
+   "Pick tasks where the skill matters, do them himself and use the AI assistant to check",
+   "Keep writing with the AI assistant, but fully rewrite its draft in his own words every time",
+   "Stop using the AI assistant for all writing tasks until the skill has fully recovered"
+  ],
+  "a": 1,
+  "e": "Giving it up entirely is costly and rarely lasts, and rewriting someone else's draft never means starting from a blank page, which is exactly the hard part. Skill erosion is managed by choice: a few tasks stay yours, and the tool comes in to check.",
+  "id": 88,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "技能",
+    "q": "同事發現沒有AI助理之後，寫分析文章變得更難了。最實際的做法是甚麼？",
+    "o": [
+     "不必在意：工作上以後都不會再需要不靠工具寫作的能力",
+     "挑出需要保住這項能力的任務，自己來做，再請AI助理查核",
+     "照樣與AI助理一起寫，但每次都把它的初稿整篇用自己的話重寫",
+     "所有文字任務都回到不用AI助理的做法，直到能力恢復為止"
+    ],
+    "e": "完全不用代價很高，通常也撐不下去；而重寫別人的初稿並不是從一張白紙開始——偏偏那才是難的部分。能力退化是靠選擇來管理的：留幾項任務自己做，工具則在查核時才出場。"
+   },
+   "ru": {
+    "q": "Сотрудник замечает, что без ИИ-ассистента ему стало труднее писать аналитический текст. Что практичнее всего сделать?",
+    "o": [
+     "Не придавать значения: навык письма без инструментов в работе больше не понадобится",
+     "Выбрать задачи, где навык важно сохранить, делать их самому и звать ИИ-ассистента на проверку",
+     "Писать с ИИ-ассистентом, но каждый раз переписывать его черновик своими словами целиком",
+     "Вернуться к работе без ИИ-ассистента во всех текстовых задачах, пока навык не восстановится"
+    ],
+    "e": "Полный отказ дорог и обычно не выдерживается, а переписывание чужого черновика начинает работу не с чистого листа — именно это и есть сложная часть. Обеднение навыка управляется выбором: несколько задач остаются своими, а инструмент приходит на проверку.",
+    "t": "Навык"
+   }
+  }
+ },
+ {
+  "day": 15,
+  "t": "Diligence",
+  "q": "A week later you can't explain where some of the statements in your document came from: you prepared it together with the AI assistant. What should change in how you work?",
+  "o": [
+   "Write the draft yourself and bring the AI assistant in only to edit a finished text",
+   "Review the whole document before sending: one careful read-through settles such questions",
+   "Save the entire conversation with the AI assistant, so a paragraph's origin can be traced later",
+   "Mark as you go what is yours and what still needs checking, rather than leaving it for later"
+  ],
+  "a": 3,
+  "e": "The conversation log shows who wrote a phrase, but not whether the claim was checked, and by the final read-through you no longer remember where things came from. Marking as you go takes seconds and preserves the document's key property: you can stand behind every statement in it.",
+  "id": 89,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "盡責",
+    "q": "一星期後，你說不出文件裏有些說法是從哪裏來的：這份文字是與AI助理一起做的。工作方式該改甚麼？",
+    "o": [
+     "初稿自己寫，只在文字已經成形之後才請AI助理做編輯",
+     "發出前把文件整份查一遍：認真校讀一次就能解決這類疑問",
+     "把與AI助理的全部往來保留下來：日後可據此還原某段的來歷",
+     "邊做邊標註哪些是自己的、哪些仍需查核，不要留到之後再說"
+    ],
+    "e": "往來紀錄能還原某句話是誰寫的，卻還原不了這個說法有沒有經過查核；而最後才校讀，到時你已記不起來歷。邊做邊標註只花幾秒，卻保住了文件最重要的性質：每一個說法你都能為它辯護。"
+   },
+   "ru": {
+    "q": "Через неделю вы не можете объяснить, откуда в вашем документе взялась часть утверждений: текст готовили вместе с ИИ-ассистентом. Что изменить в работе?",
+    "o": [
+     "Писать черновик самому, а ИИ-ассистента подключать только к редактуре уже готового текста",
+     "Проверять документ целиком перед отправкой: одна внимательная вычитка закроет такие вопросы",
+     "Хранить всю переписку с ИИ-ассистентом: по ней потом восстанавливается происхождение абзаца",
+     "Помечать по ходу, что в тексте своё, а что требует проверки, не откладывая это на потом"
+    ],
+    "e": "Переписка восстанавливает, кто написал фразу, но не то, проверено ли утверждение, а вычитка в конце застаёт вас уже без памяти о происхождении. Пометка по ходу стоит секунды и сохраняет главное свойство документа: каждое утверждение вы можете защитить.",
+    "t": "Добросовестность"
+   }
+  }
+ },
+ {
+  "day": 15,
+  "t": "Trust calibration",
+  "q": "A team wants to learn from its own experience of working with the AI assistant. Which practice will pay off most?",
+  "o": [
+   "Build a shared list of requests that worked, so anyone can grab ready wording for a task",
+   "Each quarter, review cases where it got it wrong or helped unexpectedly, and update the rules",
+   "Each quarter, see who on the team uses the AI assistant the most, and learn from them",
+   "Log every mistake the AI assistant makes, and refer back to the log when disputes arise"
+  ],
+  "a": 1,
+  "e": "A list of requests and an error log pile up material but don't change any rules on their own, and how heavily someone uses the tool says nothing about the quality of their work. Reviewing concrete cases, both the failures and the unexpected wins, is what a team's rules get updated from.",
+  "id": 90,
+  "sec": 75,
+  "i18n": {
+   "zh-HK": {
+    "t": "信任校準",
+    "q": "團隊想從自己使用AI助理的經驗中學習。哪一種做法收穫最大？",
+    "o": [
+     "收集一份共用的「好用請求」清單，讓大家按任務取現成的寫法",
+     "每季檢討它出錯或意外幫上大忙的個案，據此修訂自己的規則",
+     "每季看看團隊裏誰用AI助理用得最頻密，然後專門向他學習",
+     "把AI助理的所有錯誤記入日誌，日後遇到爭議時再翻查"
+    ],
+    "e": "請求清單和錯誤日誌累積了材料，本身卻不會改變規則；而使用得頻密與否，說明不了工作質素。檢討具體個案——既包括失手，也包括意外的成功——才是團隊規則得以更新的來源。"
+   },
+   "ru": {
+    "q": "Команда хочет учиться на своём опыте работы с ИИ-ассистентом. Какая практика даст больше всего?",
+    "o": [
+     "Собирать общий список удачных запросов, чтобы каждый мог взять готовую формулировку под задачу",
+     "Раз в квартал разбирать случаи, где он ошибся или неожиданно помог, и править по ним свои правила",
+     "Раз в квартал смотреть, кто в команде пользуется ИИ-ассистентом активнее всех остальных, и учиться именно у него",
+     "Фиксировать все ошибки ИИ-ассистента в журнале и возвращаться к нему в спорных ситуациях позже"
+    ],
+    "e": "Список запросов и журнал ошибок накапливают материал, но сами правил не меняют, а активность использования ничего не говорит о качестве работы. Разбор конкретных случаев — и провалов, и неожиданных удач — это то, из чего правила команды обновляются.",
+    "t": "Калибровка доверия"
+   }
+  }
+ }
+]

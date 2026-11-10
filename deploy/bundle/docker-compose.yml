@@ -1,0 +1,136 @@
+# OnePage: compose for deployment from a prebuilt image.
+#
+# Difference from the repository docker-compose.yml: there is NO `build:` here; the image
+# arrives prebuilt (onepage-image.tar.gz), because building is impossible inside
+# the internal network: it pulls apt-get and pip from the internet.
+#
+# Everything that depends on the site is moved into .env next to this file.
+# Performance-related values are hard-coded on purpose: they were obtained
+# by measurement on the stand (see docs/PERF_DECISIONS.md), not picked.
+
+services:
+  onepage:
+    image: onepage:latest
+
+    # Host networking: bridge costs +34% p50 / +41% p99 over bare because of
+    # docker-proxy (benchmark campaign C1), host-net only +7%.
+    # Linux ONLY. On Docker Desktop (Mac/Windows) this does not work; there
+    # you need a `ports:` block instead of this line.
+    network_mode: host
+
+    volumes:
+      # SQLite and uploaded files. The ./data directory MUST exist before
+      # startup: otherwise Docker creates it as root, and without the mount
+      # the database silently ends up inside the container and is lost when it is recreated.
+      - ./data:/data
+
+    environment:
+      OP_HOST: "0.0.0.0"
+      OP_PORT: "8743"
+      OP_WORKERS: "1"
+
+      OP_DB_PATH: "/data/onepage.db"
+      OP_UPLOADS_DIR: "/data/uploads"
+
+      # ── Site: all of this is filled in in .env ──────────────────────────────
+      OP_SAML_SP_BASE_URL: "${OP_SAML_SP_BASE_URL:?set OP_SAML_SP_BASE_URL in .env}"
+      OP_SAML_IDP_ENTITY_ID: "${OP_SAML_IDP_ENTITY_ID:-}"
+      OP_SAML_IDP_SSO_URL: "${OP_SAML_IDP_SSO_URL:-}"
+      OP_SAML_IDP_CERT: "${OP_SAML_IDP_CERT:-}"
+      OP_SAML_CLAIM_PERSON_ID: "${OP_SAML_CLAIM_PERSON_ID:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn}"
+      OP_INITIAL_ADMIN: "${OP_INITIAL_ADMIN:?set OP_INITIAL_ADMIN in .env}"
+
+      # Strict mode and HTTPS. Both must be true in production; the application
+      # refuses to start with strict=true and an empty certificate.
+      OP_SAML_STRICT: "${OP_SAML_STRICT:-true}"
+      OP_SAML_HTTPS: "${OP_SAML_HTTPS:-true}"
+      # Assertion signature check: this is what authenticates the sign-in.
+      # OP_SAML_STRICT does NOT cover it. Do not turn off.
+      OP_SAML_WANT_ASSERTIONS_SIGNED: "true"
+      # Passwordless dev sign-in. Only false in production.
+      OP_DEV_BYPASS_AUTH: "false"
+      # Password sign-in for a stand OUTSIDE the perimeter (without ADFS): a list of
+      # `id=pbkdf2_sha256$…` from `python -m app.auth.local hash`. Empty in production.
+      OP_LOCAL_USERS: "${OP_LOCAL_USERS:-}"
+      # A second name the stand is opened under (scheme+host[:port]); empty in production.
+      OP_TRUSTED_ORIGINS: "${OP_TRUSTED_ORIGINS:-}"
+
+      # ── Telemetry ───────────────────────────────────────────────────────────
+      OP_PERF_ENABLED: "true"
+      # OP_PERF_SAMPLE is a CEILING; the adaptive loop stays below it,
+      # aiming at OP_PERF_TARGET_RPS records per second. A fixed 1.0 at
+      # ~2 krps stalled the event loop (C1: p99 9.27 ms vs 0.73).
+      OP_PERF_SAMPLE: "1.0"
+      OP_PERF_ADAPTIVE: "true"
+      OP_PERF_TARGET_RPS: "200"
+      OP_PERF_SAMPLE_FLOOR: "0.01"
+      OP_PERF_SQL: "false"
+      OP_PERF_CLIENT: "true"
+      OP_PERF_DIR: "/data/perflog"
+      OP_PERF_RETENTION_DAYS: "14"
+
+      # ── Render and cache ────────────────────────────────────────────────────
+      OP_PREVIEW_MAX_BYTES: "1500000"
+      # Table catalogue and Explore (/catalog, /explore). Switches need
+      # no migrations: false → the pages and the API answer 404.
+      OP_CATALOG_ENABLED: "${OP_CATALOG_ENABLED:-true}"
+      OP_EXPLORE_ENABLED: "${OP_EXPLORE_ENABLED:-true}"
+      # Quests (/quests, gamification). Off in the code default; this
+      # deployment keeps it on.
+      OP_QUESTS_ENABLED: "${OP_QUESTS_ENABLED:-true}"
+      # NL→SQL via Ollama. Empty = off (the "Ask" button
+      # answers 503). With network_mode: host the container sees the host's Ollama as
+      # 127.0.0.1:11434. ONLY the schema goes into the prompt (table/column names,
+      # types, partition keys); value examples are 0 by default.
+      OP_LLM_ENDPOINT: "${OP_LLM_ENDPOINT:-}"
+      OP_LLM_MODEL: "${OP_LLM_MODEL:-qwen2.5-coder:7b}"
+      OP_LLM_TIMEOUT_S: "${OP_LLM_TIMEOUT_S:-20}"
+      OP_LLM_EXAMPLE_VALUES: "${OP_LLM_EXAMPLE_VALUES:-0}"
+      # Model provider (docs/LLM_PROVIDERS.md): ollama = our network,
+      # deepseek = external OpenAI-compatible /chat/completions. On the
+      # external path, what leaves is the question + metric definitions + the glossary;
+      # cell values never.
+      OP_LLM_PROVIDER: "${OP_LLM_PROVIDER:-ollama}"
+      # Key FOR THE SERVER (needs egress from this host; production has none).
+      OP_LLM_API_KEY: "${OP_LLM_API_KEY:-}"
+      # The user's browser calls the model, and the server only builds the prompt and
+      # checks the answer. This is the production path: browsers have a proxy, the server does not.
+      OP_LLM_BROWSER: "${OP_LLM_BROWSER:-false}"
+      # Key the server hands out (audited) to users who may
+      # run a generator. Empty = BYOK, the key lives in the browser's localStorage.
+      OP_LLM_BROWSER_KEY: "${OP_LLM_BROWSER_KEY:-}"
+      # Who may grant access to DeepSeek (/admin/llm, llm_access table):
+      # comma-separated person_ids. Empty = any administrator. Env only:
+      # this list cannot be changed from the admin UI, deliberately.
+      OP_LLM_ACCESS_ADMINS: "${OP_LLM_ACCESS_ADMINS:-}"
+      # Server-side lake cache (Phase 9.1): Parquet partitions of a report's source
+      # data, written by the generator, read by everyone with access to the report.
+      OP_LAKE_PART_MAX_MB: "${OP_LAKE_PART_MAX_MB:-64}"
+      OP_LAKE_MAX_MB: "${OP_LAKE_MAX_MB:-1024}"
+      OP_SNAPSHOT_EXTERNAL: "false"
+      OP_CACHE_ENCODED: "true"
+      OP_CACHE_WARM: "20"
+      OP_CACHE_MAX_MB: "256"
+      OP_TEMPLATES_AUTO_RELOAD: "false"
+      # uvicorn access log: measured at 91–96 µs RTT p50 on the hot path (C6).
+      # The reverse proxy keeps its own access log, so here it is redundant.
+      OP_ACCESS_LOG: "false"
+
+      # Uncomment IF the reverse proxy runs on ANOTHER machine.
+      # Never "*": that would let any client forge its IP in the logs.
+      # FORWARDED_ALLOW_IPS: "192.0.2.5"
+
+    healthcheck:
+      test:
+        - "CMD"
+        - "python3"
+        - "-c"
+        # deep=1 reads SQLite and writes to the uploads directory, i.e. it checks
+        # that the instance can really serve, not just that it has taken the port.
+        - "import urllib.request; urllib.request.urlopen('http://localhost:8743/health?deep=1')"
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+
+    restart: unless-stopped

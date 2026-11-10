@@ -1,0 +1,37 @@
+<!doctype html>
+{# Standalone — does NOT extend base.html (matches existing access_denied.html behavior) #}
+<html lang="{{ current_lang() if current_lang is defined else 'ru' }}" data-theme="dark" data-accent="cobalt" data-density="compact">
+<head>
+<meta charset="utf-8" />
+<title>OnePage — {{ _('Access denied') }}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="/static/css/main.css" />
+</head>
+<body data-mode="standalone">
+  {% include "components/icons.html" %}
+
+  <div class="standalone">
+    <div class="denied">
+      <div class="code">4<span class="x">0</span>3</div>
+      <div class="msg">{{ _('Your account is authenticated, but not authorized for OnePage.') }}</div>
+      <div class="detail">
+        person_id <span style="color:var(--ink)">{{ person_id | default('—') }}</span>
+        {{ _('· resolved by SAML · not present in users table') }}
+      </div>
+      <div class="actions">
+        <a class="btn sm" href="mailto:{{ admin_contact | default('onepage-admin@example.com') }}">
+          <svg class="ico ico-12"><use href="#ic-shield"/></svg>
+          {{ _('Request access') }}
+        </a>
+        <a class="btn sm ghost" href="/logout">
+          <svg class="ico ico-12"><use href="#ic-logout"/></svg>
+          {{ _('Sign in as different user') }}
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

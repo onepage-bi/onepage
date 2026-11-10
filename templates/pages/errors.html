@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}OnePage — {{ _('Dashboard errors') }}{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'perf' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '/', false], [_('Admin'), '/admin', false], [_('Errors'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content fluid">
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow">{{ _('administration') }} · {{ _('dashboard errors') }}</div>
+          <h1 class="page-title">{{ _('Dashboard errors') }}</h1>
+        </div>
+      </div>
+
+      <div class="tabbar">
+        <a class="tab" href="/admin">{{ _('Users') }}</a>
+        <a class="tab" href="/admin/audit">{{ _('Audit log') }}</a>
+        <a class="tab" href="/admin/perf">{{ _('Performance') }}</a>
+        <a class="tab active" href="/admin/errors">{{ _('Errors') }}
+          {% if rows %}<span class="mono" style="color:var(--ink-faint);font-size:10px;margin-left:4px">{{ rows | length }}</span>{% endif %}
+        </a>
+        <a class="tab" href="/admin/generators">{{ _('Generators') }}</a>
+        <a class="tab" href="/admin/employees">{{ _('Staff') }}</a>
+      </div>
+
+      <div class="toolbar">
+        <div class="seg">
+          {% for h, label in [(1, '1h'), (6, '6h'), (24, '24h'), (168, '7d'), (720, '30d')] %}
+          <button {% if hours == h %}class="active"{% endif %}
+                  onclick="location.href='/admin/errors?hours={{ h }}'">{{ label }}</button>
+          {% endfor %}
+        </div>
+        <div class="grow"></div>
+        <span style="font-size:11px;color:var(--ink-dim)">{{ _('4xx/5xx from perf log, grouped by dashboard (401 excluded)') }}</span>
+      </div>
+
+      {% if rows %}
+      <div class="dash-table-wrap">
+        <table class="dash-table">
+          <thead>
+            <tr>
+              <th>{{ _('Dashboard') }}</th>
+              <th style="width:180px">{{ _('Owner') }}</th>
+              <th class="numeric" style="width:70px">{{ _('Errors') }}</th>
+              <th style="width:130px">{{ _('Statuses') }}</th>
+              <th>{{ _('Failing paths (top 3)') }}</th>
+              <th style="width:130px">{{ _('Last seen (UTC)') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in rows %}
+            <tr>
+              <td>
+                <a href="/d/{{ r.id }}" style="color:var(--ink)">{{ r.title }}</a>
+                {% if r.has_5xx %}<span class="badge" style="background:var(--red-dim,#5c2222);color:var(--red,#ff6b6b);margin-left:6px">5xx</span>{% endif %}
+              </td>
+              <td class="mono">{{ r.owner }}{% if r.owner_name %} <span style="color:var(--ink-dim)">· {{ r.owner_name }}</span>{% endif %}</td>
+              <td class="mono numeric"><strong>{{ r.count }}</strong></td>
+              <td class="mono" style="font-size:11px">{{ r.statuses }}</td>
+              <td class="mono" style="font-size:11px;color:var(--ink-dim)">
+                {% for p in r.paths %}<div>{{ p }}</div>{% endfor %}
+              </td>
+              <td class="mono" style="font-size:11px">{{ r.last }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="dash-table-wrap">
+        <div class="empty">
+          <div class="ascii">[ {{ _('no dashboard errors in selected range') }} ]</div>
+          <p>{{ _('4xx/5xx on /render, /d and /api/dashboards appear here with dashboard owner.') }}</p>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if other %}
+      <div class="page-eyebrow" style="margin-top:24px">{{ _('other errors (not tied to a dashboard)') }}</div>
+      <div class="dash-table-wrap">
+        <table class="dash-table">
+          <thead>
+            <tr>
+              <th style="width:70px">{{ _('Status') }}</th>
+              <th>{{ _('Path') }}</th>
+              <th class="numeric" style="width:70px">{{ _('Count') }}</th>
+              <th style="width:130px">{{ _('Last seen (UTC)') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for o in other %}
+            <tr>
+              <td class="mono">{{ o.status }}</td>
+              <td class="mono" style="font-size:11px">{{ o.path }}</td>
+              <td class="mono numeric">{{ o.count }}</td>
+              <td class="mono" style="font-size:11px">{{ o.last }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+
+    </div>
+  </main>
+</div>
+
+{% include "components/palette.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/palette.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/hotkeys.js?v={{ asset_v }}" defer></script>
+{% endblock %}

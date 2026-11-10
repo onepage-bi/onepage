@@ -1,0 +1,13 @@
+{
+  "name": "onepage-explore2-devkit",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Node-side dev kit for the /explore v2 engine (workstream H1). Tests and benchmarks ONLY — nothing here is served. The browser loads static/duckdb-wasm/duckdb-browser.mjs, which already has apache-arrow bundled in; duckdb-node.cjs is the single build that requires it externally, which is why this file exists at the repo root (Node resolves upward from static/duckdb-wasm/). No \"type\":\"module\" here: the repo's existing node tests (tests/*.js) are CommonJS; the engine2 files are .mjs explicitly.",
+  "scripts": {
+    "test:engine2": "node --test \"tests/engine2/*.test.mjs\"",
+    "bench:engine2": "node tools/bench_engine2.mjs"
+  },
+  "devDependencies": {
+    "apache-arrow": "^17.0.0"
+  }
+}

@@ -1,0 +1,16 @@
+I have a self-contained HTML report with the data baked into the markup.
+Split it in two without rewriting the renderers.
+
+1) HTML without data: <script id="bootstrap-snapshot" type="application/json">{}</script>
+   stays empty; on start the report sends
+   parent.postMessage({type:"op_ready", slots:[0]}, "*")
+   and listens for {type:"op_file", slot:0, data:ArrayBuffer}, from which it
+   builds everything as before.
+
+2) The data file for slot 0: for more than ~1 MB of data use a binary columnar
+   format (typed arrays + string dictionaries) with a small JSON schema header
+   instead of JSON; decode it into views without a full JSON.parse.
+
+Filtering must materialise only the filtered subset, never a copy of all the
+data. Render the table page by page and create the charts lazily, when they
+come into view.

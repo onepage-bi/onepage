@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="{{ current_lang() if current_lang is defined else 'ru' }}"
+      data-theme="{{ ui.theme if ui is defined else 'light' }}"
+      data-accent="{{ ui.accent if ui is defined else 'cobalt' }}"
+      data-density="{{ ui.density if ui is defined else 'compact' }}"
+      data-sidebar="{{ ui.sidebar if ui is defined else 'expanded' }}">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}OnePage{% endblock %}</title>
+  <link rel="icon" href="data:," />
+  <script>
+    (function() {
+      try {
+        var html = document.documentElement;
+        ['theme', 'accent', 'density', 'sidebar'].forEach(function(k) {
+          var saved = localStorage.getItem('op-ui-' + k);
+          if (saved) html.setAttribute('data-' + k, saved);
+        });
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="preload" href="/static/fonts/inter-tight-400-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/static/fonts/inter-tight-400-cyrillic.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/static/css/fonts.css?v={{ asset_v }}" />
+  <link rel="stylesheet" href="/static/css/main.css?v={{ asset_v }}" />
+  {# i18n first: defer scripts run in document order, and putting the catalogue
+     and t() in <head> puts them ahead of EVERY deferred script of ours,
+     including the ones a page adds in its own {% block head %}. For lang=ru the
+     catalogue file is `window.OP_I18N_CATALOG={};` — about forty bytes. #}
+  <script src="/static/locales/{{ current_lang() if current_lang is defined else 'en' }}.js?v={{ asset_v }}" defer></script>
+  <script src="/static/js/i18n.js?v={{ asset_v }}" defer></script>
+  {% block head %}{% endblock %}
+</head>
+<body data-mode="{% block mode %}shell{% endblock %}">
+
+  {% include "components/icons.html" %}
+
+  {% block body %}{% endblock %}
+
+  {% if user %}
+  <script>
+    window.OP_USER = {
+      person_id: {{ user.person_id | tojson }},
+      display_name: {{ (user.display_name or '') | tojson }},
+      role: {{ user.role | tojson }}
+    };
+    window.OP_QUESTS_ON = {{ (settings is defined and settings.quests_enabled) | tojson }};
+    window.OP_EXPLORE_ON = {{ (settings is defined and settings.explore_enabled) | tojson }};
+  </script>
+  {% endif %}
+
+  <script src="/static/js/main.js?v={{ asset_v }}" defer></script>
+  {% if user %}
+  <script src="/static/js/autumn.js?v={{ asset_v }}" defer></script>
+  <script src="/static/js/sept3.js?v={{ asset_v }}" defer></script>
+  {% endif %}
+  {% if user and settings is defined and settings.quests_enabled %}
+  <script src="/static/js/quests.js?v={{ asset_v }}" defer></script>
+  {% endif %}
+  {# Collection season opening: ONLY the report-list route sets it, so neither
+     the report page, nor a presentation, nor a share link pays a single byte for it,
+     and they do not even compute the active season. #}
+  {% if season_intro %}
+  <link rel="stylesheet" href="/static/css/season-intro.css?v={{ asset_v }}">
+  <div id="op-season-intro" data-season="{{ season_intro.season }}" aria-hidden="true">
+    <div class="si-dim"></div>
+    <canvas class="si-petals" aria-hidden="true"></canvas>
+    <div class="si-box">
+      <div class="si-frame">
+        <video class="si-video" hidden muted playsinline preload="metadata"
+               poster="/static/video/{{ season_intro.poster }}?v={{ asset_v }}">
+          <source src="/static/video/{{ season_intro.video }}?v={{ asset_v }}" type="video/mp4">
+        </video>
+        <img class="si-poster" hidden alt=""
+             src="/static/video/{{ season_intro.poster }}?v={{ asset_v }}">
+        <button type="button" class="si-btn si-play" hidden>{{ _('Watch') }}</button>
+      </div>
+      <p class="si-credit">{{ season_intro.credit_html | safe }}</p>
+      <div class="si-row">
+        <button type="button" class="si-btn si-sound" hidden>{{ _('Sound on') }}</button>
+        <button type="button" class="si-btn si-skip">{{ _('Skip') }}</button>
+      </div>
+    </div>
+  </div>
+  <script src="/static/js/season-intro.js?v={{ asset_v }}" defer></script>
+  {% endif %}
+  {% if user and settings is defined and settings.perf_enabled and settings.perf_client %}
+  <script src="/static/js/perf.js?v={{ asset_v }}" defer></script>
+  {% endif %}
+  {% block scripts %}{% endblock %}
+</body>
+</html>

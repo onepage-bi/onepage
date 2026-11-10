@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+{% block title %}OnePage — {{ _('Admin') }} · {{ _('Users') }}{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'admin' %}
+  {% set user_count = users | length %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '/', false], [_('Admin'), '/admin', false], [_('Users'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content fluid">
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow">{{ _('administration') }} · {{ _('access control') }} · {{ _('build {sha}', sha=settings.build_sha) }}</div>
+          <h1 class="page-title">{{ _('Users') }}</h1>
+        </div>
+        <div class="page-actions">
+          <button class="btn sm primary" onclick="document.getElementById('form-add-user').scrollIntoView({behavior:'smooth'})">
+            <svg class="ico ico-12"><use href="#ic-plus"/></svg>
+            {{ _('Add user') }}
+          </button>
+        </div>
+      </div>
+
+      {% if stats is defined %}
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="label">{{ _('Active users') }}</div>
+          <div class="value tabular">{{ stats.active_users }}</div>
+          <div class="delta">{{ stats.active_users_delta }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">{{ _('Dashboards') }}</div>
+          <div class="value tabular">{{ stats.dashboards }}</div>
+          <div class="delta">{{ stats.dashboards_delta }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">{{ _('Sessions') }} · 24h</div>
+          <div class="value tabular">{{ stats.sessions_24h }}</div>
+          <div class="delta">{{ stats.sessions_24h_delta }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">{{ _('Audit events') }} · 24h</div>
+          <div class="value tabular">{{ stats.audit_24h }}</div>
+          <div class="delta">{{ stats.audit_24h_delta or '—' }}</div>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="tabbar">
+        <a class="tab active" href="/admin">{{ _('Users') }} <span class="mono" style="color:var(--ink-faint);font-size:10px;margin-left:4px">{{ users | length }}</span></a>
+        <a class="tab" href="/admin/audit">{{ _('Audit log') }}</a>
+        <a class="tab" href="/admin/perf">{{ _('Performance') }}</a>
+        <a class="tab" href="/admin/errors">{{ _('Errors') }}</a>
+        <a class="tab" href="/admin/generators">{{ _('Generators') }}</a>
+        <a class="tab" href="/admin/employees">{{ _('Staff') }}</a>
+        <a class="tab" href="/admin/scopes">{{ _('Scopes') }}</a>
+        <a class="tab" href="/admin/quests">{{ _('Quests') }}</a>
+      </div>
+
+      <div class="card" id="stale-users" style="margin-bottom:20px">
+        <div class="card-head">
+          <span class="card-title">{{ _('Inactive staff accounts') }}</span>
+          <span id="stale-users-count" class="mono" style="font-size:11px;color:var(--ink-dim)"></span>
+        </div>
+        <div class="card-body">
+          <p style="font-size:12px;color:var(--ink-muted);margin:0 0 10px">
+            {{ _h('OnePage account active but Staff reference table ({a}/admin/employees{a_}) this person no longer works. Deactivation closes their sessions immediately.', a='<a href="/admin/employees">', a_='</a>') }}
+          </p>
+          <div class="dash-table-wrap">
+            <table class="tbl" id="stale-users-table">
+              <thead>
+                <tr>
+                  <th style="width:160px">person_id</th>
+                  <th>{{ _('Display name') }}</th>
+                  <th>{{ _('Role') }}</th>
+                  <th style="width:160px">{{ _('Last seen') }}</th>
+                  <th style="width:120px"></th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div id="stale-users-empty" class="muted" style="font-size:12px;padding:6px 0" hidden>{{ _('No such accounts.') }}</div>
+          <div id="stale-users-norecord" class="mono" style="font-size:11px;color:var(--ink-faint);margin-top:8px"></div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="input-wrap" style="width:280px">
+          <svg class="ico ico-12 leading"><use href="#ic-search"/></svg>
+          <input id="users-search" class="input sm" placeholder="{{ _('Search by person_id or name…') }}" />
+        </div>
+        <div class="grow"></div>
+        <span class="mono" style="font-size:11px;color:var(--ink-dim)">{{ _('{n} users', n=users | length) }}</span>
+      </div>
+
+      <div class="dash-table-wrap">
+        <table class="tbl" id="users-table">
+          <thead>
+            <tr>
+              <th style="width:160px" class="sortable">person_id</th>
+              <th class="sortable">{{ _('Display name') }}</th>
+              <th style="width:280px">{{ _('Role') }}</th>
+              <th style="width:80px">{{ _('Active') }}</th>
+              <th style="width:160px" class="sortable">{{ _('Last login') }}</th>
+              <th style="width:60px"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in users %}
+            <tr data-uid="{{ u.id }}"
+                data-search="{{ (u.person_id ~ ' ' ~ (u.display_name or '')) | lower }}">
+              <td class="mono">{{ u.person_id }}</td>
+              <td>{{ u.display_name or '—' }}</td>
+              <td>
+                <div class="seg" data-role-seg="{{ u.id }}">
+                  {% for r in roles %}
+                  <button class="{% if u.role == r %}active{% endif %}" data-role="{{ r }}">
+                    {{ role_labels[r] if role_labels is defined else r }}
+                  </button>
+                  {% endfor %}
+                </div>
+              </td>
+              <td>
+                <button class="toggle" aria-checked="{{ 'true' if u.is_active else 'false' }}"
+                        data-toggle-active="{{ u.id }}"></button>
+              </td>
+              <td class="mono muted">{{ u.last_login.strftime('%Y-%m-%d %H:%M') if u.last_login else '—' }}</td>
+              <td>
+                <div class="row-actions">
+                  <button class="btn icon xs ghost btn-delete-user"
+                          data-uid="{{ u.id }}" data-name="{{ u.person_id }}" title="{{ _('Delete') }}">
+                    <svg class="ico ico-12"><use href="#ic-x"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card" style="margin-top:24px;max-width:560px">
+        <div class="card-head"><span class="card-title">{{ _('Add user') }}</span></div>
+        <div class="card-body">
+          <p class="muted" style="font-size:12px;margin:0 0 12px">{{ _h('Create user {b}before their first login{b_} so role is assigned in advance. Those who logged in via SSO — listed above, role changed there. DeepSeek access — in model card below.', b='<b>', b_='</b>') }}</p>
+          <form id="form-add-user" style="display:flex;flex-direction:column;gap:12px">
+            <div class="field">
+              <label class="field-label">person_id *</label>
+              <div class="input-wrap">
+                <input type="text" name="person_id" class="input sm mono" required placeholder="{{ _('Last name, first name or person_id…') }}" data-user-suggest>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label">{{ _('Display name') }}</label>
+              <input type="text" name="display_name" class="input sm" placeholder="{{ _('Optional') }}">
+            </div>
+            <div class="field">
+              <label class="field-label">{{ _('Role') }} *</label>
+              <select name="role" class="select sm">
+                {% for r in roles %}
+                <option value="{{ r }}">{{ role_labels[r] if role_labels is defined else r }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div style="display:flex;justify-content:flex-end">
+              <button type="submit" class="btn sm primary">{{ _('Add user') }}</button>
+            </div>
+            <div id="add-user-msg" class="mono" style="font-size:11px;color:var(--ink-dim)"></div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:24px;max-width:560px">
+        <div class="card-head"><span class="card-title">{{ _('LLM · \'Ask\' on /explore') }}</span></div>
+        <div class="card-body">
+          <form id="form-llm" style="display:flex;flex-direction:column;gap:12px">
+            <div class="field">
+              <label class="field-label">{{ _('Provider') }}</label>
+              <select name="llm_provider" class="select sm">
+                <option value="ollama">{{ _('Ollama (local model)') }}</option>
+                <option value="deepseek">DeepSeek API</option>
+              </select>
+            </div>
+            <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-muted);cursor:pointer">
+              <input type="checkbox" name="llm_browser" style="margin:0">
+              {{ _('Browser mode — model called by user page (needed when server has no internet access)') }}
+            </label>
+            <div class="field">
+              <label class="field-label">{{ _('DeepSeek key for browser') }} <span id="llm-bkey-state" class="mono" style="font-size:10px;color:var(--ink-faint)"></span></label>
+              <input type="password" name="llm_browser_key" class="input sm mono" placeholder="{{ _('leave empty to keep unchanged') }}" autocomplete="new-password">
+            </div>
+            <div class="field">
+              <label class="field-label">{{ _('DeepSeek key for server') }} <span id="llm-akey-state" class="mono" style="font-size:10px;color:var(--ink-faint)"></span></label>
+              <input type="password" name="llm_api_key" class="input sm mono" placeholder="{{ _('leave empty to keep unchanged') }}" autocomplete="new-password">
+            </div>
+            <div class="field">
+              <label class="field-label">{{ _('Model (empty = provider default)') }}</label>
+              <input type="text" name="llm_model" class="input sm mono" placeholder="deepseek-chat / gemma3:4b…">
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span id="llm-effective" class="mono" style="font-size:11px;color:var(--ink-dim)"></span>
+              <button type="submit" class="btn sm primary">{{ _('Save') }}</button>
+            </div>
+            <div id="llm-msg" class="mono" style="font-size:11px;color:var(--ink-dim)"></div>
+          </form>
+          <p style="font-size:11px;color:var(--ink-faint);margin:8px 0 0">
+            {{ _('Applies immediately, no restart needed, and persists across restart. Keys stored on server and not returned. Env vars remain at defaults.') }}
+          </p>
+
+          <div id="llm-access-block" style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border)">
+            <div style="font-size:12px;font-weight:600;margin-bottom:4px">{{ _('DeepSeek access') }}</div>
+            <p style="font-size:11px;color:var(--ink-faint);margin:0 0 10px">
+              {{ _h('Paid API access only for users in this list (key and server calls); Ollama available to all. Assigned by designated admin ({c}OP_LLM_ACCESS_ADMINS{c_}).', c='<code class="mono" style="font-size:10px">', c_='</code>') }}
+            </p>
+            <div id="llm-access-grant" style="display:flex;gap:6px;margin-bottom:8px" hidden>
+              <div class="input-wrap" style="flex:1">
+                <svg class="ico ico-12 leading"><use href="#ic-user"/></svg>
+                <input id="llm-access-input" class="input sm mono" placeholder="{{ _('Last name, first name or person_id…') }}" data-user-suggest>
+              </div>
+              <button id="llm-access-add" class="btn sm primary" type="button">{{ _('Grant') }}</button>
+            </div>
+            <div id="llm-access-note" class="mono" style="font-size:11px;color:var(--ink-faint)" hidden>
+              {{ _('Only designated admin can assign access.') }}
+            </div>
+            <div id="llm-access-list" style="display:flex;flex-direction:column;gap:2px"></div>
+            <div id="llm-access-msg" class="mono" style="font-size:11px;color:var(--ink-dim)"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+{% include "components/palette.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/palette.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/hotkeys.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/admin.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/user-suggest.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/admin-llm.js?v={{ asset_v }}" defer></script>
+{% endblock %}

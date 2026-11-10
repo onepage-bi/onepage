@@ -1,0 +1,469 @@
+{
+  "_meta": {
+    "chunk": "12",
+    "count": 150,
+    "lang": "en",
+    "source_files": [
+      "templates/pages/admin_quests_stats.html",
+      "templates/pages/admin_scopes.html",
+      "templates/pages/anonymizer.html",
+      "templates/pages/audit.html",
+      "templates/pages/catalog.html",
+      "templates/pages/confidential.html",
+      "templates/pages/data_quality.html",
+      "templates/pages/data_sources.html"
+    ]
+  },
+  "strings": {
+    "\n          {b}Folders read in the browser are matched by name, not verified.{b_}\n          The File System Access API gives the browser a folder's name, never its\n          path — so two reports appear to share a folder when the names match. On\n          one analyst's machine {s}Stock_RDC{s_} may be a network\n          share and on another a local copy. Treat a folder link as a lead to\n          confirm, not a fact. {b}A source read by the desktop app is different:{b_}\n          the app reports the full path of the folder and of every file it read,\n          and a fingerprint of that path (the root id), so you can see which exact\n          file was used. That path is what the app says about its own machine, not\n          something the platform has checked, and sources are still grouped by\n          folder name: two same-named folders at different paths show as one\n          source with the path from the latest run — compare the root id.\n          GreenPlum sources are exact: the connection name is a\n          server-side alias. Dates come from each file's modification time as the\n          analyst's own machine reported it.\n        ": {
+      "ref": "templates/pages/data_sources.html:163"
+    },
+    "(wide format HOU/RM/CM/TMR) or manual file in long format (columns person/role/node/parent). «Verify» will not save anything — only show how many rows were recognised. «Import» fully replaces the previous export (manual grants are not affected).": {
+      "ref": "templates/pages/admin_scopes.html:61"
+    },
+    "Action": {
+      "ref": "templates/pages/audit.html:56"
+    },
+    "Actor": {
+      "ref": "templates/pages/audit.html:55"
+    },
+    "Age": {
+      "ref": "templates/pages/data_quality.html:95"
+    },
+    "All": {
+      "ref": "templates/pages/data_sources.html:38"
+    },
+    "All generators": {
+      "ref": "templates/pages/data_quality.html:76"
+    },
+    "All sources": {
+      "ref": "templates/pages/catalog.html:60"
+    },
+    "Checks": {
+      "ref": "templates/pages/data_quality.html:71"
+    },
+    "Choose another file": {
+      "ref": "templates/pages/anonymizer.html:113"
+    },
+    "Clear all manual grants": {
+      "ref": "templates/pages/admin_scopes.html:96"
+    },
+    "Clear focus": {
+      "ref": "templates/pages/data_sources.html:107"
+    },
+    "Click a card to trace it end to end · drag or scroll to pan · ⌘/Ctrl+scroll to zoom · +/&minus;/0 to zoom/fit": {
+      "ref": "templates/pages/data_sources.html:90"
+    },
+    "Columns": {
+      "ref": "templates/pages/anonymizer.html:99"
+    },
+    "Confidence": {
+      "ref": "templates/pages/catalog.html:70"
+    },
+    "Confirmed": {
+      "ref": "templates/pages/catalog.html:36"
+    },
+    "Consumers": {
+      "ref": "templates/pages/catalog.html:73"
+    },
+    "Copy path": {
+      "ref": "templates/pages/data_sources.html:236"
+    },
+    "Could not load lineage.": {
+      "ref": "templates/pages/data_sources.html:135"
+    },
+    "Current zoom - click for 100%": {
+      "ref": "templates/pages/data_sources.html:102"
+    },
+    "Current zoom, click to reset to 100%": {
+      "ref": "templates/pages/data_sources.html:102"
+    },
+    "Data changed": {
+      "ref": "templates/pages/data_sources.html:195"
+    },
+    "Detail": {
+      "ref": "templates/pages/data_sources.html:92"
+    },
+    "Drift": {
+      "ref": "templates/pages/data_quality.html:72"
+    },
+    "Drop a spreadsheet here, or click to browse": {
+      "ref": "templates/pages/anonymizer.html:77"
+    },
+    "Everything runs in your browser — nothing is uploaded to the server or anywhere else.": {
+      "ref": "templates/pages/anonymizer.html:67"
+    },
+    "Export JSONL": {
+      "ref": "templates/pages/audit.html:46"
+    },
+    "Export lineage": {
+      "ref": "templates/pages/data_sources.html:110"
+    },
+    "Export…": {
+      "ref": "templates/pages/data_sources.html:111"
+    },
+    "Failing reports": {
+      "ref": "templates/pages/data_sources.html:67"
+    },
+    "Feeds": {
+      "ref": "templates/pages/data_sources.html:197"
+    },
+    "Files": {
+      "ref": "templates/pages/data_sources.html:95"
+    },
+    "Files {ctx:2}": {
+      "ref": "templates/pages/catalog.html:71"
+    },
+    "First time": {
+      "ref": "templates/pages/admin_quests_stats.html:189"
+    },
+    "Fit": {
+      "ref": "templates/pages/data_sources.html:98"
+    },
+    "Fit to screen (0)": {
+      "ref": "templates/pages/data_sources.html:98"
+    },
+    "Freshness": {
+      "ref": "templates/pages/data_quality.html:70"
+    },
+    "From (inclusive)": {
+      "ref": "templates/pages/audit.html:43"
+    },
+    "Full access (TMD)": {
+      "ref": "templates/pages/admin_scopes.html:50"
+    },
+    "Full access (see_all) — for office/Planning (TMD role). Node access — for dev teams (e.g. own unit, HOU_ADD).": {
+      "ref": "templates/pages/admin_scopes.html:82"
+    },
+    "Generate masked file": {
+      "ref": "templates/pages/anonymizer.html:116"
+    },
+    "Generator": {
+      "ref": "templates/pages/data_quality.html:92"
+    },
+    "Hierarchy nodes": {
+      "ref": "templates/pages/admin_scopes.html:40"
+    },
+    "How many people reached each step": {
+      "ref": "templates/pages/admin_quests_stats.html:157"
+    },
+    "Import scopes": {
+      "ref": "templates/pages/admin_scopes.html:57"
+    },
+    "Info": {
+      "ref": "templates/pages/data_quality.html:66"
+    },
+    "Keep all": {
+      "ref": "templates/pages/anonymizer.html:106"
+    },
+    "Kind": {
+      "ref": "templates/pages/data_quality.html:89"
+    },
+    "Latest": {
+      "ref": "templates/pages/admin_quests_stats.html:240"
+    },
+    "Location": {
+      "ref": "templates/pages/data_quality.html:93"
+    },
+    "Manual grant": {
+      "ref": "templates/pages/admin_scopes.html:79"
+    },
+    "Mask all": {
+      "ref": "templates/pages/anonymizer.html:104"
+    },
+    "Message": {
+      "ref": "templates/pages/data_quality.html:90"
+    },
+    "Message, source, column…": {
+      "ref": "templates/pages/data_quality.html:61"
+    },
+    "Name, source…": {
+      "ref": "templates/pages/catalog.html:53"
+    },
+    "No findings match this filter.": {
+      "ref": "templates/pages/data_quality.html:101"
+    },
+    "No one has visited yet.": {
+      "ref": "templates/pages/admin_quests_stats.html:263"
+    },
+    "No one opened today.": {
+      "ref": "templates/pages/admin_quests_stats.html:227"
+    },
+    "No perf log entries before start date: telemetry was off or retention period ({n} days) expired. «Before/after» comparison will appear if you enable telemetry ahead of next season.": {
+      "ref": "templates/pages/admin_quests_stats.html:148"
+    },
+    "Non-tables": {
+      "ref": "templates/pages/catalog.html:44"
+    },
+    "Note: the mapping back to real data is not saved anywhere, so use the result for structure/method help, not per-record answers. Visual styling (fonts, colours) may be simplified on export.": {
+      "ref": "templates/pages/anonymizer.html:69"
+    },
+    "Nothing found for this filter.": {
+      "ref": "templates/pages/catalog.html:80"
+    },
+    "OnePage — Admin · Quests · Stats": {
+      "ref": "templates/pages/admin_quests_stats.html:2"
+    },
+    "OnePage — Admin · Scopes": {
+      "ref": "templates/pages/admin_scopes.html:2"
+    },
+    "OnePage — Catalogue": {
+      "ref": "templates/pages/catalog.html:2"
+    },
+    "OnePage — password-protected report": {
+      "ref": "templates/pages/confidential.html:2"
+    },
+    "Open": {
+      "ref": "templates/pages/confidential.html:33"
+    },
+    "Open findings": {
+      "ref": "templates/pages/data_quality.html:44"
+    },
+    "Opened": {
+      "ref": "templates/pages/admin_quests_stats.html:212"
+    },
+    "Other": {
+      "ref": "templates/pages/data_quality.html:73"
+    },
+    "Participants": {
+      "ref": "templates/pages/admin_quests_stats.html:233"
+    },
+    "Partitions": {
+      "ref": "templates/pages/catalog.html:72"
+    },
+    "Payload": {
+      "ref": "templates/pages/audit.html:59"
+    },
+    "Perf log is sampled, figures are lower bound estimate.": {
+      "ref": "templates/pages/admin_quests_stats.html:146"
+    },
+    "Persons in export": {
+      "ref": "templates/pages/admin_scopes.html:35"
+    },
+    "Points": {
+      "ref": "templates/pages/admin_quests_stats.html:239"
+    },
+    "Quiz": {
+      "ref": "templates/pages/admin_quests_stats.html:189"
+    },
+    "Quizzes": {
+      "ref": "templates/pages/admin_quests_stats.html:241"
+    },
+    "Ranking": {
+      "ref": "templates/pages/admin_quests_stats.html:241"
+    },
+    "Real values are swapped for fakes of the same type; columns, headers and formulas are kept.": {
+      "ref": "templates/pages/anonymizer.html:68"
+    },
+    "Recalculate": {
+      "ref": "templates/pages/catalog.html:21"
+    },
+    "Rejected": {
+      "ref": "templates/pages/catalog.html:58"
+    },
+    "Replace real values in a spreadsheet with realistic fakes — same structure, safe to paste into an AI.": {
+      "ref": "templates/pages/anonymizer.html:57"
+    },
+    "Report password": {
+      "ref": "templates/pages/confidential.html:29"
+    },
+    "Report under a password": {
+      "ref": "templates/pages/confidential.html:22"
+    },
+    "Require confirmation": {
+      "ref": "templates/pages/catalog.html:40"
+    },
+    "Reveals today, {n}": {
+      "ref": "templates/pages/admin_quests_stats.html:208"
+    },
+    "Schema": {
+      "ref": "templates/pages/data_quality.html:69"
+    },
+    "Search target, person_id, IP…": {
+      "ref": "templates/pages/audit.html:36"
+    },
+    "Show acknowledged": {
+      "ref": "templates/pages/data_quality.html:78"
+    },
+    "Since run": {
+      "ref": "templates/pages/data_quality.html:94"
+    },
+    "Source": {
+      "ref": "templates/pages/admin_quests_stats.html:212"
+    },
+    "Sources Error": {
+      "ref": "templates/pages/data_quality.html:40"
+    },
+    "Sources OK": {
+      "ref": "templates/pages/data_quality.html:32"
+    },
+    "Sources Warn": {
+      "ref": "templates/pages/data_quality.html:36"
+    },
+    "Stale sources": {
+      "ref": "templates/pages/data_quality.html:52"
+    },
+    "Stats": {
+      "ref": "templates/pages/admin_quests_stats.html:67"
+    },
+    "Streak": {
+      "ref": "templates/pages/admin_quests_stats.html:239"
+    },
+    "Streams all audit_log events for the range into a file (.jsonl) (max. 366 days)": {
+      "ref": "templates/pages/audit.html:46"
+    },
+    "Table": {
+      "ref": "templates/pages/catalog.html:68"
+    },
+    "Tables": {
+      "ref": "templates/pages/catalog.html:32"
+    },
+    "Target": {
+      "ref": "templates/pages/audit.html:57"
+    },
+    "Task": {
+      "ref": "templates/pages/admin_quests_stats.html:172"
+    },
+    "Tasks": {
+      "ref": "templates/pages/admin_quests_stats.html:189"
+    },
+    "The password opens the report for this session and in this browser only. Outbound links, single-file export, the desktop copy and this report's chat stay switched off while the mode is on.": {
+      "ref": "templates/pages/confidential.html:39"
+    },
+    "Time (quests time zone)": {
+      "ref": "templates/pages/admin_quests_stats.html:212"
+    },
+    "Timestamp": {
+      "ref": "templates/pages/audit.html:54"
+    },
+    "Today": {
+      "ref": "templates/pages/admin_quests_stats.html:240"
+    },
+    "Up to (inclusive)": {
+      "ref": "templates/pages/audit.html:45"
+    },
+    "Upload an export": {
+      "ref": "templates/pages/admin_scopes.html:60"
+    },
+    "Values awaiting review": {
+      "ref": "templates/pages/data_quality.html:48"
+    },
+    "Visitor = user who opened at least one page (not API or static).": {
+      "ref": "templates/pages/admin_quests_stats.html:150"
+    },
+    "Warn": {
+      "ref": "templates/pages/data_quality.html:65"
+    },
+    "What the user sees": {
+      "ref": "templates/pages/admin_scopes.html:103"
+    },
+    "Who": {
+      "ref": "templates/pages/admin_quests_stats.html:212"
+    },
+    "You do have access to this report. It is marked highly confidential, so it also asks for a password — ask the report's owner for it.": {
+      "ref": "templates/pages/confidential.html:25"
+    },
+    "Your file never leaves this computer.": {
+      "ref": "templates/pages/anonymizer.html:66"
+    },
+    "activity timeline": {
+      "ref": "templates/pages/audit.html:17"
+    },
+    "administration · quests · season day": {
+      "ref": "templates/pages/admin_quests_stats.html:75"
+    },
+    "days": {
+      "ref": "templates/pages/admin_quests_stats.html:186"
+    },
+    "for the entire season": {
+      "ref": "templates/pages/admin_quests_stats.html:158"
+    },
+    "full access (see_all)": {
+      "ref": "templates/pages/admin_scopes.html:87"
+    },
+    "max 10 MB": {
+      "ref": "templates/pages/anonymizer.html:78"
+    },
+    "no audit events in selected range": {
+      "ref": "templates/pages/audit.html:81"
+    },
+    "no data": {
+      "ref": "templates/pages/admin_quests_stats.html:128"
+    },
+    "node (for targeted grant)": {
+      "ref": "templates/pages/admin_scopes.html:91"
+    },
+    "opened daily surprise": {
+      "ref": "templates/pages/admin_quests_stats.html:139"
+    },
+    "people · by points": {
+      "ref": "templates/pages/admin_quests_stats.html:233"
+    },
+    "people. Earned surprise but didn't open:": {
+      "ref": "templates/pages/admin_quests_stats.html:169"
+    },
+    "people.: opened surprise on at least 80% of working days since first open (counted when 3 such days accumulated). Didn't open today and yesterday, though opened before:": {
+      "ref": "templates/pages/admin_quests_stats.html:169"
+    },
+    "recognised {ok} / not found {miss}": {
+      "ref": "templates/pages/admin_scopes.html:37"
+    },
+    "role": {
+      "ref": "templates/pages/admin_scopes.html:92"
+    },
+    "row-level security": {
+      "ref": "templates/pages/admin_scopes.html:17"
+    },
+    "season start": {
+      "ref": "templates/pages/admin_quests_stats.html:126"
+    },
+    "see_all users": {
+      "ref": "templates/pages/admin_scopes.html:52"
+    },
+    "tools": {
+      "ref": "templates/pages/anonymizer.html:54"
+    },
+    "unique users per day": {
+      "ref": "templates/pages/admin_quests_stats.html:121"
+    },
+    "visitors before season": {
+      "ref": "templates/pages/admin_quests_stats.html:137"
+    },
+    "visitors in season": {
+      "ref": "templates/pages/admin_quests_stats.html:138"
+    },
+    "waiting": {
+      "ref": "templates/pages/admin_quests_stats.html:221"
+    },
+    "working days of season:": {
+      "ref": "templates/pages/admin_quests_stats.html:102"
+    },
+    "workspace": {
+      "ref": "templates/pages/anonymizer.html:54"
+    },
+    "workspace · outputted tables from actually observed exports": {
+      "ref": "templates/pages/catalog.html:17"
+    },
+    "workspace · schema, freshness and value drift": {
+      "ref": "templates/pages/data_quality.html:17"
+    },
+    "{day}: visitors {visitors}, daily rewards {daily}": {
+      "ref": "templates/pages/admin_quests_stats.html:128"
+    },
+    "{n} events": {
+      "ref": "templates/pages/audit.html:39"
+    },
+    "{n} pcs.": {
+      "ref": "templates/pages/admin_quests_stats.html:208"
+    },
+    "· exits": {
+      "ref": "templates/pages/admin_quests_stats.html:193"
+    },
+    "· start": {
+      "ref": "templates/pages/admin_quests_stats.html:75"
+    },
+    "← Settings": {
+      "ref": "templates/pages/admin_quests_stats.html:79"
+    }
+  }
+}

@@ -1,0 +1,87 @@
+# Places where Russian text is DATA, not interface, and must not be translated.
+#
+# Format:  <path glob> : <regex matched against the source line>   # why
+# Both halves must match for the line to be exempt. Keep this file small — it
+# is the escape hatch, and every entry is a promise that the string never
+# reaches a screen. tools/i18n_check.py reads it.
+
+# ── Russian-language parsing: stems, stop-words, month prefixes ────────────
+# explore.js / explore-chat.js read the user's Russian QUESTION. These tables
+# are the language they parse, mirroring app/services/nl2sql.py; translating
+# them would break the parser in every language, including Russian.
+static/js/explore.js         : ^\s*const (WHY_HEAD_RE|TREND_RE|RECENT_RE|YEAR_SPAN_RE|NAMED_PERIOD_RE|NUM_WORDS|PERIOD_UNIT_STEMS|RU_MONTH_STEMS|ASK_STOP)\b
+static/js/explore.js         : ^\s*\[?'(январ|феврал|март|апрел|ма|июн|июл|август|сентябр|октябр|ноябр|декабр)'
+static/js/explore.js         : ^\s*'(какое|у|почему)',
+static/js/explore.js         : (startsWith|indexOf|test)\('(недел|дн|год|почему|числ)'\)
+static/js/explore.js         : replace\(/ё/g, 'е'\)
+static/js/explore.js         : (^\s*else if \(/|\.split\(/\[\^a-z)
+static/js/explore.js         : stem === 'ма'
+static/js/explore.js         : (ru|unit) === '(проц|процент|шт)'          # unit synonyms typed by report authors
+static/js/explore-chat.js    : ^\s*\[?'(январ|феврал|март|апрел|ма|июн|июл|август|сентябр|октябр|ноябр|декабр)'
+static/js/explore-chat.js    : ^\s*\{ dim: '(week|month|day|year)', stems:
+static/js/explore-chat.js    : ^\s*'(а|же|мне|разрез|недел|месяц|день|год)',
+static/js/explore-chat.js    : ^\s*const (NEW_QUESTION_RE|YEAR_SPAN_RE)\b
+static/js/explore-chat.js    : replace\(/ё/g, 'е'\)
+static/js/explore-chat.js    : (\.split\(/\[\^a-z|stem === 'ма'|w === 'по')
+static/js/explore.js         : ^\s*const words = String\(question
+
+# ── Synthetic data for the anonymiser ─────────────────────────────────────
+# Fake cities and a Cyrillic->latin table used to REPLACE real values before a
+# workbook leaves the browser. Not shown as interface text.
+static/js/anonymizer.worker.js : ^const (LAST_M|FIRST_M|PATR_M|CITIES|COMPANIES|STREETS|RU_WORDS|TRANSLIT|translit)\b
+static/js/anonymizer.worker.js : ^function gen(Company|Address)\(
+static/js/anonymizer.worker.js : ^\s*name: /\^\[А-ЯЁ\]
+
+# ── Identifiers and SQL ───────────────────────────────────────────────────
+static/js/explore-recipes.js : AS \$\{qid\('(Итого|Кол-во)'\)\}   # SQL column alias in the result set
+static/js/explore2/guard.js  : ^const TABLE_RE =                  # a table name may be Cyrillic
+static/js/presentations.js   : ^\s*'Escape': 'exit'               # keyboard map: 'а'/'А' are the Russian-layout 'f'
+
+# ── Documentation samples ─────────────────────────────────────────────────
+# Ready-made prompts for an AI, meant to be copied INTO a Russian conversation
+# with the model. Translating them would produce a prompt nobody can use.
+templates/pages/docs.html    : ^\s*(<pre |1\)|2\)|Рендеры|Напиши|Создай|СТРОГИЕ)
+
+# ── Russian text that is DATA, not interface (app/) ───────────────────────
+# `tools/i18n_check.py` scans app/api and app/services. What stays here is
+# never rendered as interface text.
+app/services/nl2sql.py       : .                      # the Russian question parser: stems, stop-words, month prefixes — the same tables as explore.js above
+app/services/opc1.py         : raise Opc1Error|RuntimeError\(  # binary-format parse errors: a corrupt .opc1 is a bug report, not a user message
+app/services/lineage_export.py : ^\s*"[а-яё]": "     # Cyrillic->latin table for slugs in exported filenames
+app/services/catalog.py      : ^\s*"(названия|сумма)  # pivot field names as openpyxl writes them into the workbook
+app/services/quests.py       : (календарь без рабочих дней|Квиз — фаза 4)  # internal invariants: they mean the deployment is broken, and no one translates a stack trace
+
+# ── English that is a code, not a label (rule 7) ───────────────────────────
+# Same shape as above: <path glob> : <regex on the source line>. Everything
+# here is an identifier, a metric abbreviation or a sample the reader copies —
+# it reads the same in Russian, English and Chinese, so there is nothing to
+# translate.
+templates/pages/docs.html    : class="badge type-(interactive|snapshot|static)"   # dashboard type codes
+templates/pages/upload.html  : class="badge type-(interactive|snapshot|static)"   # same codes
+templates/pages/upload.html  : (detector\.py|text/html, \.html|input type=|bootstrap-snapshot|\.html · \.htm)
+templates/pages/docs.html    : (bootstrap-snapshot|Claude · ChatGPT · Gemini)     # code sample / model names
+templates/pages/explore.html : >(COUNT|SUM|AVG|MIN|MAX)<                          # SQL aggregate names
+templates/pages/perf.html    : >(srv p\d+|p\d+ ms|max ms|dur ms|db q|(load|ttfb) p\d+ ms)<  # metric column codes
+templates/pages/perf.html    : OP_PERF_ENABLED                                    # environment variable
+templates/pages/login.html   : OP_DEV_BYPASS_AUTH                                 # environment variable
+templates/pages/admin.html   : (deepseek-chat|gemma3)                             # model identifiers
+templates/pages/admin_scopes.html : (HOU / RM / CM / TMR|v_positions)             # position codes, view name
+templates/pages/admin_quests.html : ^\s*\[\{"id":                                # JSON sample the admin pastes
+templates/pages/anonymizer.html   : \.xlsx · \.xls                                # file extensions
+templates/pages/reference.html    : placeholder="nwd_bv_map"                      # example table name
+templates/pages/provenance.html   : >SHA-256<                                     # algorithm name
+templates/pages/docs.html    : ^const data = JSON\.parse\($                 # code sample, inside a block that opened lines earlier
+templates/pages/admin_quests.html : id="qa-bank-json"                              # placeholder is a JSON sample to paste
+
+# Dev Guide (/docs). The page shows the product as it is, so three kinds of
+# line here are DATA, not interface: the fake address bar over each
+# screenshot, the API/storage reference rows, and the code-name hint on a
+# reference drawer. The copyable artifacts (prompts, manifest, contract) are
+# multi-line and therefore live in {% trans %} blocks, which the scanner
+# already understands.
+templates/pages/docs.html: class="dg-art-bar"
+templates/pages/docs.html: class="dg-(ref-hint|code-name)">[A-Za-z][A-Za-z0-9:._-]*<
+templates/pages/docs.html: ^\s*<tr><td>(GET|PUT|POST|PATCH|DELETE|uploads|[a-z][a-z_.]*</td>)
+templates/pages/docs.html: dev guide · v3
+# alphabets for the replacement-code generator — this is data, not interface
+static/js/anonymizer.worker.js: RU_UP|RU_LO

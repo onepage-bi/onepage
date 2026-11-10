@@ -1,0 +1,149 @@
+{
+  "_meta": {
+    "chunk": "17",
+    "count": 45,
+    "lang": "en",
+    "source_files": [
+      "templates/pages/upload.html",
+      "templates/pages/viewer.html",
+      "templates/partials/schema_diff.html"
+    ]
+  },
+  "strings": {
+    "A required pattern with no matching file blocks the generator.": {
+      "ref": "templates/partials/schema_diff.html:43"
+    },
+    "A restore puts the earlier version on top of the current one; the data stays today's.": {
+      "ref": "templates/pages/viewer.html:737"
+    },
+    "Change the password": {
+      "ref": "templates/pages/viewer.html:467"
+    },
+    "Chat about this report": {
+      "ref": "templates/pages/viewer.html:367"
+    },
+    "Declared column(s) not found in sheet {pattern}": {
+      "ref": "templates/partials/schema_diff.html:52"
+    },
+    "Declared, but no file in the observed folder matched it.": {
+      "ref": "templates/partials/schema_diff.html:45"
+    },
+    "Download as one file, data included": {
+      "ref": "templates/pages/viewer.html:710"
+    },
+    "Drag to resize (double-click to reset)": {
+      "ref": "templates/pages/viewer.html:348"
+    },
+    "Highly confidential": {
+      "ref": "templates/pages/viewer.html:276"
+    },
+    "No declared inputs — this generator reads every Excel file it finds": {
+      "ref": "templates/partials/schema_diff.html:24"
+    },
+    "No file matching {match} had a sheet matching {pattern} in the observed set (cached, unreadable, or excluded).": {
+      "ref": "templates/partials/schema_diff.html:50"
+    },
+    "Observed column(s) beyond what {pattern} declares": {
+      "ref": "templates/partials/schema_diff.html:55"
+    },
+    "Opens on a double click — no platform, no network.": {
+      "ref": "templates/pages/viewer.html:713"
+    },
+    "Opens with a password; outbound links, single-file export, the desktop copy and the chat are switched off": {
+      "ref": "templates/pages/viewer.html:276"
+    },
+    "Password, at least 8 characters": {
+      "ref": "templates/pages/viewer.html:465"
+    },
+    "RLS · full access": {
+      "ref": "templates/pages/viewer.html:273"
+    },
+    "Report chat": {
+      "ref": "templates/pages/viewer.html:346"
+    },
+    "Report is filtered by scopes; you see it in full": {
+      "ref": "templates/pages/viewer.html:273"
+    },
+    "Report shows only your scopes": {
+      "ref": "templates/pages/viewer.html:271"
+    },
+    "Scope access": {
+      "ref": "templates/pages/viewer.html:271"
+    },
+    "The mode is off.": {
+      "ref": "templates/pages/viewer.html:462"
+    },
+    "The mode is on.": {
+      "ref": "templates/pages/viewer.html:462"
+    },
+    "The report asks for a password on top of its access list. While the mode is on, these are switched off: outbound links, single-file export, the desktop copy, the source download and the report's chat. A screenshot is not covered by any of this — tell people so.": {
+      "ref": "templates/pages/viewer.html:459"
+    },
+    "Turn on and set a password": {
+      "ref": "templates/pages/viewer.html:467"
+    },
+    "Turn the mode off": {
+      "ref": "templates/pages/viewer.html:471"
+    },
+    "consumed but undeclared:": {
+      "ref": "templates/partials/schema_diff.html:85"
+    },
+    "extra cols": {
+      "ref": "templates/partials/schema_diff.html:55"
+    },
+    "in": {
+      "ref": "templates/partials/schema_diff.html:24"
+    },
+    "missing": {
+      "ref": "templates/partials/schema_diff.html:43"
+    },
+    "missing cols": {
+      "ref": "templates/partials/schema_diff.html:52"
+    },
+    "no data hooks — served as-is": {
+      "ref": "templates/pages/upload.html:100"
+    },
+    "not yet observed": {
+      "ref": "templates/partials/schema_diff.html:38"
+    },
+    "not yet observed — declared inputs only, from the frozen manifest": {
+      "ref": "templates/partials/schema_diff.html:93"
+    },
+    "observed as of {date} (cached files reflect their last cold read)": {
+      "ref": "templates/partials/schema_diff.html:91"
+    },
+    "parser": {
+      "ref": "templates/pages/upload.html:84"
+    },
+    "publication": {
+      "ref": "templates/pages/viewer.html:236"
+    },
+    "required": {
+      "ref": "templates/partials/schema_diff.html:36"
+    },
+    "server injects JSON": {
+      "ref": "templates/pages/upload.html:96"
+    },
+    "sheet not observed": {
+      "ref": "templates/partials/schema_diff.html:50"
+    },
+    "sheet not observed — no schema was read for it this run (cached file, unreadable, or excluded), so \"missing columns\" cannot be judged.": {
+      "ref": "templates/partials/schema_diff.html:64"
+    },
+    "status": {
+      "ref": "templates/pages/upload.html:83"
+    },
+    "unmatched": {
+      "ref": "templates/partials/schema_diff.html:45"
+    },
+    "users drop data files": {
+      "ref": "templates/pages/upload.html:92"
+    },
+    "· data as of": {
+      "ref": "templates/pages/viewer.html:237"
+    },
+    "· outdated": {
+      "ref": "templates/pages/viewer.html:238"
+    }
+  }
+}

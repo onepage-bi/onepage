@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}{{ _('OnePage — Admin · Staff') }}{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'admin' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '/', false], [_('Admin'), '/admin', false], [_('Staff'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content fluid">
+
+      <div class="page-head">
+        <div class="titles">
+          {# "directory" here is the HR directory of PEOPLE, not the platform's
+             "Reference tables" (templates/pages/reference.html):
+             en read it right ("staff"), zh-HK read it wrong ("參考表"). #}
+          <div class="page-eyebrow">{{ _('administration · staff {ctx:HR directory of people, not the platform Reference tables}') }}</div>
+          <h1 class="page-title">{{ _('Staff') }}</h1>
+        </div>
+      </div>
+
+      <div class="tabbar">
+        <a class="tab" href="/admin">{{ _('Users') }}</a>
+        <a class="tab" href="/admin/audit">{{ _('Audit log') }}</a>
+        <a class="tab" href="/admin/perf">{{ _('Performance') }}</a>
+        <a class="tab" href="/admin/errors">{{ _('Errors') }}</a>
+        <a class="tab" href="/admin/generators">{{ _('Generators') }}</a>
+        <a class="tab active" href="/admin/employees">{{ _('Staff') }}</a>
+        <a class="tab" href="/admin/scopes">{{ _('Scopes') }}</a>
+        <a class="tab" href="/admin/quests">{{ _('Quests') }}</a>
+      </div>
+
+      <div class="stat-grid" style="margin-top:16px">
+        <div class="stat-card">
+          <div class="label">{{ _('Active staff') }}</div>
+          <div class="value tabular">{{ active_count }}</div>
+          <div class="delta">{{ _('total in reference table') }} {{ total_count }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">{{ _('Last refresh') }}</div>
+          <div class="value tabular" style="font-size:16px">{{ last_sync.created_at.strftime('%d.%m.%Y %H:%M') if last_sync else '—' }}</div>
+          <div class="delta">{{ last_actor or '' }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">{{ _('Changes in last') }}</div>
+          <div class="value tabular" style="font-size:16px">
+            {% if last_sync %}+{{ last_sync.added }} / ~{{ last_sync.updated }} / −{{ last_sync.deactivated }}{% else %}—{% endif %}
+          </div>
+          <div class="delta">{{ _('added / updated / deactivated') }}</div>
+        </div>
+      </div>
+
+      {% if stale_count %}
+      <div class="card" id="emp-stale-hint" style="margin-top:16px;max-width:640px;border-color:var(--warning)">
+        <div class="card-body" style="display:flex;align-items:center;gap:10px;padding:10px 14px">
+          <svg class="ico ico-14" style="color:var(--warning);flex-shrink:0"><use href="#ic-alert"/></svg>
+          <span style="font-size:12px;color:var(--ink-muted)">
+            {{ _n(stale_count, 'OnePage account is listed as active even though the employee is already inactive in the staff directory:|OnePage accounts are listed as active even though the employees are already inactive in the staff directory:') }} <b class="tabular">{{ stale_count }}</b>.
+          </span>
+          <a href="/admin#stale-users" class="btn xs ghost" style="margin-left:auto;white-space:nowrap">{{ _('Open on Users page') }}</a>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="card" style="margin-top:24px;max-width:640px">
+        <div class="card-head"><span class="card-title">{{ _('Refresh from export') }}</span></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:12px">
+          <p style="font-size:12px;color:var(--ink-muted);margin:0">
+            {{ _('Export CSV from Greenplum (DBeaver or psql):') }}
+            <code class="mono" style="font-size:11px">select * from warehouse.v_employees where isactive = '1'</code>
+            {{ _('and upload file here. Sensitive fields (birth date, phone, time off) discarded on import. Staff missing from export marked inactive.') }}
+          </p>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="file" id="emp-file" accept=".csv,text/csv" class="input sm" style="flex:1" />
+            <button id="emp-import-btn" class="btn sm primary" disabled>
+              <svg class="ico ico-12"><use href="#ic-database"/></svg>
+              {{ _('Refresh') }}
+            </button>
+          </div>
+          <div id="emp-import-status" class="mono" style="font-size:12px;color:var(--ink-dim)" hidden></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:24px;max-width:640px">
+        <div class="card-head"><span class="card-title">{{ _('Search reference table') }}</span></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:8px">
+          <div class="input-wrap">
+            <svg class="ico ico-12 leading"><use href="#ic-search"/></svg>
+            <input id="emp-search" class="input sm" placeholder="{{ _('Last name / first name (Russian or English), person_id, email…') }}" autocomplete="off" />
+          </div>
+          <div id="emp-search-results" style="display:flex;flex-direction:column;gap:2px"></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/palette.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/hotkeys.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/admin-employees.js?v={{ asset_v }}" defer></script>
+{% endblock %}

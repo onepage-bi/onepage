@@ -1,0 +1,11 @@
+slreport-bundle-2.1.0.zip
+├── manifest.json        ← the contract: inputs, outputs, dependencies
+└── slreport/
+    ├── __init__.py
+    ├── engine.py        ← entrypoint.module: begin()
+    ├── dataload.py
+    └── frontend/…       ← the templates and JS of your report, if any
+
+No __pycache__, no .git, no hidden files.
+Versions are immutable: every upload is a new version, old bytes are never
+rewritten, and the bundle's SHA-256 becomes the cache key.

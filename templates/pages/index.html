@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% block title %}OnePage — {{ _('Dashboards') }}{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'dashboards' %}
+  {% set dashboard_count = dashboards | length %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '#', false], [_('Dashboards'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content fluid">
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow">
+            {{ _('workspace') }} · {{ _('{n} dashboards', n=dashboards | length) }}
+          </div>
+          <h1 class="page-title">{{ _('Dashboards') }}</h1>
+        </div>
+        <div class="page-actions">
+          {% if user.role in ('administrator', 'superuser') %}
+          <a class="btn sm primary" href="/upload">
+            <svg class="ico ico-12"><use href="#ic-plus"/></svg>
+            {{ _('Upload dashboard') }}
+            <span class="kbd-hint">U</span>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="input-wrap" style="width:280px">
+          <svg class="ico ico-12 leading"><use href="#ic-search"/></svg>
+          <input id="dash-search" class="input sm" placeholder="{{ _('Search title, owner, person_id…') }}" />
+        </div>
+        <div id="dash-filters" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          {% for t in ['interactive', 'snapshot', 'static'] %}
+          <button class="chip" data-filter="type" data-val="{{ t }}">
+            <span class="dot" style="width:6px;height:6px;border-radius:50%;background:var(--type-{{ t }})"></span>
+            {{ t }}
+            <span class="count">{{ counts[t] }}</span>
+          </button>
+          {% endfor %}
+          <div class="vsep"></div>
+          <button class="chip" data-filter="status" data-val="published">
+            {{ _('published') }}
+            <span class="count">{{ counts['published'] }}</span>
+          </button>
+          <button class="chip" data-filter="status" data-val="draft">
+            {{ _('draft') }}
+            <span class="count">{{ counts['draft'] }}</span>
+          </button>
+          <div class="vsep"></div>
+          <button class="chip" data-filter="owner" data-val="{{ user.person_id }}">
+            <svg class="ico ico-12"><use href="#ic-user"/></svg>
+            {{ _('owned by me') }}
+          </button>
+        </div>
+        <div class="grow"></div>
+        <span id="dash-count" class="mono" style="font-size:11px;color:var(--ink-dim)">
+          {{ _('{n} total', n=dashboards|length) }}
+        </span>
+        <div class="vsep"></div>
+        {% if can_manage_folders %}
+        <button id="btn-new-folder" class="btn sm" title="{{ _('Create a shared folder') }}">
+          <svg class="ico ico-12"><use href="#ic-folder"/></svg>
+          {{ _('New folder') }}
+        </button>
+        <div class="vsep"></div>
+        {% endif %}
+        <div class="seg">
+          <button data-view-btn="table" class="active">
+            <svg class="ico ico-12" style="margin-right:4px"><use href="#ic-rows"/></svg>{{ _('Table') }}
+          </button>
+          <button data-view-btn="grid">
+            <svg class="ico ico-12" style="margin-right:4px"><use href="#ic-grid"/></svg>{{ _('Grid') }}
+          </button>
+        </div>
+      </div>
+
+      {% if dashboards %}
+      <!-- Table view -->
+      <div id="dash-table-wrap" class="dash-table-wrap">
+        <table class="tbl">
+          <thead id="dash-thead">
+            <tr>
+              <th class="col-fav"></th>
+              <th class="col-title sortable" data-key="title">{{ _('Title') }}</th>
+              <th class="col-type">{{ _('Type') }}</th>
+              <th class="col-status">{{ _('Status') }}</th>
+              <th class="col-owner sortable" data-key="owner">{{ _('Owner') }}</th>
+              <th class="col-version sortable numeric" data-key="version">{{ _('Ver') }}</th>
+              <th class="col-updated sortable" data-key="updated">{{ _('Updated') }}</th>
+              <th class="col-actions"></th>
+            </tr>
+          </thead>
+          <tbody id="dash-tbody">
+            {% set has_folders = sections | length > 1 %}
+            {% for folder, dlist in sections %}
+            {% if folder is not none or (dlist and has_folders) %}
+            <tr class="folder-row" data-folder-id="{{ folder.id if folder else '' }}">
+              <td colspan="8">
+                <div class="folder-head">
+                  <svg class="ico ico-12 chev"><use href="#ic-chevron-down"/></svg>
+                  <svg class="ico ico-12 folder-ico"><use href="#ic-folder"/></svg>
+                  <span class="folder-name">{{ folder.name if folder else _('Unsorted') }}</span>
+                  <span class="count mono" data-folder-count>{{ dlist | length }}</span>
+                  {% if folder and can_manage_folders %}
+                  <span class="folder-actions row-actions">
+                    <button class="btn icon xs ghost folder-rename" data-fid="{{ folder.id }}"
+                            data-name="{{ folder.name }}" title="{{ _('Rename folder') }}">
+                      <svg class="ico ico-12"><use href="#ic-settings"/></svg>
+                    </button>
+                    <button class="btn icon xs ghost folder-delete" data-fid="{{ folder.id }}"
+                            data-name="{{ folder.name }}" title="{{ _('Delete folder (dashboards move to Unsorted)') }}">
+                      <svg class="ico ico-12"><use href="#ic-x"/></svg>
+                    </button>
+                  </span>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% endif %}
+            {% for d in dlist %}
+            <tr data-id="{{ d.id }}"
+                data-folder="{{ folder.id if folder else '' }}"
+                data-type="{{ d.dash_type }}"
+                data-status="{{ 'published' if d.is_published else 'draft' }}"
+                data-owner="{{ d.owner.person_id if d.owner else '' }}"
+                data-search="{{ (d.title ~ ' ' ~ (d.description or '') ~ ' ' ~ (d.owner.person_id if d.owner else '')) | lower }}">
+              <td class="col-fav">
+                <button class="btn icon xs ghost card-fav" data-fav-id="{{ d.id }}" aria-pressed="false" title="{{ _('Add to favourites') }}">☆</button>
+              </td>
+              <td class="col-title">
+                <div class="row-title">
+                  <a class="name" href="/d/{{ d.id }}">{{ d.title }}</a>
+                  {% if d.description %}
+                  <span class="name-desc">{{ d.description }}</span>
+                  {% endif %}
+                </div>
+              </td>
+              <td class="col-type"><span class="badge type-{{ d.dash_type }}">{{ d.dash_type }}</span></td>
+              <td class="col-status">
+                {% if not d.is_published %}
+                  <span class="badge draft">{{ _('draft') }}</span>
+                {% else %}
+                  <span class="pill success"><span class="dot"></span>{{ _('published') }}</span>
+                {% endif %}
+              </td>
+              <td class="col-owner mono">{{ d.owner.person_id if d.owner else '—' }}</td>
+              <td class="col-version mono numeric">v{{ d.current_version }}</td>
+              <td class="col-updated mono muted">
+                {{ d.updated_at.strftime('%Y-%m-%d') }}
+                <span style="color:var(--ink-faint)">{{ d.updated_at.strftime('%H:%M') }}</span>
+              </td>
+              <td class="col-actions">
+                <div class="row-actions">
+                  {% if user.role == 'administrator' or d.owner_id == user.id %}
+                  <button class="btn icon xs ghost btn-move" data-id="{{ d.id }}" title="{{ _('Move to folder') }}">
+                    <svg class="ico ico-12"><use href="#ic-folder"/></svg>
+                  </button>
+                  {% endif %}
+                  <a class="btn icon xs ghost" href="/d/{{ d.id }}" title="{{ _('Open') }}">
+                    <svg class="ico ico-12"><use href="#ic-eye"/></svg>
+                  </a>
+                  <button class="btn icon xs ghost" title="{{ _('Copy link') }}"
+                          onclick="event.preventDefault(); navigator.clipboard.writeText(location.origin+'/d/{{ d.id }}')">
+                    <svg class="ico ico-12"><use href="#ic-link"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Grid view — cards are built client-side from #dash-data on first
+           activation (dashboards.js), so the table-first payload stays small -->
+      <div id="dash-grid-wrap" hidden>
+        <div id="dash-grid" class="dash-grid"></div>
+      </div>
+      {% else %}
+      <div class="dash-table-wrap">
+        <div class="empty">
+          <div class="ascii">[ {{ _('no dashboards yet') }} ]</div>
+          {% if user.role in ('administrator', 'superuser') %}
+          <p>{{ _('Upload a self-contained HTML dashboard to get started.') }}</p>
+          <a class="btn sm primary" href="/upload" style="margin-top:12px">
+            <svg class="ico ico-12"><use href="#ic-upload"/></svg>
+            {{ _('Upload your first dashboard') }}
+          </a>
+          {% else %}
+          <p>{{ _('No dashboards have been shared with you yet.') }}</p>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </main>
+</div>
+
+{% include "components/palette.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script id="dash-data" type="application/json">{{ dash_payload | tojson }}</script>
+<script src="/static/js/palette.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/hotkeys.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/dashboards.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/presentations.js?v={{ asset_v }}" defer></script>
+{% endblock %}

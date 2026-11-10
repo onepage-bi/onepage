@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% block title %}{{ _('OnePage — Admin · Quests') }}{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'admin' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '/', false], [_('Admin'), '/admin', false], [_('Quests'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content fluid">
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow">{{ _('administration · quests') }}</div>
+          <h1 class="page-title">{{ _('Quests') }}</h1>
+        </div>
+        <div class="actions">
+          <a class="btn sm ghost" href="/admin/quests/stats">{{ _('Stats →') }}</a>
+        </div>
+      </div>
+
+      <div class="tabbar">
+        <a class="tab" href="/admin">{{ _('Users') }}</a>
+        <a class="tab" href="/admin/audit">{{ _('Audit log') }}</a>
+        <a class="tab" href="/admin/perf">{{ _('Performance') }}</a>
+        <a class="tab" href="/admin/errors">{{ _('Errors') }}</a>
+        <a class="tab" href="/admin/generators">{{ _('Generators') }}</a>
+        <a class="tab" href="/admin/employees">{{ _('Staff') }}</a>
+        <a class="tab" href="/admin/scopes">{{ _('Scopes') }}</a>
+        <a class="tab active" href="/admin/quests">{{ _('Quests') }}</a>
+      </div>
+
+      <!-- ── Status ─────────────────────────────────────────────────── -->
+      <div class="card" style="margin-top:16px;max-width:640px">
+        <div class="card-head"><span class="card-title">{{ _('Status') }}</span></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:16px">
+
+          <div style="display:flex;align-items:center;gap:10px">
+            <button class="toggle" id="qa-enabled-toggle" aria-checked="{{ 'true' if config.enabled else 'false' }}"></button>
+            <div style="display:flex;flex-direction:column;gap:2px">
+              <span>{{ _('Quests enabled') }}</span>
+              <span class="mono" style="font-size:11px;color:var(--ink-dim)">
+                {{ _('overlay (this setting) overrides env var until reset') }}
+              </span>
+            </div>
+            {% if 'quests_enabled' in config.overrides %}
+            <span class="badge solid" style="margin-left:auto">{{ _('overlay') }}</span>
+            <button type="button" class="btn xs ghost" id="qa-reset-enabled" data-reset="quests_enabled">{{ _('Reset to env') }}</button>
+            {% endif %}
+          </div>
+
+          <div style="display:flex;align-items:center;gap:10px">
+            <button class="toggle" id="qa-companion-toggle" aria-checked="{{ 'true' if config.companion_enabled else 'false' }}" data-initial="{{ 'true' if config.companion_enabled else 'false' }}"></button>
+            <div style="display:flex;flex-direction:column;gap:2px">
+              <span>{{ _('Companion for the full collection') }}</span>
+              <span class="mono" style="font-size:11px;color:var(--ink-dim)">
+                {{ _('off — the creature, the den and the autumn theme disappear for everyone; collections are untouched') }}
+              </span>
+            </div>
+            {% if 'quests_companion_enabled' in config.overrides %}
+            <span class="badge solid" style="margin-left:auto">{{ _('overlay') }}</span>
+            <button type="button" class="btn xs ghost" data-reset="quests_companion_enabled">{{ _('Reset to env') }}</button>
+            {% endif %}
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="qa-season-start">{{ _('Season start') }}</label>
+            <div style="display:flex;align-items:center;gap:10px">
+              <input type="date" id="qa-season-start" class="input sm" value="{{ config.season_start }}" style="max-width:200px">
+              {% if 'quests_season_start' in config.overrides %}
+              <span class="badge solid">{{ _('overlay') }}</span>
+              <button type="button" class="btn xs ghost" id="qa-reset-season-start" data-reset="quests_season_start">{{ _('Reset to env') }}</button>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="qa-season-length">{{ _('Season length (working days)') }}</label>
+            <div style="display:flex;align-items:center;gap:10px">
+              <input type="number" id="qa-season-length" class="input sm" min="1" max="400" value="{{ config.season_length }}" style="max-width:120px">
+              {% if 'quests_season_length' in config.overrides %}
+              <span class="badge solid">{{ _('overlay') }}</span>
+              <button type="button" class="btn xs ghost" id="qa-reset-season-length" data-reset="quests_season_length">{{ _('Reset to env') }}</button>
+              {% endif %}
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:10px">
+            <button type="button" class="btn sm primary" id="qa-status-save">{{ _('Save') }}</button>
+            <span id="qa-status-msg" class="mono" style="font-size:11px;color:var(--ink-dim)"></span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── Holidays ──────────────────────────────────────────────── -->
+      <div class="card" style="margin-top:20px;max-width:640px">
+        <div class="card-head"><span class="card-title">{{ _('Holidays') }}</span></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:10px">
+          <p style="font-size:12px;color:var(--ink-muted);margin:0">
+            {{ _('One ISO date (YYYY-MM-DD) per line. These days exclude from streak count and season scale.') }}
+          </p>
+          <textarea id="qa-holidays" class="input" rows="8" style="font-family:var(--font-mono, monospace);font-size:12px" spellcheck="false">{{ config.holidays | join('\n') }}</textarea>
+          <div style="display:flex;align-items:center;gap:10px">
+            <button type="button" class="btn sm primary" id="qa-holidays-save">{{ _('Save holidays') }}</button>
+            {% if 'holidays' in config.overrides %}
+            <span class="badge solid">{{ _('overlay') }}</span>
+            <button type="button" class="btn xs ghost" id="qa-reset-holidays" data-reset="holidays">{{ _('Reset to env') }}</button>
+            {% endif %}
+          </div>
+          <div id="qa-holidays-status" class="mono" style="font-size:11px;color:var(--ink-dim)"></div>
+        </div>
+      </div>
+
+      <!-- ── Quiz bank ─────────────────────────────────────────── -->
+      <div class="card" style="margin-top:20px;max-width:720px">
+        <div class="card-head"><span class="card-title">{{ _('Quiz bank') }}</span></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:10px">
+
+          <div class="mono" style="font-size:12px;color:var(--ink-dim)">
+            {{ _('active questions:') }} {{ bank.active }}
+            {{ _('· days complete:') }} {{ _('yes') if bank.days_complete else _('no') }}
+            {{ _('· last import:') }} {{ bank.last_imported_at or '—' }}
+          </div>
+
+          <textarea id="qa-bank-json" class="input" rows="10" style="font-family:var(--font-mono, monospace);font-size:12px" spellcheck="false" placeholder="[{&quot;id&quot;: 1, &quot;day&quot;: 1, &quot;q&quot;: &quot;...&quot;, &quot;o&quot;: [&quot;...&quot;], &quot;a&quot;: 0, &quot;e&quot;: &quot;...&quot;, &quot;t&quot;: &quot;...&quot;}, …]"></textarea>
+
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <input type="file" id="qa-bank-file" accept=".json" class="input sm" style="max-width:260px">
+            <button type="button" class="btn sm ghost" id="qa-bank-check">{{ _('Check') }}</button>
+            <button type="button" class="btn sm primary" id="qa-bank-import" disabled>{{ _('Import') }}</button>
+            <button type="button" class="btn sm ghost" id="qa-bank-default">{{ _('Load built-in bank (45)') }}</button>
+          </div>
+
+          <div id="qa-bank-report" class="mono" style="font-size:11px;color:var(--ink-dim);white-space:pre-wrap"></div>
+        </div>
+      </div>
+
+      <!-- ── Cards ───────────────────────────────────────────────── -->
+      <div class="card" style="margin-top:20px;margin-bottom:24px;max-width:720px">
+        <div class="card-head"><span class="card-title">{{ _('Card list') }}</span></div>
+        <div class="card-body">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>{{ _('Card') }}</th>
+                <th>{{ _('Rarity') }}</th>
+                <th class="numeric" style="width:110px">{{ _('Base weight, %') }}</th>
+                <th class="numeric" style="width:110px">{{ _('Drawn') }}</th>
+                <th class="numeric" style="width:110px">{{ _('Share, %') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% set total_drops = stats.values() | sum %}
+              {% for c in cards %}
+              <tr>
+                <td>{{ c.name }}</td>
+                <td class="mono">{{ c.rarity }}</td>
+                <td class="mono numeric">{{ c.base_weight }}</td>
+                <td class="mono numeric">{{ stats.get(c.card_id, 0) }}</td>
+                <td class="mono numeric">{{ '%.1f' % ((stats.get(c.card_id, 0) / total_drops * 100) if total_drops else 0) }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/palette.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/hotkeys.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/admin-quests.js?v={{ asset_v }}" defer></script>
+{% endblock %}

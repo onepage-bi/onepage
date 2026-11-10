@@ -1,0 +1,66 @@
+name: Bug report
+description: Something does not work as documented
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Please do not paste real company data, secrets
+        or personal data into this form.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, what you got instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. make dev
+        2. ...
+    validations:
+      required: true
+  - type: dropdown
+    id: saml
+    attributes:
+      label: Did you install requirements-saml.txt?
+      description: >
+        SAML is a separate, optional install. Many sign-in problems differ
+        depending on whether it is present.
+      options:
+        - "No, base requirements.txt only"
+        - "Yes, requirements-saml.txt installed"
+        - "Docker image built with INSTALL_SAML=true"
+        - "Docker image built with INSTALL_SAML=false (dev default)"
+        - "Not sure"
+    validations:
+      required: true
+  - type: dropdown
+    id: how
+    attributes:
+      label: How do you run OnePage
+      options:
+        - "make dev / docker compose"
+        - "make run (local venv)"
+        - "Production bundle"
+        - "Other"
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: Output of `git rev-parse --short HEAD`, or the `build` field of /health.
+  - type: input
+    id: env
+    attributes:
+      label: OS and Python version
+      placeholder: macOS 14, Python 3.12.7
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or console output
+      render: shell

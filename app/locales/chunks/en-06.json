@@ -1,0 +1,463 @@
+{
+  "_meta": {
+    "chunk": "06",
+    "count": 150,
+    "lang": "en",
+    "source_files": [
+      "static/js/explore.js"
+    ]
+  },
+  "strings": {
+    " · not calculated: {p1}": {
+      "ref": "static/js/explore.js:3421"
+    },
+    " · not in catalogue: {p1}": {
+      "ref": "static/js/explore.js:803"
+    },
+    " · not read: {p1}": {
+      "ref": "static/js/explore.js:795"
+    },
+    " · protected from cleanup": {
+      "ref": "static/js/explore.js:1278"
+    },
+    " · storage {p1} of {p2}{p3}": {
+      "ref": "static/js/explore.js:1278"
+    },
+    " · time {p1} ({p2})": {
+      "ref": "static/js/explore.js:792"
+    },
+    " · where it's concentrated (top {p1} by {p2})": {
+      "ref": "static/js/explore.js:3420"
+    },
+    "\"{p1}\" is:": {
+      "ref": "static/js/explore.js:3139"
+    },
+    "(all partitions)": {
+      "ref": "static/js/explore.js:2072"
+    },
+    ", period: {p1}": {
+      "ref": "static/js/explore.js:3708"
+    },
+    "Answer for metric \"{p1}\" ({p2}) — dimension: {p3}": {
+      "ref": "static/js/explore.js:3706"
+    },
+    "April": {
+      "ref": "static/js/explore.js:1069"
+    },
+    "Asking…": {
+      "ref": "static/js/explore.js:3942"
+    },
+    "Asking… Tip: select a table in the builder or name it in the question — the answer will come noticeably faster.": {
+      "ref": "static/js/explore.js:2708"
+    },
+    "August": {
+      "ref": "static/js/explore.js:1069"
+    },
+    "Average": {
+      "ref": "static/js/explore.js:53"
+    },
+    "Building the query…": {
+      "ref": "static/js/explore.js:1102"
+    },
+    "By dimension": {
+      "ref": "static/js/explore.js:1053"
+    },
+    "Calculate": {
+      "ref": "static/js/explore.js:1085"
+    },
+    "Calculating the trend…": {
+      "ref": "static/js/explore.js:3245"
+    },
+    "Calculating using the definition \"{p1}\"…": {
+      "ref": "static/js/explore.js:1107"
+    },
+    "Calculating… {p1} s": {
+      "ref": "static/js/explore.js:2465"
+    },
+    "Checking the cache…": {
+      "ref": "static/js/explore.js:1599"
+    },
+    "Checking the folder…": {
+      "ref": "static/js/explore.js:4201"
+    },
+    "Clarification needed: the word from the question appears in several dimensions.": {
+      "ref": "static/js/explore.js:3159"
+    },
+    "Connecting ": {
+      "ref": "static/js/explore.js:692"
+    },
+    "Connecting {p1}": {
+      "ref": "static/js/explore.js:1656"
+    },
+    "Could not answer using the report's semantics. Rephrase the question or build the query in the builder.": {
+      "ref": "static/js/explore.js:3962"
+    },
+    "December": {
+      "ref": "static/js/explore.js:1069"
+    },
+    "Done": {
+      "ref": "static/js/explore.js:1665"
+    },
+    "Done — SQL is in the editor, result below.": {
+      "ref": "static/js/explore.js:1117"
+    },
+    "Downloading partitions from the server": {
+      "ref": "static/js/explore.js:1612"
+    },
+    "Engine error": {
+      "ref": "static/js/explore.js:719"
+    },
+    "Engine error: {p1}": {
+      "ref": "static/js/explore.js:663"
+    },
+    "Export error: {p1}": {
+      "ref": "static/js/explore.js:2672"
+    },
+    "Export failed ({p1}).": {
+      "ref": "static/js/explore.js:1206"
+    },
+    "Failed to build the query.": {
+      "ref": "static/js/explore.js:1105"
+    },
+    "Failed to export the file.": {
+      "ref": "static/js/explore.js:2683"
+    },
+    "Failed to read the folder.": {
+      "ref": "static/js/explore.js:1823"
+    },
+    "Failed to run the query.": {
+      "ref": "static/js/explore.js:2562"
+    },
+    "Failed to save ({p1}).": {
+      "ref": "static/js/explore.js:2649"
+    },
+    "Failed to save the question.": {
+      "ref": "static/js/explore.js:2654"
+    },
+    "February": {
+      "ref": "static/js/explore.js:1069"
+    },
+    "File {p1} exported.": {
+      "ref": "static/js/explore.js:2681"
+    },
+    "First connect a folder with files and update the index.": {
+      "ref": "static/js/explore.js:4198"
+    },
+    "Folder \"{p1}\" was connected before — permission needed": {
+      "ref": "static/js/explore.js:1366"
+    },
+    "Folder check: no issues found.": {
+      "ref": "static/js/explore.js:4174"
+    },
+    "Folder check: {p1}": {
+      "ref": "static/js/explore.js:4178"
+    },
+    "Folder with files \"{p1}\" connected": {
+      "ref": "static/js/explore.js:1379"
+    },
+    "Found metric \"{p1}\" — select a dimension and click \"Calculate\"{p2}": {
+      "ref": "static/js/explore.js:3760"
+    },
+    "From cache {p1}": {
+      "ref": "static/js/explore.js:1901"
+    },
+    "Generate SQL": {
+      "ref": "static/js/explore.js:2092"
+    },
+    "Index is being built — the query will run as soon as it is ready.": {
+      "ref": "static/js/explore.js:2444"
+    },
+    "Index not loaded — click \"Load index\" on the report card.": {
+      "ref": "static/js/explore.js:2447"
+    },
+    "Indexing {p1}": {
+      "ref": "static/js/explore.js:1918"
+    },
+    "Indexing…": {
+      "ref": "static/js/explore.js:699"
+    },
+    "Interrupted — the index has been reset, load it again.": {
+      "ref": "static/js/explore.js:4109"
+    },
+    "January": {
+      "ref": "static/js/explore.js:1069"
+    },
+    "July": {
+      "ref": "static/js/explore.js:1069"
+    },
+    "June": {
+      "ref": "static/js/explore.js:1069"
+    },
+    "Key deleted.": {
+      "ref": "static/js/explore.js:2738"
+    },
+    "Key saved in this browser.": {
+      "ref": "static/js/explore.js:2738"
+    },
+    "Key {p1} rejected ({p2}). Check the key.": {
+      "ref": "static/js/explore.js:2836"
+    },
+    "Load the report index first.": {
+      "ref": "static/js/explore.js:2448"
+    },
+    "Loaded question \"{p1}\"": {
+      "ref": "static/js/explore.js:2609"
+    },
+    "Loading engine…": {
+      "ref": "static/js/explore.js:1581"
+    },
+    "Looking for the number {p1} in the report data…": {
+      "ref": "static/js/explore.js:3653"
+    },
+    "March": {
+      "ref": "static/js/explore.js:1069"
+    },
+    "Max": {
+      "ref": "static/js/explore.js:53"
+    },
+    "May": {
+      "ref": "static/js/explore.js:1069"
+    },
+    "Metric \"{p1}\"": {
+      "ref": "static/js/explore.js:1110"
+    },
+    "Metric \"{p1}\" has no period dimension — its trend cannot be calculated.": {
+      "ref": "static/js/explore.js:3240"
+    },
+    "Metric form is open — specify a dimension and click \"Calculate\"": {
+      "ref": "static/js/explore.js:3737"
+    },
+    "Min": {
+      "ref": "static/js/explore.js:53"
+    },
+    "Month": {
+      "ref": "static/js/explore.js:981"
+    },
+    "Nothing to save — SQL is empty.": {
+      "ref": "static/js/explore.js:2636"
+    },
+    "November": {
+      "ref": "static/js/explore.js:1069"
+    },
+    "October": {
+      "ref": "static/js/explore.js:1069"
+    },
+    "Opening the index on the server…": {
+      "ref": "static/js/explore.js:1513"
+    },
+    "Other catalogue tables": {
+      "ref": "static/js/explore.js:1967"
+    },
+    "Owner: {p1}": {
+      "ref": "static/js/explore.js:1035"
+    },
+    "Parsing ": {
+      "ref": "static/js/explore.js:692"
+    },
+    "Preparing file…": {
+      "ref": "static/js/explore.js:2669"
+    },
+    "Query error: {p1}": {
+      "ref": "static/js/explore.js:2516"
+    },
+    "Query result": {
+      "ref": "static/js/explore.js:2486"
+    },
+    "Question \"{p1}\" saved.": {
+      "ref": "static/js/explore.js:2651"
+    },
+    "Question from {p1}": {
+      "ref": "static/js/explore.js:2639"
+    },
+    "Reading the folder…": {
+      "ref": "static/js/explore.js:1820"
+    },
+    "Reading {p1}": {
+      "ref": "static/js/explore.js:1911"
+    },
+    "Result without a period or value — the trend cannot be calculated.": {
+      "ref": "static/js/explore.js:3257"
+    },
+    "Running…": {
+      "ref": "static/js/explore.js:2459"
+    },
+    "SQL received — check it before running.": {
+      "ref": "static/js/explore.js:3987"
+    },
+    "SQL was written by the model from the report's semantics — check it": {
+      "ref": "static/js/explore.js:3776"
+    },
+    "Select a report — its index will load from the server.": {
+      "ref": "static/js/explore.js:4104"
+    },
+    "September": {
+      "ref": "static/js/explore.js:1069"
+    },
+    "Server unavailable — retry or connect a folder.": {
+      "ref": "static/js/explore.js:1216"
+    },
+    "Sum": {
+      "ref": "static/js/explore.js:53"
+    },
+    "The browser couldn't reach {p1}: {p2} — trying via the server…": {
+      "ref": "static/js/explore.js:2854"
+    },
+    "The browser doesn't support folder access.": {
+      "ref": "static/js/explore.js:1323"
+    },
+    "The folder holds no workbook or table.": {
+      "ref": "static/js/explore.js:1838"
+    },
+    "The folder is not in the catalogue — taking it as it is: {n} file becomes table {list}.|The folder is not in the catalogue — taking it as it is: {n} files become tables {list}.": {
+      "plural": true,
+      "ref": "static/js/explore.js:1851"
+    },
+    "The folder was connected before — permission needed": {
+      "ref": "static/js/explore.js:1415"
+    },
+    "The index on the server is empty — recalculate the report.": {
+      "ref": "static/js/explore.js:1593"
+    },
+    "The index on the server was built with a different engine version — recalculate the report": {
+      "ref": "static/js/explore.js:1588"
+    },
+    "The largest decrease: {p1} ({p2} → {p3}, Δ {p4})": {
+      "ref": "static/js/explore.js:3297"
+    },
+    "The model is not configured, and the question did not match any metric wording. Select a metric in the \"Metrics\" panel — it is calculated without a model.": {
+      "ref": "static/js/explore.js:3895"
+    },
+    "The number {p1} appears in several metrics — select which one you mean": {
+      "ref": "static/js/explore.js:3667"
+    },
+    "The number {p1} was not found in the current data — clarify the metric": {
+      "ref": "static/js/explore.js:3680"
+    },
+    "The query didn't run.": {
+      "ref": "static/js/explore.js:3332"
+    },
+    "The query may not answer the question.": {
+      "ref": "static/js/explore.js:3097"
+    },
+    "The report's index is built when calculating across all the report's folders and is stored on the server.": {
+      "ref": "static/js/explore.js:4102"
+    },
+    "The request did not finish within {p1} s and the engine did not respond — the index has been reset, connect the folder and load it again and narrow the period or add a partition filter.": {
+      "ref": "static/js/explore.js:1243"
+    },
+    "The request did not finish within {p1} s and the engine did not respond — the index has been reset, load it again and narrow the period or add a partition filter.": {
+      "ref": "static/js/explore.js:1242"
+    },
+    "The server could not open the index — try again later.": {
+      "ref": "static/js/explore.js:1529"
+    },
+    "The server did not respond to the request ({p1}).": {
+      "ref": "static/js/explore.js:1212"
+    },
+    "There are fewer than two periods of \"{p1}\" in the data — there's nothing to compare the trend with.": {
+      "ref": "static/js/explore.js:3264"
+    },
+    "There is no decrease in any dimension for {p1} {p2} → {p3}.": {
+      "ref": "static/js/explore.js:3298"
+    },
+    "There is no index for this report on the server — connect a folder.": {
+      "ref": "static/js/explore.js:1523"
+    },
+    "This is about: {p1} · {p2} · {p3}": {
+      "ref": "static/js/explore.js:3557"
+    },
+    "This report's index has not been published yet — recalculate the report (Run) to build the index across all folders.": {
+      "ref": "static/js/explore.js:4103"
+    },
+    "This report's index is not loaded": {
+      "ref": "static/js/explore.js:1352"
+    },
+    "Trend \"{p1}\"{p2}: {p3} {p4} → {p5}": {
+      "ref": "static/js/explore.js:3285"
+    },
+    "Value": {
+      "ref": "static/js/explore.js:3396"
+    },
+    "Verifier: {p1} — clarify the question or click \"Calculate anyway\".": {
+      "ref": "static/js/explore.js:3108"
+    },
+    "Week": {
+      "ref": "static/js/explore.js:981"
+    },
+    "Why: \"{p1}\" — {p2}": {
+      "ref": "static/js/explore.js:3377"
+    },
+    "Why: calculating \"{p1}\"…": {
+      "ref": "static/js/explore.js:3369"
+    },
+    "Why: {p1}{p2}": {
+      "ref": "static/js/explore.js:3374"
+    },
+    "Why: {p1}{p2} = {p3}": {
+      "ref": "static/js/explore.js:3414"
+    },
+    "Year": {
+      "ref": "static/js/explore.js:981"
+    },
+    "You respond with strictly one JSON object. No explanations and no markdown.": {
+      "ref": "static/js/explore.js:2823"
+    },
+    "You respond with strictly one SQL query. No explanations and no markdown.": {
+      "ref": "static/js/explore.js:3826"
+    },
+    "cache {p1}": {
+      "ref": "static/js/explore.js:790"
+    },
+    "calculate anyway": {
+      "ref": "static/js/explore.js:3102"
+    },
+    "connected folder '{p1}»": {
+      "ref": "static/js/explore.js:854"
+    },
+    "dimension {p1}: {p2}": {
+      "ref": "static/js/explore.js:3402"
+    },
+    "doesn't matter, show without it": {
+      "ref": "static/js/explore.js:3152"
+    },
+    "engine reset": {
+      "ref": "static/js/explore.js:1170"
+    },
+    "error": {
+      "ref": "static/js/explore.js:4145"
+    },
+    "failed to read the file": {
+      "ref": "static/js/explore.js:1917"
+    },
+    "findings": {
+      "ref": "static/js/explore.js:4178"
+    },
+    "first only": {
+      "ref": "static/js/explore.js:1082"
+    },
+    "first {p1}": {
+      "ref": "static/js/explore.js:1082"
+    },
+    "folder \"{p1}\"": {
+      "ref": "static/js/explore.js:857"
+    },
+    "from {p1}": {
+      "ref": "static/js/explore.js:1036"
+    },
+    "index from the server · {p1}": {
+      "ref": "static/js/explore.js:849"
+    },
+    "index not published": {
+      "ref": "static/js/explore.js:860"
+    },
+    "index on server": {
+      "ref": "static/js/explore.js:859"
+    },
+    "index on the server · {p1}{p2}": {
+      "ref": "static/js/explore.js:965"
+    },
+    "indexed folder '{p1}»": {
+      "ref": "static/js/explore.js:853"
+    }
+  }
+}

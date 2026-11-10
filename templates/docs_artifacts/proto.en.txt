@@ -1,0 +1,37 @@
+Write an HTML file for the OnePage platform. The report runs in an isolated
+iframe and its data arrives over postMessage.
+
+1. When the page loads:
+   window.parent.postMessage({ type: 'op_ready', slots: [0] }, '*')
+
+2. Listen for the incoming file:
+   window.addEventListener('message', (e) => {
+     if (e.data?.type === 'op_file' && e.data.slot === 0) {
+       processFile(e.data.data, e.data.name)   // data is an ArrayBuffer
+     }
+   })
+
+3. If the reader changes the file inside the report:
+   window.parent.postMessage({ type: 'op_save_file', slot: 0,
+     name: file.name, data: buf }, '*', [buf])
+
+4. Fallback: if op_file has not arrived within 500 ms, show a drag & drop zone.
+
+READING EXCEL
+Never — neither in code nor in the text on the page — ask for the workbook to
+be re-saved as CSV, and never state that .xlsx cannot be read in the sandbox:
+on this platform it can. Accept CSV as well, but as the second option, not the
+only one.
+
+Do not ask people for CSV: the report reads .xlsx itself. The library already
+sits on the platform's server — same origin as the report, no login, no
+internet:
+
+   <script src="/static/js/vendor/xlsx.full.min.js"></script>   <!-- SheetJS 0.20.3 -->
+
+   var wb   = XLSX.read(new Uint8Array(e.data.data), { type: 'array' })
+   var rows = XLSX.utils.sheet_to_json(wb.Sheets['By Month'], { header: 1 })
+
+The platform serves no charting library: draw on canvas/SVG yourself or embed
+one in a <script>. CDN links stay banned — the server has no way out to the
+internet, so such a report would simply come up blank.

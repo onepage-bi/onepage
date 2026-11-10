@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+{% block title %}OnePage — {{ _('Performance') }}{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'perf' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '/', false], [_('Admin'), '/admin', false], [_('Performance'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content fluid">
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow">{{ _('administration') }} · {{ _('performance telemetry') }}</div>
+          <h1 class="page-title">{{ _('Performance') }}</h1>
+        </div>
+        <div class="page-actions">
+          <button class="btn sm" id="btn-telemetry"
+                  title="{{ _('Pause/resume telemetry collection (survives restarts)') }}">
+            {{ _('Telemetry:') }} {{ _('On') if telemetry_on else _('Off') }}
+          </button>
+          <button class="btn sm" id="btn-clear-logs" title="{{ _('Delete all accumulated perf logs') }}">
+            <svg class="ico ico-12"><use href="#ic-x"/></svg>
+            {{ _('Clear logs') }}
+          </button>
+          <a class="btn sm" href="/api/admin/perf/export?hours={{ hours }}&format=jsonl">
+            <svg class="ico ico-12"><use href="#ic-download"/></svg>
+            JSONL
+          </a>
+          <a class="btn sm" href="/api/admin/perf/export?hours={{ hours }}&format=csv">
+            <svg class="ico ico-12"><use href="#ic-download"/></svg>
+            CSV
+          </a>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="label">{{ _('Requests') }} · {{ hours }}h</div>
+          <div class="value tabular">{{ summary.total }}</div>
+          <div class="delta">{{ _('{n} routes', n=summary.routes | length) }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">{{ _('Dashboards page') }} · p95</div>
+          <div class="value tabular">{{ (cards.index.p95 ~ ' ms') if cards.index else '—' }}</div>
+          <div class="delta">{{ ('p50 ' ~ cards.index.p50 ~ ' ms · ' ~ cards.index.count ~ ' req') if cards.index else _('no data') }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">{{ _('Render') }} · p95</div>
+          <div class="value tabular">{{ (cards.render.p95 ~ ' ms') if cards.render else '—' }}</div>
+          <div class="delta">{{ ('p50 ' ~ cards.render.p50 ~ ' ms · ' ~ cards.render.count ~ ' req') if cards.render else _('no data') }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">{{ _h('Browser load "/" · p95') }}</div>
+          <div class="value tabular">{{ (cards.page_index.p95_load ~ ' ms') if cards.page_index else '—' }}</div>
+          <div class="delta">{{ ('ttfb p95 ' ~ cards.page_index.p95_ttfb ~ ' ms') if cards.page_index else _('no data') }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">{{ _('Fast lane') }} · {{ _('warm render') }}, µs</div>
+          <div class="value tabular">{{ (cards.fast.fast_us_p50 ~ ' µs') if cards.fast else '—' }}</div>
+          <div class="delta">{{ ('serve ' ~ cards.fast.serve_us_p50 ~ ' µs · p95 ' ~ cards.fast.fast_us_p95 ~ ' · p99 ' ~ cards.fast.fast_us_p99 ~ ' µs · ' ~ cards.fast.count ~ ' hits') if cards.fast else _('no data') }}</div>
+        </div>
+      </div>
+
+      <div class="tabbar">
+        <a class="tab" href="/admin">{{ _('Users') }}</a>
+        <a class="tab" href="/admin/audit">{{ _('Audit log') }}</a>
+        <a class="tab active" href="/admin/perf">{{ _('Performance') }}</a>
+        <a class="tab" href="/admin/errors">{{ _('Errors') }}</a>
+        <a class="tab" href="/admin/generators">{{ _('Generators') }}</a>
+        <a class="tab" href="/admin/employees">{{ _('Staff') }}</a>
+      </div>
+
+      <div class="toolbar">
+        <div class="seg">
+          {% for h, label in [(1, '1h'), (6, '6h'), (24, '24h'), (168, '7d'), (720, '30d')] %}
+          <button {% if hours == h %}class="active"{% endif %}
+                  onclick="location.href='/admin/perf?hours={{ h }}'">{{ label }}</button>
+          {% endfor %}
+        </div>
+        <div class="grow"></div>
+        {% if not perf_enabled %}
+        <span class="badge draft">{{ _('perf logging disabled') }} (OP_PERF_ENABLED=false)</span>
+        {% elif not telemetry_on %}
+        <span class="badge draft">{{ _('telemetry paused — records not collected') }}</span>
+        {% elif perf_adaptive %}
+        {# The probability floats, so the counts above are either exact or
+           reweighted estimates — the operator has to be able to tell which. #}
+        <span class="badge{% if effective_sample >= 1.0 %} ok{% endif %}{{ _('" title="Adaptive sampler: writes share') }} {{ effective_sample }} {{ _('requests, target') }} {{ perf_target_rps }} {{ _('records/s.') }}{% if effective_sample >= 1.0 %} {{ _('Currently at ceiling — all requests logged, counters precise.') }}{% else %} {{ _('Table counters are estimates weighted by 1/sample.') }}{% endif %}">
+          {{ _('sample') }} {{ effective_sample }}{% if effective_sample >= 1.0 %} {{ _('(all queries)') }}{% else %} {{ _('→ estimates') }}{% endif %}
+        </span>
+        {% else %}
+        <span class="badge draft" title="{{ _('Adaptive sampler disabled (OP_PERF_ADAPTIVE=false) — fixed probability') }}">
+          {{ _('sample') }} {{ effective_sample }} {{ _('(fixed)') }}
+        </span>
+        {% endif %}
+      </div>
+
+      {% if summary.routes %}
+      <div class="dash-table-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th style="width:70px">{{ _('Method') }}</th>
+              <th>{{ _('Route') }}</th>
+              <th class="numeric" style="width:80px">{{ _('Count') }}</th>
+              <th class="numeric" style="width:90px" title="{{ _('time to headers — server without network') }}">srv p50</th>
+              <th class="numeric" style="width:90px" title="{{ _('time to headers — server without network') }}">srv p95</th>
+              <th class="numeric" style="width:90px" title="{{ _('tail — what users perceive as \'slow\'') }}">srv p99</th>
+              <th class="numeric" style="width:90px">p50 ms</th>
+              <th class="numeric" style="width:90px">p95 ms</th>
+              <th class="numeric" style="width:90px">p99 ms</th>
+              <th class="numeric" style="width:90px">max ms</th>
+              <th class="numeric" style="width:90px">db ms</th>
+              <th class="numeric" style="width:70px">db q</th>
+              <th class="numeric" style="width:60px">5xx</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in summary.routes %}
+            <tr>
+              <td class="mono">{{ r.method }}</td>
+              <td class="mono">{{ r.route }}</td>
+              <td class="mono numeric" {% if r.n_raw and r.n_raw < r.count %}title="{{ _('estimate from {n} records (adaptive sampling)', n=r.n_raw) }}"{% endif %}>{{ r.count }}{% if r.n_raw and r.n_raw < r.count %}&nbsp;<span class="muted">({{ r.n_raw }})</span>{% endif %}</td>
+              <td class="mono numeric"><strong>{{ r.hdr_p50 if r.hdr_p50 is not none else '—' }}</strong></td>
+              <td class="mono numeric">{{ r.hdr_p95 if r.hdr_p95 is not none else '—' }}</td>
+              <td class="mono numeric">{{ r.hdr_p99 if r.hdr_p99 is not none else '—' }}</td>
+              <td class="mono numeric">{{ r.p50 }}</td>
+              <td class="mono numeric"><strong>{{ r.p95 }}</strong></td>
+              <td class="mono numeric muted">{{ r.p99 }}</td>
+              <td class="mono numeric muted">{{ r.max }}</td>
+              <td class="mono numeric">{{ r.avg_db_ms }}</td>
+              <td class="mono numeric">{{ r.avg_db_n }}</td>
+              <td class="mono numeric {% if not r.errors %}muted{% endif %}"
+                  {% if r.errors %}style="color:var(--danger)"{% endif %}>{{ r.errors or '—' }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      {% if summary.pages %}
+      <h2 class="page-title" style="font-size:14px;margin:24px 0 8px">{{ _('Browser timings (per page)') }}</h2>
+      <div class="dash-table-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>{{ _('Page') }}</th>
+              <th class="numeric" style="width:80px">{{ _('Loads') }}</th>
+              <th class="numeric" style="width:110px">load p50 ms</th>
+              <th class="numeric" style="width:110px">load p95 ms</th>
+              <th class="numeric" style="width:110px">ttfb p50 ms</th>
+              <th class="numeric" style="width:110px">ttfb p95 ms</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in summary.pages %}
+            <tr>
+              <td class="mono">{{ p.page }}</td>
+              <td class="mono numeric">{{ p.count }}</td>
+              <td class="mono numeric">{{ p.p50_load }}</td>
+              <td class="mono numeric"><strong>{{ p.p95_load }}</strong></td>
+              <td class="mono numeric">{{ p.p50_ttfb }}</td>
+              <td class="mono numeric">{{ p.p95_ttfb }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+
+      <h2 class="page-title" style="font-size:14px;margin:24px 0 8px">{{ _('Slowest requests') }}</h2>
+      <div class="dash-table-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th style="width:150px">{{ _('Time (UTC)') }}</th>
+              <th style="width:70px">{{ _('Method') }}</th>
+              <th>{{ _('Path') }}</th>
+              <th class="numeric" style="width:70px">{{ _('Status') }}</th>
+              <th class="numeric" style="width:90px">dur ms</th>
+              <th class="numeric" style="width:90px">db ms</th>
+              <th class="numeric" style="width:60px">db q</th>
+              <th>{{ _('Stages') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in summary.slowest %}
+            <tr>
+              <td class="mono muted">{{ r.ts }}</td>
+              <td class="mono">{{ r.method }}</td>
+              <td class="mono">{{ r.path }}</td>
+              <td class="mono numeric">{{ r.status }}</td>
+              <td class="mono numeric"><strong>{{ r.dur_ms }}</strong></td>
+              <td class="mono numeric">{{ r.db_ms }}</td>
+              <td class="mono numeric">{{ r.db_n }}</td>
+              <td class="mono" style="font-size:11px;color:var(--ink-dim)">
+                {{ r.stages | tojson if r.stages else '—' }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="dash-table-wrap">
+        <div class="empty">
+          <div class="ascii">[ {{ _('no perf records in selected range') }} ]</div>
+          <p>{{ _('Browse the app for a bit — server and client timings land in {path}.', path='data/perflog/') }}</p>
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </main>
+</div>
+
+{% include "components/palette.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/palette.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/hotkeys.js?v={{ asset_v }}" defer></script>
+<script defer>
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('btn-telemetry')?.addEventListener('click', async () => {
+    const res = await fetch('/api/admin/perf/toggle', { method: 'POST' });
+    if (res.ok) location.reload();
+    else alert('Toggle failed');
+  });
+  document.getElementById('btn-clear-logs')?.addEventListener('click', async () => {
+    if (!confirm(t('Delete all accumulated perf logs? Export what you need before clearing.'))) return;
+    const res = await fetch('/api/admin/perf/logs', { method: 'DELETE' });
+    if (res.ok) {
+      const r = await res.json();
+      alert(t('Deleted files: {p1}, freed {p2} MB', {p1: r.deleted, p2: r.freed_mb}));
+      location.reload();
+    } else alert('Clear failed');
+  });
+});
+</script>
+{% endblock %}

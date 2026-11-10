@@ -1,0 +1,981 @@
+{% extends "base.html" %}
+{% import "partials/schema_diff.html" as sd %}
+{% block title %}{{ dashboard.title }} — OnePage{% endblock %}
+
+{% block head %}
+<style>
+  body { overflow: hidden; }
+  .dash-iframe { border: none; width: 100%; min-height: 80vh; display: block; border-radius: 6px; box-shadow: 0 0 0 1px var(--border) inset, 0 20px 40px -20px rgba(0,0,0,.18); background: var(--surface-1); }
+  .v-main-iframe-wrap { width: 100%; }
+
+  /* drop overlay for slot replace */
+  #drop-overlay {
+    display: none; position: fixed;
+    top: var(--topbar-h); left: 0; right: var(--dock-w); bottom: 0;
+    z-index: 50;
+    align-items: center; justify-content: center; flex-direction: column; gap: 12px;
+    border: 3px dashed transparent;
+    color: var(--accent); font-size: 18px; font-weight: 600;
+    pointer-events: none;
+  }
+  #drop-overlay.visible {
+    display: flex; pointer-events: all;
+    border-color: var(--border);
+    background: rgba(0,0,0,.3);
+    color: var(--ink-dim); font-size: 14px;
+  }
+  #drop-overlay.active {
+    border-color: var(--accent);
+    background: color-mix(in oklab, var(--accent) 14%, transparent);
+    color: var(--accent); font-size: 18px;
+  }
+
+  /* loading overlay */
+  #load-overlay {
+    display: none; position: fixed;
+    top: var(--topbar-h); left: 0; right: var(--dock-w); bottom: 0;
+    z-index: 40;
+    align-items: center; justify-content: center;
+    flex-direction: column; gap: 14px;
+    background: color-mix(in oklab, var(--bg-base) 80%, transparent);
+    color: var(--ink-muted); font-family: var(--font-mono); font-size: 12px;
+  }
+  #load-overlay.active { display: flex; }
+  .load-spinner {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    animation: op-spin .8s linear infinite;
+  }
+  @keyframes op-spin { to { transform: rotate(360deg); } }
+
+  /* Present dropdown */
+  .present-wrap { position: relative; }
+  .present-menu {
+    position: absolute; top: calc(100% + 6px); right: 0; z-index: 300;
+    min-width: 188px; padding: 6px;
+    background: var(--surface-3); border: 1px solid var(--border);
+    border-radius: 10px; box-shadow: 0 14px 36px -10px rgba(0,0,0,.45);
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .present-menu[hidden] { display: none; }
+  .present-item {
+    display: flex; align-items: center; gap: 11px;
+    padding: 8px 10px; border: none; background: none;
+    color: var(--ink); font-size: 13px; text-align: left;
+    border-radius: 7px; cursor: pointer; width: 100%; font-family: inherit;
+  }
+  .present-item:hover { background: var(--surface-2); }
+  .present-item .ico { color: var(--ink-dim); width: 15px; height: 15px; flex: none; }
+
+  /* Present mode — hide all chrome, iframe fills the viewport */
+  body.op-present .sidebar,
+  body.op-present .topbar,
+  body.op-present .v-bar,
+  body.op-present .v-dock,
+  /* The chat pane deliberately SURVIVES present mode (owner 2026-08-23):
+     questions get asked mid-show. The .viewer grid is gone here (display:
+     block), so the pane pins itself to the right edge and the report's fixed
+     layer stops where the pane starts — mid-show it still pushes, never
+     covers. */
+  body.op-present .shell,
+  body.op-present .main,
+  body.op-present .viewer { display: block; height: 100vh; overflow: visible; }
+  body.op-present .v-main {
+    position: fixed; inset: 0; padding: 0; overflow: auto;
+    background: var(--surface-1); z-index: 200;
+  }
+  body.op-present .v-main-iframe-wrap { height: 100%; }
+  body.op-present .dash-iframe { border-radius: 0; box-shadow: none; min-height: 100vh; }
+  body.op-present .v-chat {
+    position: fixed; top: 0; right: 0; bottom: 0; z-index: 210;
+    width: min(var(--chat-w, 440px), 100vw);
+    border-left: 1px solid var(--border-soft);
+  }
+  body.op-present #viewer-root[data-chat="open"] .v-main { right: var(--chat-w, 440px); }
+  body.op-pres .v-chat { top: 36px; }
+
+  #present-exit {
+    display: none; position: fixed; top: 14px; right: 14px; z-index: 320;
+    box-shadow: 0 4px 14px -4px rgba(0,0,0,.4);
+  }
+  body.op-present #present-exit { display: inline-flex; }
+
+  /* ── Presentation show mode (`/d/{id}?pres=…&i=…`) ──────────────────
+     The presenter bar IS the chrome here, so op-pres composes ON TOP of
+     op-present rather than repeating it: op-present already hides sidebar,
+     topbar, v-bar and dock, and op-pres only adds the 36 px bar, the space
+     it occupies, and the removal of present mode's own Exit button (the bar
+     carries "Esc · exit" instead). Both classes are set together. */
+  #pres-bar {
+    display: none; position: fixed; top: 0; left: 0; right: 0; height: 36px;
+    z-index: 400; align-items: center; gap: 12px; padding: 0 12px;
+    background: #14161a; color: #e8eaed; font-size: 12px;
+    box-shadow: 0 1px 0 rgba(255,255,255,.06);
+  }
+  body.op-pres #pres-bar { display: flex; }
+  body.op-pres #present-exit { display: none !important; }
+  body.op-pres .v-main { top: 36px; }
+  .pres-kicker {
+    flex: none; font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: .12em; text-transform: uppercase; color: #8b929c;
+  }
+  .pres-title { font-weight: 600; max-width: 26vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pres-dots { display: flex; gap: 5px; flex: none; }
+  .pres-dot { width: 6px; height: 6px; border-radius: 50%; background: #3a3f47; }
+  .pres-dot.on { background: #e8eaed; }
+  .pres-count { font-family: var(--font-mono); color: #8b929c; flex: none; }
+  .pres-fresh { font-family: var(--font-mono); font-size: 11px; color: #8b929c; }
+  .pres-fresh.stale { color: #f0a35e; }
+  .pres-nav { margin-left: auto; display: flex; align-items: center; gap: 8px; flex: none; }
+  .pres-btn {
+    display: inline-flex; align-items: center; padding: 4px 10px;
+    border: 1px solid #3a3f47; border-radius: 6px;
+    color: #e8eaed; text-decoration: none; font-size: 12px; white-space: nowrap;
+  }
+  .pres-btn:hover { background: #23272e; }
+  button.pres-btn { font: inherit; cursor: pointer; border: 0; }
+  body.op-pres:fullscreen #pres-full { display: none; }
+  .pres-btn.is-off { opacity: .3; pointer-events: none; }
+
+  /* Annotate panel */
+  .annot-card { border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: var(--surface-2); }
+  .annot-card-head { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+  .annot-num { flex: none; width: 18px; height: 18px; border-radius: 9px; background: var(--accent); color: #fff; font: 700 11px/18px var(--font-mono); text-align: center; }
+  .annot-sel { flex: 1; font-size: 10px; color: var(--ink-dim); font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .annot-note { width: 100%; resize: vertical; min-height: 38px; }
+  .annot-thumb { display: block; max-width: 100%; margin-top: 6px; border: 1px solid var(--border); border-radius: 4px; }
+  .annot-shot-actions { display: flex; gap: 6px; margin-top: 4px; }
+  .annot-shot-pending { font-size: 10px; color: var(--ink-dim); font-family: var(--font-mono); margin-top: 4px; }
+
+  /* Colors panel */
+  .dock-hint { font-size: 11px; color: var(--ink-dim); font-family: var(--font-mono); line-height: 1.5; margin-bottom: 8px; }
+  .dock-hint.warn { display: flex; gap: 6px; align-items: flex-start; }
+  .dock-hint.warn .ico { flex: none; margin-top: 1px; }
+  .theme-presets { display: flex; flex-wrap: wrap; gap: 6px; }
+  .theme-rows { display: flex; flex-direction: column; gap: 4px; }
+  .theme-row { display: flex; align-items: center; gap: 8px; }
+  .theme-chip { flex: none; width: 16px; height: 16px; border-radius: 4px; border: 1px solid var(--border); }
+  .theme-pick { flex: none; width: 30px; height: 24px; padding: 0; border: 1px solid var(--border); border-radius: 4px; background: none; cursor: pointer; }
+  .theme-pick::-webkit-color-swatch-wrapper { padding: 2px; }
+  .theme-pick::-webkit-color-swatch { border: none; border-radius: 2px; }
+  .theme-name { flex: 1; font-size: 10px; color: var(--ink-dim); font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .theme-count { font-size: 10px; color: var(--ink-dim); font-family: var(--font-mono); }
+  .theme-row.changed .theme-name { color: var(--accent); }
+  .theme-reset { flex: none; border: none; background: none; color: var(--ink-dim); cursor: pointer; padding: 2px; line-height: 0; visibility: hidden; }
+  .theme-row.changed .theme-reset { visibility: visible; }
+  .theme-row.hit { background: color-mix(in oklab, var(--accent) 18%, transparent); border-radius: 4px; box-shadow: 0 0 0 1px var(--accent) inset; }
+  #btn-theme-pick.active { color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+
+  /* Text panel */
+  #btn-text-edit.active { color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+  .text-diff { font-size: 11px; line-height: 1.5; word-break: break-word; }
+  .text-old { color: var(--ink-dim); text-decoration: line-through; opacity: .7; }
+  .text-new { color: var(--ink); }
+
+  /* Declared-vs-observed schema diff (partials/schema_diff.html), also used
+     in the /data-sources drawer — kept visually identical there so the same
+     data reads the same way in both places. */
+  .sd-diff { display: flex; flex-direction: column; gap: 6px; font-size: 11px; }
+  .sd-note { color: var(--ink-dim); line-height: 1.5; }
+  .sd-patterns { display: flex; flex-direction: column; gap: 5px; }
+  .sd-pattern { padding: 5px 8px; background: var(--surface-2); border-radius: var(--r-3, 4px); }
+  .sd-pattern-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .sd-pattern-head code { color: var(--ink); }
+  .sd-role { color: var(--ink-dim); }
+  .sd-count { color: var(--ink-dim); margin-left: auto; }
+  .sd-badge {
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: .03em;
+    padding: 1px 5px; border-radius: 3px; text-transform: uppercase;
+  }
+  .sd-badge.sd-err { color: var(--danger); background: color-mix(in oklab, var(--danger) 16%, transparent); }
+  .sd-badge.sd-warn { color: var(--warning); background: color-mix(in oklab, var(--warning) 16%, transparent); }
+  .sd-badge.sd-info { color: var(--accent); background: color-mix(in oklab, var(--accent) 14%, transparent); }
+  .sd-sheet { margin-top: 4px; color: var(--ink-dim); }
+  .sd-chiprow { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 2px; }
+  .sd-chip { padding: 1px 6px; border-radius: 8px; font-size: 10px; }
+  .sd-chip-missing { color: var(--warning); background: color-mix(in oklab, var(--warning) 14%, transparent); }
+  .sd-chip-extra { color: var(--ink-dim); background: var(--surface-2); box-shadow: 0 0 0 1px var(--border-subtle) inset; }
+  .sd-info-line { color: var(--ink-dim); line-height: 1.5; }
+  .sd-asof { color: var(--ink-faint, var(--ink-dim)); opacity: .8; }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'dashboards' %}
+  {% include "components/sidebar.html" %}
+
+  {# The navigator is not in the report list — leading "back" there would be a lie. #}
+  {% if dashboard.dash_type == 'page' %}
+  {% set crumbs = [['Workspace', '/', false], [_('Navigators'), '/navigators', false], [dashboard.title, None, true]] %}
+  {% else %}
+  {% set crumbs = [['Workspace', '/', false], ['Dashboards', '/', false], [dashboard.title, None, true]] %}
+  {% endif %}
+  {% include "components/topbar.html" %}
+
+  <main class="main" style="overflow:hidden">
+    <div class="viewer" data-dock="open" id="viewer-root">
+
+      {% if pres_ctx %}
+      <!-- Presenter bar — show mode only. Plain <a> links, so ← / → work with
+           JS off; the keyboard shortcuts in viewer.js just click these. -->
+      <div id="pres-bar">
+        <span class="pres-kicker">{{ _('Presentation') }}</span>
+        <span class="pres-title">{{ pres_ctx.title }}</span>
+        {% if pres_ctx.n <= 40 %}
+        <span class="pres-dots" aria-hidden="true">
+          {%- for k in range(pres_ctx.n) -%}
+          <span class="pres-dot{% if k == pres_ctx.i %} on{% endif %}"></span>
+          {%- endfor -%}
+        </span>
+        {% endif %}
+        <span class="pres-count">{{ pres_ctx.i + 1 }} / {{ pres_ctx.n }}</span>
+        {% if pres_ctx.freshness %}
+        <span class="pres-fresh{% if pres_ctx.freshness.stale %} stale{% endif %}">
+          {%- if pres_ctx.freshness.pub_dm %}{{ _('publication') }} {{ pres_ctx.freshness.pub_dm }}{% endif -%}
+          {%- if pres_ctx.freshness.data_dm %} {{ _('· data as of') }} {{ pres_ctx.freshness.data_dm }}{% endif -%}
+          {%- if pres_ctx.freshness.stale %} {{ _('· outdated') }}{% endif -%}
+        </span>
+        {% endif %}
+        <span class="pres-nav">
+          <a class="pres-btn{% if not pres_ctx.prev_url %} is-off{% endif %}" id="pres-prev"
+             href="{{ pres_ctx.prev_url or '#' }}">{{ _('← Back') }}</a>
+          <a class="pres-btn{% if not pres_ctx.next_url %} is-off{% endif %}" id="pres-next"
+             href="{{ pres_ctx.next_url or '#' }}">{{ _('Next →') }}</a>
+          <button type="button" class="pres-btn" id="pres-full" title="{{ _('Full screen (F)') }}"><svg class="ico ico-12"><use href="#ic-fullscreen"/></svg> {{ _('Full screen') }}</button>
+          <a class="pres-btn" id="pres-exit" href="{{ pres_ctx.builder_url }}">{{ _('Esc · exit') }}</a>
+        </span>
+      </div>
+      <script>document.body.classList.add('op-present', 'op-pres');</script>
+      {% endif %}
+
+      {# A navigator opens as the PAGE ONLY (owner, 2026-11-05): its readers
+         need the page itself; the sidebar, the header and the dock are noise.
+         It is the same present mode as the Present button, just switched on
+         before first paint; the "Settings" button over the page expands
+         everything, "Page only" in the toolbar collapses it back. `?full=1`
+         opens it expanded — for links from one's own list and for editing. #}
+      {% if dashboard.dash_type == 'page' and not pres_ctx %}
+      <script>
+        if (new URLSearchParams(location.search).get('full') !== '1') {
+          document.body.classList.add('op-present', 'op-page-only');
+        }
+      </script>
+      {% endif %}
+
+      <!-- Viewer bar -->
+      <div class="v-bar">
+        <a class="back btn icon sm ghost" href="/" title="Back to dashboards">
+          <svg class="ico"><use href="#ic-arrow-left"/></svg>
+        </a>
+        <div style="display:flex;flex-direction:column;line-height:1.15">
+          <span class="v-title">{{ dashboard.title }}</span>
+          <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.04em">
+            /d/{{ dashboard.id }} · owner {{ dashboard.owner.person_id if dashboard.owner else '—' }}
+          </span>
+        </div>
+        <div class="v-meta-pills">
+          <span class="badge type-{{ dashboard.dash_type }}">{{ dashboard.dash_type }}</span>
+          {% if not dashboard.is_published %}<span class="badge draft">draft</span>{% endif %}
+          {% if dashboard.is_public %}<span class="badge">public</span>{% endif %}
+          {# ADR-18: the viewer must KNOW that the figures in front of them are only theirs,
+             otherwise "my report shows a different number" becomes a dispute about the data. #}
+          {% if rls_scoped is defined and rls_scoped %}
+          <span class="badge" title="{{ _('Report shows only your scopes') }}">{{ _('Scope access') }}</span>
+          {% elif rls_enabled is defined and rls_enabled %}
+          <span class="badge" title="{{ _('Report is filtered by scopes; you see it in full') }}">{{ _('RLS · full access') }}</span>
+          {% endif %}
+          {% if confidential is defined and confidential %}
+          <span class="badge warning" title="{{ _('Opens with a password; outbound links, single-file export, the desktop copy and the chat are switched off') }}">{{ _('Highly confidential') }}</span>
+          {% endif %}
+        </div>
+        <div class="v-actions">
+          <span class="file-status mono" id="file-status" style="font-size:11px;color:var(--ink-dim)"></span>
+          {% if dashboard.dash_type == 'page' %}
+          <button class="btn sm" id="btn-page-only" title="{{ _('Collapse the panels and keep only the page') }}">
+            <svg class="ico ico-12"><use href="#ic-expand"/></svg>
+            {{ _('Page only') }}
+          </button>
+          {% endif %}
+          <div class="present-wrap">
+            <button class="btn sm" id="btn-present" aria-haspopup="true" aria-expanded="false">
+              Present
+              <svg class="ico ico-12"><use href="#ic-chevron-down"/></svg>
+            </button>
+            <div class="present-menu" id="present-menu" role="menu" hidden>
+              <button class="present-item" data-present="tab" role="menuitem">
+                <svg class="ico"><use href="#ic-expand"/></svg> In this tab
+              </button>
+              <button class="present-item" data-present="fullscreen" role="menuitem">
+                <svg class="ico"><use href="#ic-play"/></svg> Fullscreen
+              </button>
+              <button class="present-item" data-present="newtab" role="menuitem">
+                <svg class="ico"><use href="#ic-globe"/></svg> New tab
+              </button>
+            </div>
+          </div>
+          {% if can_manage %}
+          <button class="btn sm" id="btn-annotate" title="Mark elements and build an AI prompt">
+            <svg class="ico ico-12"><use href="#ic-scan"/></svg>
+            Annotate
+          </button>
+          {% endif %}
+          {% if not (rls_scoped is defined and rls_scoped) and not (confidential is defined and confidential) %}
+          <button class="btn sm" id="btn-share-link">
+            <svg class="ico ico-12"><use href="#ic-link"/></svg>
+            Copy link
+          </button>
+          {% endif %}
+          {% if can_manage %}
+          <button id="dock-toggle" class="btn icon sm ghost" title="Toggle dock  ]">
+            <svg class="ico"><use href="#ic-panel"/></svg>
+          </button>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Iframe -->
+      <div class="v-main">
+        {% if dashboard.dash_type == 'page' %}
+        <button id="present-exit" class="btn sm" title="{{ _('Show the platform panels (Esc)') }}">
+          <svg class="ico ico-12"><use href="#ic-settings"/></svg>
+          {{ _('Settings') }}
+        </button>
+        {% else %}
+        <button id="present-exit" class="btn sm" title="Exit present mode (Esc)">
+          <svg class="ico ico-12"><use href="#ic-x"/></svg>
+          Exit
+        </button>
+        {% endif %}
+        <div class="v-main-iframe-wrap">
+          {# The navigator's answer for a link the browser cannot open
+             (network folder) or was not allowed to open (popup blocker). Staying
+             silent is not an option: the person clicked and must learn what happened. #}
+          <div id="page-open-note" class="page-open-note" hidden></div>
+          <iframe id="dash-frame"
+                  class="dash-iframe"
+                  src="/render/{{ dashboard.id }}/"
+                  sandbox="allow-scripts allow-forms allow-downloads allow-popups allow-modals"
+                  title="{{ dashboard.title }}"></iframe>
+        </div>
+      </div>
+
+      {% if can_discuss %}
+      {# "Chat about the report" is a COLUMN of the .viewer grid: it pushes the report
+         aside instead of covering it (owner 2026-09-06 — the floating widget
+         hid the numbers it was asked about). Below 760px the same markup
+         becomes a full-width overlay and the grip disappears (main.css).
+         The chat itself is /explore in a same-origin iframe — same IndexedDB,
+         so literally the same thread. The iframe does not exist until the
+         report has painted; closing HIDES it (the built index survives), the
+         worker unloads only after 10 quiet minutes. #}
+      <aside class="v-chat" id="discuss-pane" aria-label="{{ _('Report chat') }}" hidden>
+        <div class="v-chat-grip" id="discuss-grip" role="separator" aria-orientation="vertical"
+             title="{{ _('Drag to resize (double-click to reset)') }}"></div>
+        <header class="v-chat-head">
+          <span class="v-chat-name">{{ _('Report chat') }}</span>
+          <span class="v-chat-sp"></span>
+          <button type="button" id="discuss-wide" class="v-chat-ib" aria-pressed="false"
+                  title="{{ _('Wider / narrower') }}" aria-label="{{ _('Wider / narrower') }}">
+            <svg class="ico ico-12"><use href="#ic-expand"/></svg>
+          </button>
+          {# The close button is deliberately big and labelled: the owner could
+             not find the way out of the floating widget. #}
+          <button type="button" id="discuss-close" class="v-chat-x"
+                  title="{{ _('Close (Esc)') }}">
+            <svg class="ico ico-12"><use href="#ic-x"/></svg>
+            <span>{{ _('Close') }}</span>
+          </button>
+        </header>
+        <div class="v-chat-body" id="discuss-body"></div>
+      </aside>
+      <button type="button" id="discuss-fab" class="v-chat-fab"
+              title="{{ _('Chat about this report') }}" aria-controls="discuss-pane" aria-expanded="false">
+        <svg class="ico ico-16 fab-open"><use href="#ic-send"/></svg>
+        <svg class="ico ico-16 fab-close"><use href="#ic-x"/></svg>
+        <span id="discuss-count" class="v-chat-count" hidden>0</span>
+      </button>
+      {% endif %}
+
+      <!-- Right dock -->
+      {# The dock is the report's workbench: owner, administrator and — owner
+         decision 2026-09-04 — any colleague with «can update data» get it in
+         full; only the Danger zone (delete) stays with the owner/admin. #}
+      {% if can_manage %}
+      <aside class="v-dock">
+        <div class="dock-tabs" role="tablist">
+          {% if can_manage %}
+          <button class="dock-tab active" data-tab="settings">Settings</button>
+          {% if permissions is defined %}
+          <button class="dock-tab" data-tab="access">Access <span class="count">{{ permissions | length }}</span></button>
+          {% else %}
+          <button class="dock-tab" data-tab="access">Access</button>
+          {% endif %}
+          {% endif %}
+          {% if dashboard.dash_type == 'interactive' or dashboard.dash_type == 'snapshot' or dashboard.generator_id %}
+          <button class="dock-tab" data-tab="data">Data</button>
+          {% endif %}
+          {% if can_manage %}
+          <button class="dock-tab" data-tab="versions">Versions <span class="count">{{ dashboard.current_version }}</span></button>
+          {% endif %}
+          {% if not (rls_scoped is defined and rls_scoped) and not (confidential is defined and confidential) %}
+          <button class="dock-tab" data-tab="share">Share</button>
+          {% endif %}
+          {% if can_manage %}
+          <button class="dock-tab" data-tab="annotate">Annotate</button>
+          <button class="dock-tab" data-tab="colors">Colors</button>
+          <button class="dock-tab" data-tab="text">Text</button>
+          {% endif %}
+        </div>
+
+        <!-- Settings panel -->
+        {% if can_manage %}
+        <div class="dock-panel active" data-tab="settings">
+          <form id="form-meta" class="dock-section">
+            <div class="dock-section-title">Dashboard</div>
+            <div class="field">
+              <label class="field-label">Title</label>
+              <input class="input sm" name="title" value="{{ dashboard.title }}" />
+            </div>
+            <div class="field">
+              <label class="field-label">Description</label>
+              <input class="input sm" name="description" value="{{ dashboard.description or '' }}" />
+            </div>
+            <div class="field">
+              <label class="field-label">Type</label>
+              <div style="display:flex;gap:8px;align-items:center">
+                <span class="badge type-{{ dashboard.dash_type }}">{{ dashboard.dash_type }}</span>
+                {% if dashboard.dash_type == 'interactive' and dashboard.slot_count %}
+                <span class="mono" style="font-size:11px;color:var(--ink-dim)">{{ dashboard.slot_count }} slot{{ 's' if dashboard.slot_count != 1 else '' }} detected</span>
+                {% endif %}
+              </div>
+            </div>
+            <button type="submit" class="btn sm primary" style="align-self:flex-start">Save changes</button>
+          </form>
+
+          <div class="dock-section">
+            <div class="dock-section-title">Visibility</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0">
+              <div>
+                <div style="font-size:13px;color:var(--ink)">Published</div>
+                <div style="font-size:11px;color:var(--ink-dim);font-family:var(--font-mono)">Visible to permitted viewers</div>
+              </div>
+              <button class="toggle" id="toggle-published"
+                      aria-checked="{{ 'true' if dashboard.is_published else 'false' }}"></button>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0">
+              <div>
+                <div style="font-size:13px;color:var(--ink)">Open to all users</div>
+                <div style="font-size:11px;color:var(--ink-dim);font-family:var(--font-mono)">Any authenticated user can view</div>
+              </div>
+              <button class="toggle" id="toggle-public"
+                      aria-checked="{{ 'true' if dashboard.is_public else 'false' }}"></button>
+            </div>
+          </div>
+
+          {% if is_owner %}
+          {# "Strictly confidential" — with the OWNER, next to the danger zone, not
+             with whoever refreshes the data: removing the lock is a decision of the same
+             order as deleting the report. This password field is the only place
+             where it is entered; the current password cannot be shown (only a hash is
+             stored) — so a second visit can only change it. #}
+          <div class="dock-section" id="conf-box" data-on="{{ 'true' if confidential is defined and confidential else 'false' }}">
+            <div class="dock-section-title">{{ _('Highly confidential') }}</div>
+            <div style="font-size:11px;color:var(--ink-dim);margin-bottom:8px;line-height:1.5">
+              {{ _('The report asks for a password on top of its access list. While the mode is on, these are switched off: outbound links, single-file export, the desktop copy, the source download and the report\'s chat. A screenshot is not covered by any of this — tell people so.') }}
+            </div>
+            <div id="conf-state" class="mono" style="font-size:11px;margin-bottom:8px;color:var(--ink-dim)">
+              {% if confidential is defined and confidential %}{{ _('The mode is on.') }}{% else %}{{ _('The mode is off.') }}{% endif %}
+            </div>
+            <input type="password" id="conf-new" class="input sm" autocomplete="new-password"
+                   placeholder="{{ _('Password, at least 8 characters') }}" style="width:100%;margin-bottom:8px" />
+            <button type="button" class="btn sm primary" id="btn-conf-set" style="width:100%;margin-bottom:8px">
+              {% if confidential is defined and confidential %}{{ _('Change the password') }}{% else %}{{ _('Turn on and set a password') }}{% endif %}
+            </button>
+            {% if confidential is defined and confidential %}
+            <button type="button" class="btn sm ghost" id="btn-conf-off" style="width:100%">
+              {{ _('Turn the mode off') }}
+            </button>
+            {% endif %}
+          </div>
+
+          <div class="dock-section">
+            <div class="dock-section-title">Danger zone</div>
+            <button id="btn-delete" class="btn sm danger" style="width:100%">
+              <svg class="ico ico-12"><use href="#ic-x"/></svg>
+              Delete dashboard…
+            </button>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Access panel -->
+        <div class="dock-panel" data-tab="access">
+          <form id="form-perm" class="dock-section">
+            <div class="dock-section-title">Grant access</div>
+            <div style="display:flex;gap:6px">
+              <div class="input-wrap" style="flex:1">
+                <svg class="ico ico-12 leading"><use href="#ic-user"/></svg>
+                <input class="input sm mono" name="person_id" placeholder="{{ _('Last name, first name or person_id…') }}" required data-user-suggest />
+              </div>
+              <button type="submit" class="btn sm primary">Add</button>
+            </div>
+            <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-muted);cursor:pointer">
+              <input type="checkbox" name="can_update_data" style="margin:0">
+              Can update data
+            </label>
+          </form>
+
+          <div class="dock-section">
+            <div class="dock-section-title" id="perm-count">Users with access</div>
+            <div id="perm-list" class="dock-section" style="gap:0">
+              {# Will be populated by viewer.js #}
+            </div>
+          </div>
+
+          <div class="dock-section">
+            <button id="btn-publish-all" class="btn sm" style="width:100%">
+              {% if dashboard.is_public %}Restrict access{% else %}Open to all users{% endif %}
+            </button>
+          </div>
+        </div>
+
+        <!-- Data panel -->
+        {% if dashboard.dash_type in ['interactive', 'snapshot'] or dashboard.generator_id %}
+        {% endif %}
+        <div class="dock-panel" data-tab="data">
+          {% if generator_ctx %}
+          <div class="dock-section">
+            <div class="dock-section-title">Generator</div>
+            <div class="mono" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--ink-dim)">
+              <span>{{ generator_ctx.name }} v{{ generator_ctx.version_number }} · {{ generator_ctx.author or '—' }} · {{ generator_ctx.created_at.strftime('%Y-%m-%d') if generator_ctx.created_at else '—' }}</span>
+              {% if generator_ctx.engine %}<span class="badge" style="text-transform:none">{{ generator_ctx.engine }}</span>{% endif %}
+            </div>
+
+            {# What this report reads. Shown to everyone who can open the Data
+               dock, because the folder handles themselves are per-user OS
+               grants that can never be shared — the names are the only thing
+               a colleague can act on. #}
+            {# P4.2 folder-change banner (static/js/folder-watch.js): mounted
+               above the declared-inputs block so it reads as "here's what
+               changed" before "here's what this report reads". Hidden by
+               default — folder-watch.js only reveals it once a saved handle,
+               a granted permission, and a diff against this browser's own
+               last-observed baseline all agree there's something to say. #}
+            <div id="folder-watch-banner" data-dashboard-id="{{ dashboard.id }}" style="margin-top:10px" hidden></div>
+
+            {% if generator_ctx.input_dirs or generator_ctx.inputs_decl or generator_ctx.aux_names %}
+            <div id="gen-inputs" style="margin-top:10px;display:flex;flex-direction:column;gap:6px">
+              {# Declared inputs (the frozen manifest's `inputs`, `required_files`
+                 folded in as sugar) against what the latest observed run actually
+                 saw — one partial, same shape the /data-sources drawer renders,
+                 so "what does this report read" answers identically everywhere. #}
+              {% if generator_ctx.input_dirs %}
+              <div class="mono" style="font-size:11px;color:var(--ink-dim)">
+                Reads folders:
+                {% for d in generator_ctx.input_dirs %}<span style="color:var(--ink)">{{ d }}</span>{% if not loop.last %}, {% endif %}{% endfor %}
+                {% if generator_ctx.observed_at %} — as of {{ generator_ctx.observed_at }}{% endif %}
+              </div>
+              {% endif %}
+              <div class="mono" style="font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint,var(--ink-dim))">Declared inputs</div>
+              {{ sd.render_diff(generator_ctx.observed_diff, generator_ctx.inputs_decl,
+                                 generator_ctx.observed_at, generator_ctx.input_dirs) }}
+              {% if generator_ctx.aux_names %}
+              <div class="mono" style="font-size:11px;color:var(--ink-dim)">
+                Analyst input:
+                {% for f in generator_ctx.aux_names %}<span style="color:var(--ink)">{{ f }}</span>{% if not loop.last %}, {% endif %}{% endfor %}
+              </div>
+              {% endif %}
+            </div>
+            {% endif %}
+
+            <div style="margin-top:10px">
+              <a href="/data-quality?generator={{ generator_ctx.name | urlencode }}" style="display:inline-flex;align-items:center;gap:6px;color:var(--accent);text-decoration:none;font-size:12px;font-weight:500">
+                Data Quality
+              </a>
+            </div>
+
+            {% set lr = generator_ctx.last_run %}
+            <div id="gen-last-run" style="margin-top:10px">
+              {% if lr %}
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                {% if lr.status == 'success' %}
+                <span class="badge success">success</span>
+                {% elif lr.status == 'error' %}
+                <span class="badge danger">error</span>
+                {% elif lr.status == 'running' %}
+                <span class="badge">running</span>
+                {% else %}
+                <span class="badge">{{ lr.status }}</span>
+                {% endif %}
+                <span class="mono" style="font-size:11px;color:var(--ink-dim)">{{ lr.started_at.strftime('%Y-%m-%d %H:%M') if lr.started_at else '—' }}</span>
+                {% if lr.duration_ms %}
+                <span class="mono" style="font-size:11px;color:var(--ink-dim)">{{ '%.1f'|format(lr.duration_ms / 1000) }} s</span>
+                {% endif %}
+              </div>
+              {% if lr.status == 'success' %}
+              <div class="mono" style="font-size:11px;color:var(--ink-dim);margin-top:4px">{% if lr.output_version_number %}published v{{ lr.output_version_number }}{% endif %}</div>
+              {% elif lr.status == 'error' and lr.error_message %}
+              <div class="mono" style="font-size:11px;color:var(--danger);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="{{ lr.error_message }}">{{ lr.error_message }}</div>
+              {% endif %}
+              {% else %}
+              <div class="dock-hint" style="margin-bottom:0">No runs yet</div>
+              {% endif %}
+            </div>
+
+            <div style="margin-top:10px">
+              <button type="button" class="btn xs ghost" id="gen-runs-toggle">Run history</button>
+              <div id="gen-runs" data-dashboard-id="{{ dashboard.id }}" data-loaded="0" style="margin-top:6px" hidden></div>
+            </div>
+
+            <div id="gen-engine-root" data-dashboard-id="{{ dashboard.id }}"
+                 data-input-dirs="{{ (generator_ctx.input_dirs if generator_ctx and generator_ctx.input_dirs else []) | tojson | forceescape }}"
+                 data-pyodide-base="{{ settings.resolved_pyodide_base }}"
+                 data-asset-v="{{ asset_v }}">
+              <!-- engine controls mount here (stage 3) -->
+            </div>
+          </div>
+          {% endif %}
+          {% if dashboard.dash_type == 'snapshot' %}
+          <div class="dock-section">
+            <div class="dock-section-title">Snapshot JSON</div>
+            <form id="form-snapshot" enctype="multipart/form-data" style="display:flex;flex-direction:column;gap:8px">
+              <input type="file" name="file" accept=".json" class="input sm" />
+              <button type="submit" class="btn sm primary">Upload JSON</button>
+            </form>
+          </div>
+          {% if not (rls_scoped is defined and rls_scoped) %}
+          <div class="dock-section">
+            <div class="dock-section-title">Data file (slot 0)</div>
+            <div style="font-size:11px;color:var(--ink-dim);margin-bottom:8px">
+              Large out-of-HTML dataset (binary / JSON), e.g. <span class="mono">sl_bc_data.bin.gz</span>.
+              Delivered to the dashboard at view time — not inlined into the snapshot.
+            </div>
+            {% set cur = slots | selectattr('slot', 'equalto', 0) | list | first | default(None) %}
+            <div class="slot-card">
+              <div class="slot-head">
+                <span>slot 0</span>
+                {% if cur %}<span class="badge success" style="text-transform:none">{{ cur.name.split('.')[-1] }}</span>{% endif %}
+                {% if cur %}
+                <button class="btn icon xs ghost slot-delete-btn" data-slot="0" title="Remove file from slot 0" style="margin-left:auto">
+                  <svg class="ico ico-12"><use href="#ic-x"/></svg>
+                </button>
+                {% endif %}
+              </div>
+              {% if cur %}
+              <div class="slot-file">{{ cur.name }}</div>
+              {% else %}
+              <div class="slot-file" style="color:var(--ink-dim)">— no file yet —</div>
+              {% endif %}
+              <input type="file" class="input sm slot-file-input" data-slot="0"
+                     accept=".bin,.gz,.br,.json,.csv,.xlsx,.xlsm,.xls" />
+            </div>
+            <button class="btn sm primary" id="btn-upload-slots">Upload data file</button>
+            <div id="slots-msg" class="mono" style="font-size:11px;color:var(--ink-dim)"></div>
+          </div>
+          {% endif %}
+          {% endif %}
+          {% if dashboard.dash_type == 'interactive' and dashboard.slot_count > 0 and not (rls_scoped is defined and rls_scoped) %}
+          <div class="dock-section">
+            <div class="dock-section-title">Data slots</div>
+            {% for i in range(dashboard.slot_count) %}
+              {% set cur = slots | selectattr('slot', 'equalto', i) | list | first | default(None) %}
+              <div class="slot-card">
+                <div class="slot-head">
+                  <span>slot {{ i }}</span>
+                  {% if cur %}<span class="badge success" style="text-transform:none">{{ cur.name.split('.')[-1] }}</span>{% endif %}
+                  {% if cur %}
+                  <button class="btn icon xs ghost slot-delete-btn" data-slot="{{ i }}" title="Remove file from slot {{ i }}" style="margin-left:auto">
+                    <svg class="ico ico-12"><use href="#ic-x"/></svg>
+                  </button>
+                  {% endif %}
+                </div>
+                {% if cur %}
+                <div class="slot-file">{{ cur.name }}</div>
+                {% else %}
+                <div class="slot-file" style="color:var(--ink-dim)">— no file yet —</div>
+                {% endif %}
+                <input type="file" class="input sm slot-file-input" data-slot="{{ i }}"
+                       accept=".xlsx,.xlsm,.xls,.csv,.json,.bin,.gz,.br" />
+              </div>
+            {% endfor %}
+            <button class="btn sm primary" id="btn-upload-slots">Upload slots</button>
+            <div id="slots-msg" class="mono" style="font-size:11px;color:var(--ink-dim)"></div>
+          </div>
+          {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Versions panel -->
+        {% if can_manage %}
+        <div class="dock-panel" data-tab="versions">
+          {# Uploading a new version lives here, not in Settings (owner,
+             13.09: "why is upload new version in settings right now"). History and
+             Restore are here too — one tab for the report's whole life cycle, while
+             Settings keeps what is about access and the title. Permissions have not
+             changed: both panels sit under the same `can_manage`. #}
+          <div class="dock-section">
+            <div class="dock-section-title">New version</div>
+            <button type="button" class="btn sm" id="btn-download-html"
+                    data-filename="{{ dashboard.slug }}-v{{ dashboard.current_version }}.html"
+                    style="width:100%;margin-bottom:8px">
+              <svg class="ico ico-12"><use href="#ic-download"/></svg>
+              Download current version (v{{ dashboard.current_version }})
+            </button>
+            {# A second button, not a replacement for the first: the source is needed to hand
+               the report to a model for editing, and data in it only gets in the way. This one
+               is for the report to open on double-click for someone without the platform:
+               the slots are embedded in the file itself. A report with row-level access
+               (ADR-18) does not have it at all — a file with unfiltered rows would
+               then live on by itself. #}
+            {% if not dashboard.rls_enabled and not (confidential is defined and confidential) %}
+            <button type="button" class="btn sm" id="btn-download-standalone"
+                    data-filename="{{ dashboard.slug }}-v{{ dashboard.current_version }}-data.html"
+                    style="width:100%;margin-bottom:8px">
+              <svg class="ico ico-12"><use href="#ic-download"/></svg>
+              {{ _('Download as one file, data included') }}
+            </button>
+            <div class="mono" style="font-size:11px;color:var(--ink-dim);margin-bottom:8px">
+              {{ _('Opens on a double click — no platform, no network.') }}
+            </div>
+            {% endif %}
+            <form id="form-replace-html" enctype="multipart/form-data" style="display:flex;flex-direction:column;gap:8px">
+              <input type="file" name="html_file" accept=".html,.htm" class="input sm" required />
+              <button type="submit" class="btn sm">Upload new version</button>
+            </form>
+          </div>
+
+          <div class="dock-section">
+            <div class="dock-section-title">
+              Version history
+              <a class="btn xs ghost" style="float:right" href="/d/{{ dashboard.id }}/provenance">{{ _('Lineage') }}</a>
+            </div>
+            <div class="version-row current">
+              <span class="v-num">v{{ dashboard.current_version }}</span>
+              <div class="v-info">
+                Current<br>
+                <span class="by">{{ dashboard.updated_at.strftime('%Y-%m-%d %H:%M') }}</span>
+              </div>
+              <span class="badge success">current</span>
+            </div>
+            {% if versions %}
+            <div style="font-size:11px;color:var(--ink-dim);font-family:var(--font-mono);margin:6px 0 4px">
+              {{ _('A restore puts the earlier version on top of the current one; the data stays today\'s.') }}
+            </div>
+            {% endif %}
+            {% for v in versions | default([]) %}
+            <div class="version-row">
+              <span class="v-num">v{{ v.number }}</span>
+              <div class="v-info">
+                {{ v.note or '—' }}<br>
+                <span class="by">{{ v.created_by }} · {{ v.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+              </div>
+              <button class="btn xs ghost" data-restore="{{ v.number }}">Restore</button>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Share panel -->
+        {% endif %}
+        {% if not (rls_scoped is defined and rls_scoped) and not (confidential is defined and confidential) %}
+        <div class="dock-panel" data-tab="share">
+          <div class="dock-section">
+            <div class="dock-section-title">Generate share link</div>
+            <div style="font-size:11px;color:var(--ink-dim);font-family:var(--font-mono);margin-bottom:4px">
+              Read-only, no auth required, time-limited.
+            </div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <select class="select sm" id="share-expires" style="width:auto">
+                <option value="1">1 day</option>
+                <option value="7" selected>7 days</option>
+                <option value="30">30 days</option>
+                <option value="">No expiry</option>
+              </select>
+              <input type="text" id="share-label" class="input sm" placeholder="Label (optional)" style="flex:1;min-width:120px"/>
+              <button class="btn sm primary" id="btn-gen-share">Generate</button>
+            </div>
+            <div id="share-result" style="display:none;margin-top:8px">
+              <div class="share-link-row">
+                <input type="text" id="share-url" class="input sm mono" readonly style="border:none;background:transparent;box-shadow:none;padding:0"/>
+                <button class="btn icon xs ghost" id="btn-copy-share-url"><svg class="ico ico-12"><use href="#ic-link"/></svg></button>
+              </div>
+            </div>
+          </div>
+          <div class="dock-section">
+            <div class="dock-section-title">Active links</div>
+            <div id="share-list" class="dock-section" style="gap:6px">
+              {# Populated by viewer.js #}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Annotate panel -->
+        {% if can_manage %}
+        <div class="dock-panel" data-tab="annotate">
+          <div class="dock-section">
+            <div class="dock-section-title">Annotate elements</div>
+            <div style="font-size:11px;color:var(--ink-dim);font-family:var(--font-mono);margin-bottom:8px;line-height:1.5">
+              Click elements on the dashboard, describe the change, then copy a ready prompt for any AI (Claude, Codex, Qwen). Nothing leaves the server.
+            </div>
+            <div id="annotate-status" class="mono" style="font-size:11px;color:var(--accent)">Open this tab and click an element</div>
+          </div>
+
+          <div class="dock-section">
+            <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-muted);cursor:pointer">
+              <input type="checkbox" id="annot-include-source" {% if rls_scoped is defined and rls_scoped %}disabled{% else %}checked{% endif %} style="margin:0">
+              Include full source <span id="annot-source-size" class="mono" style="color:var(--ink-dim);font-size:11px"></span>
+            </label>
+          </div>
+
+          <div class="dock-section">
+            <div class="dock-section-title">Screenshot (optional)</div>
+            <div style="font-size:11px;color:var(--ink-dim);font-family:var(--font-mono);margin-bottom:6px;line-height:1.5">
+              Captures the visible dashboard with the numbered markers, so the AI sees which element is which. Asks for screen-share permission once.
+            </div>
+            <button type="button" class="btn sm" id="btn-annot-shot" style="width:100%">
+              <svg class="ico ico-12"><use href="#ic-scan"/></svg>
+              Capture annotated screenshot
+            </button>
+            <div id="annot-shot-wrap"></div>
+          </div>
+
+          <div class="dock-section">
+            <div class="dock-section-title" id="annot-count">No elements yet</div>
+            <div id="annot-list" class="dock-section" style="gap:8px"></div>
+          </div>
+
+          <div class="dock-section">
+            <button class="btn sm primary" id="btn-annot-copy" style="width:100%">Copy prompt</button>
+            <button class="btn sm" id="btn-annot-clear" style="width:100%;margin-top:6px">Clear all</button>
+          </div>
+        </div>
+
+        <!-- Colors panel -->
+        <div class="dock-panel" data-tab="colors">
+          <div class="dock-section">
+            <div class="dock-section-title">Recolor this report</div>
+            <div class="dock-hint">
+              Change colours without touching the source. A saved theme recolors the published report for everyone who opens it.
+            </div>
+            <div id="theme-status" class="mono" style="font-size:11px;color:var(--ink-dim)">Open this tab to scan colours…</div>
+            <button type="button" class="btn sm" id="btn-theme-pick" style="width:100%;margin-top:8px">
+              <svg class="ico ico-12"><use href="#ic-scan"/></svg>
+              <span>Pick colour from report</span>
+            </button>
+          </div>
+
+          <div class="dock-section">
+            <div class="dock-section-title">Presets</div>
+            <div class="theme-presets" id="theme-presets">
+              <button type="button" class="btn xs" data-preset="corporate">Corporate</button>
+              <button type="button" class="btn xs" data-preset="dark">Dark</button>
+              <button type="button" class="btn xs" data-preset="light">Light</button>
+              <button type="button" class="btn xs ghost" data-preset="clear">Clear all</button>
+            </div>
+          </div>
+
+          <div class="dock-section" id="theme-vars-section" hidden>
+            <div class="dock-section-title">Theme variables</div>
+            <div id="theme-vars" class="theme-rows"></div>
+          </div>
+
+          <div class="dock-section">
+            <div class="dock-section-title" id="theme-palette-title">Palette</div>
+            <div id="theme-palette" class="theme-rows"></div>
+          </div>
+
+          <div class="dock-section">
+            <div class="dock-hint warn">
+              <svg class="ico ico-12"><use href="#ic-alert"/></svg>
+              <span>Chart.js &amp; Plotly are recoloured best-effort (plain colours only — gradients, colour scales and CDN stylesheets are skipped). For perfect chart theming, build charts from CSS variables and the <code>op:theme</code> event — see the Dev Guide.</span>
+            </div>
+          </div>
+
+          <div class="dock-section">
+            <button class="btn sm primary" id="btn-theme-save" style="width:100%">Save theme</button>
+            <button class="btn sm" id="btn-theme-download" style="width:100%;margin-top:6px"
+                    data-filename="{{ dashboard.slug }}-v{{ dashboard.current_version }}-theme.json">
+              <svg class="ico ico-12"><use href="#ic-download"/></svg>
+              Download theme.json
+            </button>
+            <button class="btn sm ghost" id="btn-theme-revert" style="width:100%;margin-top:6px">Revert unsaved changes</button>
+          </div>
+        </div>
+
+        <!-- Text panel -->
+        <div class="dock-panel" data-tab="text">
+          <div class="dock-section">
+            <div class="dock-section-title">Edit static text</div>
+            <div class="dock-hint">
+              Turn on, then click any text on the report and type to change it (Enter to confirm, Esc to cancel). Saved edits update the published report for everyone.
+            </div>
+            <button type="button" class="btn sm" id="btn-text-edit" style="width:100%;margin-top:4px">
+              <svg class="ico ico-12"><use href="#ic-scan"/></svg>
+              <span>Edit text</span>
+            </button>
+            <div id="text-status" class="mono" style="font-size:11px;color:var(--ink-dim);margin-top:8px">Turn on, then click any text</div>
+          </div>
+
+          <div class="dock-section">
+            <div class="dock-hint warn">
+              <svg class="ico ico-12"><use href="#ic-alert"/></svg>
+              <span>Only plain text (no nested tags) is editable. Text drawn on a chart or generated by JavaScript can’t be edited here.</span>
+            </div>
+          </div>
+
+          <div class="dock-section">
+            <div class="dock-section-title" id="text-count">No edits yet</div>
+            <div id="text-list" class="dock-section" style="gap:8px"></div>
+          </div>
+
+          <div class="dock-section">
+            <button class="btn sm primary" id="btn-text-save" style="width:100%">Save edits</button>
+            <button class="btn sm ghost" id="btn-text-revert" style="width:100%;margin-top:6px">Revert unsaved changes</button>
+            <button class="btn sm ghost" id="btn-text-clear" style="width:100%;margin-top:6px">Clear all</button>
+          </div>
+        </div>
+        {% endif %}
+      </aside>
+      {% endif %}
+    </div>
+  </main>
+</div>
+
+{% if dashboard.dash_type == 'interactive' and slots %}
+<div id="load-overlay" class="active">
+  <div class="load-spinner"></div>
+  <span style="color:var(--ink)">Loading data…</span>
+  <span id="load-size" style="color:var(--ink-dim);font-family:var(--font-mono)"></span>
+</div>
+{% endif %}
+
+{% if dashboard.dash_type == 'interactive' and dashboard.slot_count > 0 and can_update_data and not (rls_scoped is defined and rls_scoped) %}
+<div id="drop-overlay">
+  <span>⬇  Drop file to replace data</span>
+  <span class="mono" style="font-size:12px;color:var(--ink-muted)">slot 0 → /api/dashboards/{{ dashboard.id }}/files/0</span>
+</div>
+{% endif %}
+
+{% include "components/palette.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const DASHBOARD_ID = {{ dashboard.id | tojson }};
+  const CAN_UPDATE_DATA = {{ 'true' if can_update_data else 'false' }};
+  const CAN_MANAGE = {{ 'true' if can_manage else 'false' }};
+  const SLOTS = {{ slots_json | safe }};
+  let IS_PUBLIC = {{ 'true' if dashboard.is_public else 'false' }};
+</script>
+<script src="/static/js/palette.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/hotkeys.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/page-links.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/viewer.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/user-suggest.js?v={{ asset_v }}" defer></script>
+{% if pres_ctx %}<script src="/static/js/presentations.js?v={{ asset_v }}" defer></script>{% endif %}
+{% if generator_ctx %}<script src="/static/js/gen-engine.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/folder-watch.js?v={{ asset_v }}" defer></script>{% endif %}
+{% endblock %}

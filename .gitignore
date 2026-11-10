@@ -1,0 +1,80 @@
+# Environment & secrets
+.env
+.env.local
+
+# Database & uploads (Docker volumes, do not keep in git)
+data/onepage.db
+data/onepage.db-wal
+data/onepage.db-shm
+data/onepage.db.migrate.lock
+data/uploads/
+
+# Build stamp written by deploy/make-bundle.sh and deploy/make-patch.sh —
+# generated at package time, never committed (see app/config.py build_sha).
+app/BUILD
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# Archives
+*.tar.gz
+*.zip
+
+# Local artifacts not part of the app
+onepage/
+startup/
+data/perflog/
+
+# Perf-log exports: contain user uids and IPs
+perf-*.jsonl
+static/pyodide/
+.claude/worktrees/
+
+# /explore engine v2 (workstream H1) — vendored at build time, like pyodide
+static/duckdb-wasm/
+static/duckdb-ext/
+static/arrow-esm/
+static/xlsx-arrow/
+engine/xlsx-arrow/target/
+node_modules/
+scratch-ui/
+
+# ── Real data and keys: never ─────────────────────────────────────────────
+# Before the project is published, these patterns are the last line of
+# defence against an accidental `git add .`. None of the listed items is in the
+# index right now (checked 11.10), and the rule exists to keep it that way.
+data/
+uploads/
+scratch/
+scratch_*/
+scratchpad/
+*.db
+*.sqlite
+*.sqlite3
+*.pem
+*.key
+id_rsa*
+# Working exports and reference lists containing real people and customers
+SL/
+# Position mart export for /admin/scopes: real people and territories.
+# The mask is deliberately broad: ANY file with "positions" in its name, with any
+# extension. The previous mask named the mart explicitly, and renaming the
+# mart during the cleanup narrowed it silently: the .csv.gz and .xlsx of the real
+# export stopped being caught at all. A protection rule must survive the renaming
+# of what it protects. It hides no tracked file;
+# checked, there are none in the repository.
+*positions*

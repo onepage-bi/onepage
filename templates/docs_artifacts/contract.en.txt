@@ -1,0 +1,16 @@
+def begin(out_dir: str, cache_dir: str, schema_version: str, progress) -> "Session":
+    """Open a calculation session. Called once per run."""
+
+class Session:
+    def add_file(self, name: str, mtime_ms: int, size: int, path: str) -> str:
+        """The user's file already sits at `path`. Return exactly one of:
+        "parsed"  — parsed now, aggregates updated;
+        "cached"  — recognised from the cache, parsing skipped;
+        "service" — a supporting workbook (a lookup): the engine keeps it
+                    until finish(); every other file is deleted at once."""
+
+    def finish(self) -> dict:
+        """Write the outputs into out_dir and return their names:
+        {"html": "dashboard.html" | None,
+         "slots": {"0": "sl_bc_data.bin.gz"},
+         "write_back": {"1": "sl_unassigned_reasons.xlsx"} | {}}"""

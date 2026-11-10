@@ -1,0 +1,60 @@
+; op-agent — configuration. Copy to agent.ini next to the exe and edit.
+; IMPORTANT: the GreenPlum password IS NOT STORED HERE AND MUST NOT BE. The analyst's
+; credential lives in Windows Credential Manager (the agent asks once). Only
+; what is not a secret goes here: the allowed page origins and connection topology.
+
+[security]
+; Strict allowlist of the OnePage page origin. The agent sends the CORS header
+; Access-Control-Allow-Origin ONLY for the listed ones — never '*'.
+; Comma-separated, if there are several environments (prod/stage).
+allowed_origins = https://onepage.example.com
+
+; Logical connections. The name ([connection:<name>]) is matched to the field
+; manifest.sources.connection of the frozen bundle. host/port/dbname — not a secret.
+[connection:analytics_dw]
+host = warehouse.example.com
+port = 5432
+dbname = dwh
+; We do NOT write user/password here — Credential Manager (M3).
+
+; --------------------------------------------------------------------------- #
+; THE APP FOLDERS LIVE IN ANOTHER FILE — folders.ini next to the program.
+; Deliberately separated: agent.ini is edited by whoever sets up the connections to
+; GreenPlum (once and, as a rule, not the analyst), while folders.ini is edited by
+; a person whose exports moved to another folder — and they must not
+; accidentally touch the origin allowlist. A full example with explanations —
+; deploy/agent_tools/folders.ini.example, parsing — agent/folders.py.
+;
+; In short: a section per report, any number of dir/file in the section:
+;
+;   [folders:17]
+;   dir = \\server\share\Reports\2026
+;   file = D:\Exports\sl.xlsx
+;   include = *.xlsx, *.csv
+;   exclude = ~$*, *.tmp
+
+; --------------------------------------------------------------------------- #
+; S3 BUCKET AS A NETWORK FOLDER (like WinSCP). The agent downloads the objects of a prefix into a
+; local folder, and the generator reads it the usual way — no second
+; data source bypassing everything else appears.
+;
+; You do not have to and should not edit this by hand: the same fields as in the WinSCP
+; connection window are filled on the "Report folders" screen (agent icon ->
+; "Report folders…", the "S3 bucket" block), the folder is picked there with the
+; "Browse…" button and there is also "Test connection" — a real bucket listing.
+; THE SECRET IS NOT STORED HERE IN ANY WAY: it lives in DPAPI under the name
+; s3-<name>, and the program only exposes a "set" flag outward.
+;
+; [s3:ldwh]
+; endpoint = https://storage.yandexcloud.net  ; Host name + Port + TLS in one
+; region = ru-central1                        ; part of the signature: wrong = 403
+; bucket = prod-s3-nwd                        ; the FIRST word of Remote directory
+; prefix = exports/                           ; the rest of Remote directory
+; access_key = YCAJE...                       ; Access key ID — a login, not a secret
+; target = C:\OnePage\data\sales              ; this folder is picked in the report
+; path_style = true                           ; MinIO/Ceph — true, AWS — false
+; refresh_before_run = true                   ; fetch fresh data BEFORE a run
+;                                             ; (default is yes; false means
+;                                             ; "compute on what is already downloaded")
+; include = *.xlsx, *.xlsb
+; exclude = ~$*

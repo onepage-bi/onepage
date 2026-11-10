@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+{% block title %}{{ _('OnePage — Catalogue') }}{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'catalog' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '#', false], [_('Catalogue'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content fluid">
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow">{{ _('workspace · outputted tables from actually observed exports') }}</div>
+          <h1 class="page-title">{{ _('Catalogue') }}</h1>
+        </div>
+        <div class="page-actions">
+          <button type="button" class="btn sm" id="cat-rebuild">{{ _('Recalculate') }}</button>
+        </div>
+      </div>
+
+      <div id="cat-root"
+           data-tables="{{ tables_json }}"
+           data-stats="{{ stats_json }}"></div>
+
+      {# ── Tiles ─────────────────────────────────────────────────────── #}
+      <div class="cat-tiles">
+        <div class="cat-tile">
+          <div class="cat-tile-k">{{ _('Tables') }}</div>
+          <div class="cat-tile-v" id="cat-tile-tables">0</div>
+        </div>
+        <div class="cat-tile is-accent">
+          <div class="cat-tile-k">{{ _('Confirmed') }}</div>
+          <div class="cat-tile-v" id="cat-tile-confirmed">0</div>
+        </div>
+        <div class="cat-tile is-warn">
+          <div class="cat-tile-k">{{ _('Require confirmation') }}</div>
+          <div class="cat-tile-v" id="cat-tile-inferred">0</div>
+        </div>
+        <div class="cat-tile">
+          <div class="cat-tile-k">{{ _('Non-tables') }}</div>
+          <div class="cat-tile-v" id="cat-tile-nontables">0</div>
+        </div>
+      </div>
+
+      {# ── Filter row ────────────────────────────────────────────────── #}
+      <div class="cat-toolbar">
+        <div class="input-wrap" style="width:240px">
+          <svg class="ico ico-12 leading"><use href="#ic-search"/></svg>
+          <input id="cat-search" class="input sm" placeholder="{{ _('Name, source…') }}" />
+        </div>
+        <div class="cat-chips">
+          <button type="button" class="cat-facet" data-cat-status="inferred">{{ _('Require confirmation') }}</button>
+          <button type="button" class="cat-facet" data-cat-status="confirmed">{{ _('Confirmed') }}</button>
+          <button type="button" class="cat-facet" data-cat-status="rejected">{{ _('Rejected') }}</button>
+        </div>
+        <select id="cat-source" class="input sm"><option value="">{{ _('All sources') }}</option></select>
+      </div>
+
+      {# ── Table list ────────────────────────────────────────────────── #}
+      <div class="cat-table-wrap">
+        <table class="tbl cat-table">
+          <thead>
+            <tr>
+              <th>{{ _('Table') }}</th>
+              <th style="width:11%">{{ _('Status') }}</th>
+              <th style="width:13%">{{ _('Confidence') }}</th>
+              <th class="numeric" style="width:7%">{{ _('Files {ctx:2}') }}</th>
+              <th class="numeric" style="width:8%">{{ _('Partitions') }}</th>
+              <th style="width:16%">{{ _('Consumers') }}</th>
+              <th style="width:10%">{{ _('Owner') }}</th>
+            </tr>
+          </thead>
+          <tbody id="cat-tbody"></tbody>
+        </table>
+      </div>
+      <div id="cat-empty" class="dock-hint" hidden>{{ _('Nothing found for this filter.') }}</div>
+
+    </div>
+  </main>
+</div>
+
+<div id="cat-scrim" class="cat-scrim" hidden></div>
+<aside id="cat-drawer" class="cat-drawer" role="dialog" aria-modal="true" aria-labelledby="cat-drawer-title" hidden>
+  <header class="cat-drawer-head">
+    <h2 id="cat-drawer-title" class="mono" data-drawer-title></h2>
+    <button type="button" class="btn xs ghost" data-drawer-close aria-label="{{ _('Close') }}">
+      <svg class="ico ico-12"><use href="#ic-x"/></svg>
+    </button>
+  </header>
+  <div class="cat-drawer-body" data-drawer-body></div>
+</aside>
+
+<style>
+  [hidden] { display: none !important; }
+
+  /* ── Tiles ────────────────────────────────────────────────────────── */
+  .cat-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+  .cat-tile {
+    background: var(--surface-1);
+    border-radius: var(--r-4);
+    box-shadow: 0 0 0 1px var(--border) inset;
+    padding: 12px 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cat-tile::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+    background: transparent;
+  }
+  .cat-tile.is-accent::before { background: var(--success); }
+  .cat-tile.is-warn::before   { background: var(--warning); }
+  .cat-tile-k {
+    font-family: var(--font-mono); font-size: var(--fs-10);
+    letter-spacing: .06em; text-transform: uppercase; color: var(--ink-dim);
+  }
+  .cat-tile-v {
+    font-size: 25px; font-weight: 600; line-height: 1.25; margin-top: 2px;
+    font-variant-numeric: tabular-nums; letter-spacing: -.015em;
+  }
+  .cat-tile.is-accent .cat-tile-v { color: var(--success); }
+  .cat-tile.is-warn   .cat-tile-v { color: var(--warning); }
+
+  /* ── Toolbar ──────────────────────────────────────────────────────── */
+  .cat-toolbar {
+    display: flex; align-items: center; gap: var(--space-3);
+    flex-wrap: wrap; margin-bottom: var(--space-3);
+  }
+  .cat-chips { display: flex; gap: 4px; flex-wrap: wrap; }
+  .cat-facet {
+    height: 24px; padding: 0 10px; border: 0; cursor: pointer;
+    background: var(--surface-2); color: var(--ink-dim);
+    border-radius: 999px; font-family: inherit; font-size: var(--fs-11);
+    box-shadow: 0 0 0 1px var(--border) inset;
+    transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
+  }
+  .cat-facet:hover { color: var(--ink); }
+  .cat-facet.active {
+    background: color-mix(in oklab, var(--accent) 16%, transparent);
+    color: var(--accent);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 45%, transparent) inset;
+  }
+  #cat-source { width: 180px; }
+
+  /* ── Table ────────────────────────────────────────────────────────── */
+  .cat-table-wrap { width: 100%; overflow-x: auto; }
+  .cat-table tbody tr { cursor: pointer; position: relative; }
+  .cat-table tbody td { position: relative; }
+  .cat-name { color: var(--ink); }
+  .cat-name-sub { color: var(--ink-dim); font-size: var(--fs-11); }
+  .cat-src-sub { color: var(--ink-dim); }
+  .cat-stale-badge {
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: .03em;
+    padding: 1px 6px; border-radius: 3px; text-transform: uppercase;
+    color: var(--warning); background: var(--warning-soft); margin-left: 6px;
+  }
+
+  .cat-badge {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: .03em; padding: 1px 6px; border-radius: 3px;
+    text-transform: uppercase; white-space: nowrap;
+  }
+  .cat-badge-inferred  { color: var(--warning); background: var(--warning-soft); }
+  .cat-badge-confirmed { color: var(--success); background: var(--success-soft); }
+  .cat-badge-rejected  { color: var(--ink-muted); background: var(--surface-2); }
+
+  .cat-conf-wrap { display: flex; align-items: center; gap: 6px; }
+  .cat-conf-bar {
+    width: 60px; height: 5px; border-radius: 3px; background: var(--surface-2);
+    overflow: hidden; flex: none;
+  }
+  .cat-conf-fill { height: 100%; background: var(--accent); border-radius: 3px; }
+  .cat-conf-num { font-family: var(--font-mono); font-size: var(--fs-11); color: var(--ink-dim); }
+
+  .cat-chiprow { display: flex; flex-wrap: wrap; gap: 5px; }
+  .cat-chip {
+    font-family: var(--font-mono); font-size: 10px; color: var(--ink-muted);
+    background: var(--surface-2); border-radius: 3px; padding: 1px 6px;
+  }
+
+  /* ── Drawer ───────────────────────────────────────────────────────── */
+  .cat-scrim {
+    position: fixed; inset: 0; z-index: 40;
+    background: color-mix(in oklab, var(--bg-base) 62%, transparent);
+  }
+  .cat-drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; z-index: 41;
+    width: min(560px, 100vw);
+    display: flex; flex-direction: column;
+    background: var(--surface-1);
+    box-shadow: -1px 0 0 0 var(--border) inset, var(--elev-3);
+  }
+  .cat-drawer-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 14px 16px; border-bottom: 1px solid var(--border-subtle); flex: none;
+  }
+  .cat-drawer-head h2 { margin: 0; font-size: var(--fs-12); font-weight: 600; color: var(--ink); }
+  .cat-drawer-body { padding: 16px; overflow-y: auto; flex: 1; }
+  .cat-drawer-sect { margin-top: var(--space-5); }
+  .cat-drawer-sect:first-child { margin-top: 0; }
+  .cat-drawer-sect h3 {
+    margin: 0 0 8px; font-size: var(--fs-10); font-weight: 500;
+    font-family: var(--font-mono); letter-spacing: .06em;
+    text-transform: uppercase; color: var(--ink-dim);
+  }
+  .cat-dl {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 1px; background: var(--border-subtle);
+    box-shadow: 0 0 0 1px var(--border-subtle); border-radius: var(--r-4);
+    overflow: hidden; margin-top: 10px;
+  }
+  .cat-dl > div { background: var(--surface-1); padding: 8px 10px; }
+  .cat-dl dt {
+    margin: 0 0 2px; font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: .06em; text-transform: uppercase; color: var(--ink-dim);
+  }
+  .cat-dl dd { margin: 0; font-size: var(--fs-12); color: var(--ink); }
+  .cat-note { font-size: var(--fs-11); color: var(--ink-dim); line-height: 1.5; }
+  .cat-actions-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .cat-status { display: block; margin-top: 8px; font-size: var(--fs-11); }
+  .cat-inline-form { display: flex; gap: 6px; align-items: center; margin-top: 6px; flex-wrap: wrap; }
+  .cat-inline-form .input { flex: 1; min-width: 140px; }
+  .cat-mini-table { width: 100%; border-collapse: collapse; font-size: var(--fs-12); }
+  .cat-mini-table th, .cat-mini-table td {
+    text-align: left; padding: 4px 6px; border-bottom: 1px solid var(--border-subtle);
+  }
+  .cat-mini-table th { color: var(--ink-dim); font-weight: 500; font-size: var(--fs-11); }
+  .cat-mini-table td.numeric, .cat-mini-table th.numeric { text-align: right; font-variant-numeric: tabular-nums; }
+  .cat-timeline { display: flex; flex-direction: column; gap: 4px; max-height: 260px; overflow-y: auto; }
+  .cat-timeline-row {
+    display: flex; align-items: baseline; gap: 8px; font-size: var(--fs-12);
+    padding: 3px 0; border-bottom: 1px solid var(--border-subtle);
+  }
+  .cat-timeline-key { font-family: var(--font-mono); color: var(--accent); min-width: 90px; }
+  .cat-timeline-file { color: var(--ink); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cat-timeline-meta { color: var(--ink-dim); font-size: var(--fs-11); white-space: nowrap; }
+  .cat-evidence { display: none; }
+  .cat-evidence.open { display: block; }
+  .cat-why-btn { background: none; border: none; color: var(--accent); cursor: pointer; font: inherit; padding: 0; }
+  .cat-suggest-box {
+    background: var(--surface-2); border-radius: var(--r-4); padding: 10px 12px; margin-top: 8px;
+  }
+  .cat-suggest-json {
+    font-family: var(--font-mono); font-size: 10px; white-space: pre-wrap; word-break: break-all;
+    max-height: 220px; overflow-y: auto; background: var(--surface-1);
+    border-radius: 3px; padding: 8px; margin: 6px 0;
+  }
+  .cat-warn-box {
+    color: var(--warning); background: var(--warning-soft); border-radius: 3px;
+    padding: 6px 8px; font-size: var(--fs-11); margin: 6px 0;
+  }
+  .cat-file-list { max-height: 120px; overflow-y: auto; font-size: var(--fs-11); color: var(--ink-dim); }
+  .cat-nontable-row { display: flex; gap: 8px; font-size: var(--fs-11); padding: 3px 0; border-bottom: 1px solid var(--border-subtle); }
+</style>
+
+<script src="/static/js/catalog.js?v={{ asset_v }}" defer></script>
+{% endblock %}

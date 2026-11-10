@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Navigators — OnePage') }}{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'navigators' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '/', false], [_('Navigators'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content">
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow">{{ _('workspace · pages people start from') }}</div>
+          <h1 class="page-title">{{ _('Navigators') }}</h1>
+        </div>
+        {% if can_add %}
+        <div class="page-actions">
+          <button type="button" class="btn sm primary" id="nav-add">{{ _('Upload a page') }}</button>
+        </div>
+        {% endif %}
+      </div>
+
+      <p class="nav-lead">
+        {{ _('A navigator is a page you write yourself as one html file: links to OnePage reports, to Power BI, to network folders. Access works exactly as it does for a report. The platform opens the links, so signing in to an external system works as usual.') }}
+      </p>
+
+      {% if items %}
+      <div class="nav-cards">
+        {% for d in items %}
+        <a class="nav-card" href="/d/{{ d.id }}">
+          <div class="nav-card-name">{{ d.title }}</div>
+          {% if d.description %}<div class="nav-card-desc">{{ d.description }}</div>{% endif %}
+          <div class="nav-card-meta mono">
+            {{ d.owner.person_id if d.owner else '—' }} · v{{ d.current_version }}
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="nav-empty">
+        {{ _('No navigators yet.') }}
+        {% if can_add %}{{ _('Upload an html file and it will appear here.') }}{% endif %}
+      </div>
+      {% endif %}
+
+      {% if can_add %}
+      <form class="nav-form" id="nav-form" method="post" action="/api/navigators"
+            enctype="multipart/form-data" hidden>
+        <div class="nav-form-row">
+          <label for="nav-title">{{ _('Title') }}</label>
+          <input class="input" type="text" id="nav-title" name="title" required maxlength="200">
+        </div>
+        <div class="nav-form-row">
+          <label for="nav-desc">{{ _('Description {ctx:2}') }}</label>
+          <input class="input" type="text" id="nav-desc" name="description" maxlength="500">
+        </div>
+        <div class="nav-form-row">
+          <label for="nav-file">{{ _('HTML file') }}</label>
+          <input class="input" type="file" id="nav-file" name="html_file" accept=".html,.htm" required>
+        </div>
+        <div class="nav-form-acts">
+          <button type="submit" class="btn sm primary">{{ _('Upload') }}</button>
+          <button type="button" class="btn sm ghost" id="nav-cancel">{{ _('Cancel') }}</button>
+        </div>
+      </form>
+      {% endif %}
+
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script defer src="/static/js/navigators.js?v={{ asset_v }}"></script>
+{% endblock %}

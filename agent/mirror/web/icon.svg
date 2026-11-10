@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1" shape-rendering="geometricPrecision">
+<!-- The program window icon. The same drawing as in the shortcut and on the taskbar:
+     a blue rounded square, a white sheet with a folded corner and three lines.
+     The numbers below are literally the constants from tools/make_app_icon.py (r = 0.2;
+     sheet 0.26..0.74 in x and 0.16..0.84 in y; corner cut 0.16; lines at 0.40,
+     0.54, 0.68 with height 0.055 and inset 0.07), and they must not diverge:
+     the window and the shortcut of one program with different icons look like two different
+     programs. The check is kept by smoke_mirror_wiring.
+
+     Why a separate SVG rather than the same .ico: Edge takes the WINDOW icon from the
+     page favicon, not from the shortcut, and without it shows a globe — exactly
+     what the person saw. The .ico stays for the shortcut and the taskbar:
+     they need precisely that. -->
+<rect width="1" height="1" rx="0.2" ry="0.2" fill="#1F5FBF"/>
+<path d="M0.26 0.16 H0.58 L0.74 0.32 V0.84 H0.26 Z" fill="#FFFFFF"/>
+<path d="M0.58 0.16 V0.32 H0.74 Z" fill="#BFD4F2"/>
+<g fill="#1F5FBF">
+<rect x="0.33" y="0.40" width="0.34" height="0.055"/>
+<rect x="0.33" y="0.54" width="0.34" height="0.055"/>
+<rect x="0.33" y="0.68" width="0.34" height="0.055"/>
+</g>
+</svg>

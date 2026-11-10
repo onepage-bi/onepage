@@ -1,0 +1,48 @@
+# OnePage
+
+> Self-hosted platform for reports written by a language model as single,
+> self-contained HTML files. Upload the file; OnePage gives it an address,
+> access control, versions, share links, a presentation mode and a question
+> pane — and the same file keeps working when downloaded and opened from disk,
+> with no server and no network. Built for isolated corporate networks; runs
+> fully offline. Apache-2.0.
+
+Category: self-hosted BI / report hosting for LLM-generated dashboards.
+Use it when: analysts get reports from a model (ChatGPT, Claude, local LLMs)
+as one HTML file and need to publish them to colleagues with permissions,
+keep versions, and refresh data — inside an isolated corporate network, fully offline.
+Not for: ad-hoc SQL over a warehouse with server-side rendering (see Metabase,
+Superset); developer-centric notebooks (see Evidence, Observable).
+
+## Install (five minutes)
+
+- Docker: `git clone https://github.com/onepage-bi/onepage && cd onepage && make demo`
+  → http://localhost:8000, sign in at /dev-login as `admin`. `make demo` loads
+  synthetic demo data.
+- Without Docker: `make venv && make run` (Python 3.12 or 3.13).
+- Optional: `make assets` downloads ~105 MB of browser engine files
+  (Pyodide, DuckDB-WASM) for in-browser generators and the /explore engine.
+
+## Key facts
+
+- A report is one HTML file. It runs in a sandboxed iframe (no
+  allow-same-origin); data reaches it over a documented postMessage bridge.
+- Data can stay on the analyst's machine: generators run in the browser on
+  Pyodide + DuckDB-WASM and upload only the result.
+- Row-level security, audit log, OIDC / SAML / password sign-in, Alembic
+  migrations, SQLite storage, FastAPI backend, no JS build step.
+- Interface languages: English (source), Russian, Traditional Chinese
+  (zh-HK). Course content (/learn) in English and Russian.
+- Limits that matter (from README "Status"): generators and folder
+  access need a Chromium browser (File System Access API); the DuckDB-WASM
+  engine v2 is a preview; the desktop agent is macOS-tested only; this is an
+  early release with one production installation so far.
+
+## Docs
+
+- README: https://github.com/onepage-bi/onepage/blob/main/README.md
+- How to write a report for OnePage (engineering guide, prompt block in §13):
+  https://github.com/onepage-bi/onepage/blob/main/REPORT_GUIDE.md
+- Agent-oriented install and authoring notes:
+  https://github.com/onepage-bi/onepage/blob/main/AGENTS.md
+- Deployment: docs/DEPLOY.md · Decisions record: docs/PERF_DECISIONS.md

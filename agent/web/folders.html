@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OnePage Portable — folders</title>
+<link rel="stylesheet" href="/folders-ui/folders.css">
+</head>
+<body>
+<main class="wrap">
+  <h1 id="title"></h1>
+  <p class="sub" id="subtitle"></p>
+  <p class="path" id="ini"></p>
+  <div class="notice warn" id="problem" hidden></div>
+  <div class="notice" id="comments" hidden></div>
+  <div class="notice" id="partial" hidden></div>
+  <div class="row top">
+    <button class="btn" id="reload"></button>
+    <button class="btn" id="new-section"></button>
+  </div>
+  <div class="notice err" id="error" hidden></div>
+  <section id="sections"></section>
+  <section id="empty" hidden>
+    <h2 id="empty-title"></h2>
+    <p class="sub" id="empty-hint"></p>
+  </section>
+  <!-- S3 bucket as a network folder. A separate block, not one more kind of
+       entry inside a report: this is ANOTHER settings file (agent.ini) and
+       another boundary: there is a secret here, which paths never have. -->
+  <section id="s3">
+    <h2 id="s3-title"></h2>
+    <p class="sub" id="s3-sub"></p>
+    <p class="path" id="s3-ini"></p>
+    <div class="notice warn" id="s3-problem" hidden></div>
+    <div id="s3-list"></div>
+    <p class="sub" id="s3-empty" hidden></p>
+    <div class="row">
+      <button class="btn" id="s3-add"></button>
+    </div>
+  </section>
+</main>
+<script src="/folders-ui/folders.js"></script>
+</body>
+</html>

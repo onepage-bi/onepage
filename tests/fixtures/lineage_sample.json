@@ -1,0 +1,73 @@
+{
+  "meta": {"generated_at": "2026-08-20T10:00:00", "runs_considered": 5, "stale_days": 14},
+  "nodes": [
+    {"id": "src:1", "layer": 0, "kind": "folder", "label": "Stock_RDC",
+     "data": {"source_id": 1, "declared_path": "\\\\share\\OPS\\RDC\\Stock_RDC", "files": 142, "bytes": 546000000,
+              "data_age_days": 1, "read_age_days": 0, "fingerprint": "9f1c…", "shared": true, "data_stale": false, "unread": false}},
+    {"id": "src:2", "layer": 0, "kind": "folder", "label": "Reasons_Catalog",
+     "data": {"source_id": 2, "declared_path": null, "files": 1, "bytes": 2100000,
+              "data_age_days": 40, "read_age_days": 1, "fingerprint": "a0b3…", "shared": false, "data_stale": true, "unread": false}},
+    {"id": "src:3", "layer": 0, "kind": "greenplum", "label": "gp_dwh",
+     "data": {"source_id": 3, "queries": ["sql/rejections.sql"], "shared": false}},
+
+    {"id": "pat:rdcstock:Stock_*.xlsx", "layer": 1, "kind": "pattern", "label": "Stock_*.xlsx",
+     "data": {"generator": "rdcstock", "role": "data", "required": false, "matched_files": 140, "unmatched": false}},
+    {"id": "pat:rdcstock:SL_NWD.xls", "layer": 1, "kind": "pattern", "label": "SL_NWD.xls",
+     "data": {"generator": "rdcstock", "role": "reference", "required": true, "matched_files": 1, "unmatched": false, "from_required_files": true}},
+    {"id": "pat:opshealth:*", "layer": 1, "kind": "pattern", "label": "*",
+     "data": {"generator": "opshealth", "role": "data", "required": false, "matched_files": 142, "legacy": true}},
+
+    {"id": "sheet:rdcstock:Stock_*.xlsx:Stock", "layer": 2, "kind": "sheet", "label": "Stock",
+     "data": {"columns": [
+        {"name": "SKU", "declared": true, "observed": true, "consumed": true},
+        {"name": "Qty", "declared": true, "observed": true, "consumed": true},
+        {"name": "Reason_ID", "declared": true, "observed": false, "consumed": null},
+        {"name": "Qty_new", "declared": false, "observed": true, "consumed": null}
+      ], "observed_rows": 184000, "diff": {"missing_columns": ["Reason_ID"], "extra_columns": ["Qty_new"]}}},
+    {"id": "sheet:rdcstock:SL_NWD.xls:*", "layer": 2, "kind": "sheet", "label": "*",
+     "data": {"columns": [{"name": "Reason_ID", "declared": true, "observed": true, "consumed": null},
+                          {"name": "Reason_Name", "declared": true, "observed": true, "consumed": null}], "diff": {}}},
+
+    {"id": "gen:rdcstock", "layer": 3, "kind": "generator", "label": "rdcstock",
+     "data": {"generator_id": 7, "version": 3, "engine": "browser", "reports": 1}},
+    {"id": "gen:opshealth", "layer": 3, "kind": "generator", "label": "opshealth",
+     "data": {"generator_id": 8, "version": 1, "engine": "browser", "reports": 1, "legacy_inputs": true}},
+    {"id": "gen:dwhreject", "layer": 3, "kind": "generator", "label": "dwhreject",
+     "data": {"generator_id": 9, "version": 2, "engine": "agent", "reports": 1, "observed": false}},
+
+    {"id": "out:rdcstock:html", "layer": 4, "kind": "output", "label": "dashboard.html", "data": {"slot": null}},
+    {"id": "out:rdcstock:0", "layer": 4, "kind": "output", "label": "stock.bin.gz", "data": {"slot": 0}},
+    {"id": "out:rdcstock:wb:sl_unassigned_reasons.xlsx", "layer": 4, "kind": "write_back", "label": "sl_unassigned_reasons.xlsx",
+     "data": {"targets": ["Stock_RDC"], "failed": [], "last_written": "2026-08-19"}},
+    {"id": "out:opshealth:html", "layer": 4, "kind": "output", "label": "dashboard.html", "data": {"slot": null}},
+    {"id": "out:dwhreject:html", "layer": 4, "kind": "output", "label": "dashboard.html", "data": {"slot": null}},
+
+    {"id": "rep:d1", "layer": 5, "kind": "report", "label": "RDC Stock Health",
+     "data": {"dashboard_id": "d1", "status": "success", "last_run_at": "2026-08-19", "engine": "browser"}},
+    {"id": "rep:d2", "layer": 5, "kind": "report", "label": "OPS RDC Health",
+     "data": {"dashboard_id": "d2", "status": "error", "last_run_at": "2026-08-20", "engine": "browser"}},
+    {"id": "rep:d3", "layer": 5, "kind": "report", "label": "DWH Rejection Analysis",
+     "data": {"dashboard_id": "d3", "status": "success", "last_run_at": "2026-08-17", "engine": "agent"}}
+  ],
+  "edges": [
+    {"from": "src:1", "to": "pat:rdcstock:Stock_*.xlsx", "kind": "matches"},
+    {"from": "src:2", "to": "pat:rdcstock:SL_NWD.xls", "kind": "matches"},
+    {"from": "src:1", "to": "pat:opshealth:*", "kind": "matches"},
+    {"from": "pat:rdcstock:Stock_*.xlsx", "to": "sheet:rdcstock:Stock_*.xlsx:Stock", "kind": "contains"},
+    {"from": "pat:rdcstock:SL_NWD.xls", "to": "sheet:rdcstock:SL_NWD.xls:*", "kind": "contains"},
+    {"from": "sheet:rdcstock:Stock_*.xlsx:Stock", "to": "gen:rdcstock", "kind": "reads"},
+    {"from": "sheet:rdcstock:SL_NWD.xls:*", "to": "gen:rdcstock", "kind": "reads"},
+    {"from": "pat:opshealth:*", "to": "gen:opshealth", "kind": "reads"},
+    {"from": "src:3", "to": "gen:dwhreject", "kind": "reads"},
+    {"from": "gen:rdcstock", "to": "out:rdcstock:html", "kind": "writes"},
+    {"from": "gen:rdcstock", "to": "out:rdcstock:0", "kind": "writes"},
+    {"from": "gen:rdcstock", "to": "out:rdcstock:wb:sl_unassigned_reasons.xlsx", "kind": "writes"},
+    {"from": "out:rdcstock:wb:sl_unassigned_reasons.xlsx", "to": "src:1", "kind": "writes_back"},
+    {"from": "gen:opshealth", "to": "out:opshealth:html", "kind": "writes"},
+    {"from": "gen:dwhreject", "to": "out:dwhreject:html", "kind": "writes"},
+    {"from": "out:rdcstock:html", "to": "rep:d1", "kind": "publishes"},
+    {"from": "out:rdcstock:0", "to": "rep:d1", "kind": "publishes"},
+    {"from": "out:opshealth:html", "to": "rep:d2", "kind": "publishes"},
+    {"from": "out:dwhreject:html", "to": "rep:d3", "kind": "publishes"}
+  ]
+}

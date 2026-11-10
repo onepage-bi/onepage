@@ -1,0 +1,3 @@
+Alembic migration environment for OnePage (see docs/DEPLOY.md, section "Migrations").
+Lives under app/ so the Dockerfile's `COPY app/ app/` and deploy/make-patch.sh
+ship the revisions together with the code that expects them.

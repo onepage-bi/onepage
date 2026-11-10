@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}OnePage — {{ _('Audit log') }}{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'audit' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '/', false], [_('Admin'), '/admin', false], [_('Audit log'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content fluid">
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow">{{ _('administration') }} · {{ _('activity timeline') }}</div>
+          <h1 class="page-title">{{ _('Audit log') }}</h1>
+        </div>
+      </div>
+
+      <div class="tabbar">
+        <a class="tab" href="/admin">{{ _('Users') }}</a>
+        <a class="tab active" href="/admin/audit">{{ _('Audit log') }}
+          <span class="mono" style="color:var(--ink-faint);font-size:10px;margin-left:4px">{{ events | length }}</span>
+        </a>
+        <a class="tab" href="/admin/perf">{{ _('Performance') }}</a>
+        <a class="tab" href="/admin/errors">{{ _('Errors') }}</a>
+        <a class="tab" href="/admin/generators">{{ _('Generators') }}</a>
+        <a class="tab" href="/admin/employees">{{ _('Staff') }}</a>
+      </div>
+
+      <div class="toolbar">
+        <div class="input-wrap" style="width:280px">
+          <svg class="ico ico-12 leading"><use href="#ic-search"/></svg>
+          <input id="audit-search" class="input sm" placeholder="{{ _('Search target, person_id, IP…') }}" />
+        </div>
+        <div class="grow"></div>
+        <span class="mono" style="font-size:11px;color:var(--ink-dim)">{{ _('{n} events', n=events | length) }}</span>
+      </div>
+
+      <div class="toolbar">
+        <input type="date" id="audit-export-from" class="input sm" title="{{ _('From (inclusive)') }}" />
+        <span class="mono" style="color:var(--ink-faint)">—</span>
+        <input type="date" id="audit-export-to" class="input sm" title="{{ _('Up to (inclusive)') }}" />
+        <button class="btn sm" id="btn-audit-export" title="{{ _('Streams all audit_log events for the range into a file (.jsonl) (max. 366 days)') }}">{{ _('Export JSONL') }}</button>
+      </div>
+
+      {% if events %}
+      <div class="dash-table-wrap">
+        <table class="tbl audit-table">
+          <thead>
+            <tr>
+              <th class="at-col">{{ _('Timestamp') }}</th>
+              <th class="who-col">{{ _('Actor') }}</th>
+              <th class="act-col">{{ _('Action') }}</th>
+              <th>{{ _('Target') }}</th>
+              <th class="ip-col">IP</th>
+              <th>{{ _('Payload') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for e in events %}
+            <tr data-search="{{ (e.actor ~ ' ' ~ (e.target_label or '') ~ ' ' ~ (e.ip or '') ~ ' ' ~ e.action) | lower }}">
+              <td class="mono muted at-col">{{ e.created_at.strftime('%Y-%m-%d %H:%M') if e.created_at else '—' }}</td>
+              <td class="mono who-col">{{ e.actor }}</td>
+              <td class="act-col"><span class="badge">{{ e.action }}</span></td>
+              <td>{{ e.target_label or '—' }}</td>
+              <td class="mono muted ip-col">{{ e.ip or '—' }}</td>
+              <td class="mono" style="font-size:11px; color:var(--ink-dim);">
+                {{ e.payload | tojson if e.payload else '{}' }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="dash-table-wrap">
+        <div class="empty">
+          <div class="ascii">[ {{ _('no audit events in selected range') }} ]</div>
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </main>
+</div>
+
+{% include "components/palette.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/palette.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/hotkeys.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/audit.js?v={{ asset_v }}" defer></script>
+{% endblock %}

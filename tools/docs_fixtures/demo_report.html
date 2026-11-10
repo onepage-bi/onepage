@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Shelf availability · week 37</title>
+<script id="bootstrap-snapshot" type="application/json">{}</script>
+<style>
+  :root{
+    --ink:#10151c; --muted:#6b7684; --line:#e4e8ee; --bg:#f6f7f9; --card:#fff;
+    --accent:#2f6bff; --good:#13916b; --warn:#c9871f; --bad:#c4453c;
+    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font:14px/1.5 "Inter Tight",Inter,-apple-system,Segoe UI,sans-serif;
+       -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 28px 56px}
+  header{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:22px}
+  h1{font-size:24px;font-weight:650;letter-spacing:-.02em;margin:0}
+  .sub{color:var(--muted);font-size:13px;margin-top:4px}
+  .stamp{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+  .kpi .lab{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .kpi .val{font-size:28px;font-weight:640;letter-spacing:-.03em;margin-top:6px;font-variant-numeric:tabular-nums}
+  .kpi .dlt{font-size:12px;margin-top:2px;font-variant-numeric:tabular-nums}
+  .up{color:var(--good)} .down{color:var(--bad)} .flat{color:var(--muted)}
+  .grid{display:grid;grid-template-columns:1.35fr 1fr;gap:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px 18px}
+  .card h2{font-size:13px;font-weight:600;margin:0 0 2px;letter-spacing:-.01em}
+  .card .note{font-size:12px;color:var(--muted);margin-bottom:12px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;font-weight:500;color:var(--muted);font-size:11px;letter-spacing:.06em;
+     text-transform:uppercase;padding:0 0 8px;border-bottom:1px solid var(--line)}
+  td{padding:9px 0;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+  td.n,th.n{text-align:right}
+  tbody tr:last-child td{border-bottom:0}
+  .bar{height:6px;border-radius:3px;background:#eef1f6;position:relative;min-width:70px}
+  .bar i{position:absolute;inset:0 auto 0 0;border-radius:3px;background:var(--accent)}
+  .pill{display:inline-block;padding:1px 7px;border-radius:100px;font-size:11px;font-weight:500}
+  .pill.ok{background:#e6f4ef;color:var(--good)}
+  .pill.w{background:#fdf3e2;color:var(--warn)}
+  .pill.b{background:#fbeceb;color:var(--bad)}
+  footer{margin-top:18px;font-size:12px;color:var(--muted)}
+  @media (max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Shelf availability · week 37</h1>
+      <div class="sub">Demo report — every figure is invented</div>
+    </div>
+    <div class="stamp">built 2026-09-12 08:14 · 6 sources · 41,280 rows</div>
+  </header>
+
+  <div class="kpis">
+    <div class="kpi"><div class="lab">Availability</div><div class="val">93.4%</div><div class="dlt up">+1.8 pp vs week 36</div></div>
+    <div class="kpi"><div class="lab">Stores out of stock</div><div class="val">218</div><div class="dlt down">+34 vs week 36</div></div>
+    <div class="kpi"><div class="lab">Mean days out of stock</div><div class="val">1.7</div><div class="dlt flat">no change</div></div>
+    <div class="kpi"><div class="lab">Network coverage</div><div class="val">96.1%</div><div class="dlt up">+0.4 pp</div></div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Availability by week</h2>
+      <div class="note">Whole network, 12 weeks</div>
+      <svg viewBox="0 0 620 190" width="100%" height="190" role="img" aria-label="Availability trend">
+        <g stroke="#eef1f6" stroke-width="1">
+          <line x1="34" y1="20" x2="610" y2="20"/><line x1="34" y1="62" x2="610" y2="62"/>
+          <line x1="34" y1="104" x2="610" y2="104"/><line x1="34" y1="146" x2="610" y2="146"/>
+        </g>
+        <g font-size="10" fill="#8b95a3" font-family="monospace">
+          <text x="0" y="24">96%</text><text x="0" y="66">94%</text>
+          <text x="0" y="108">92%</text><text x="0" y="150">90%</text>
+        </g>
+        <polyline fill="none" stroke="#2f6bff" stroke-width="2.2" stroke-linejoin="round"
+          points="46,132 96,120 146,126 196,101 246,110 296,88 346,95 396,74 446,82 496,66 546,71 596,53"/>
+        <g fill="#2f6bff">
+          <circle cx="596" cy="53" r="3.6"/><circle cx="546" cy="71" r="2.4"/><circle cx="496" cy="66" r="2.4"/>
+        </g>
+        <g font-size="10" fill="#8b95a3" font-family="monospace">
+          <text x="36" y="176">26</text><text x="186" y="176">29</text>
+          <text x="336" y="176">32</text><text x="486" y="176">35</text><text x="586" y="176">37</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="card">
+      <h2>Where the losses come from</h2>
+      <div class="note">Reasons for out-of-stock, week 37</div>
+      <table>
+        <thead><tr><th>Reason</th><th class="n">Stores</th><th style="width:110px"></th></tr></thead>
+        <tbody>
+          <tr><td>Delivery never arrived</td><td class="n">86</td><td><div class="bar"><i style="width:100%"></i></div></td></tr>
+          <tr><td>Out of stock at the DC</td><td class="n">61</td><td><div class="bar"><i style="width:71%"></i></div></td></tr>
+          <tr><td>Stock not put on the shelf</td><td class="n">39</td><td><div class="bar"><i style="width:45%"></i></div></td></tr>
+          <tr><td>Ordering error</td><td class="n">21</td><td><div class="bar"><i style="width:24%"></i></div></td></tr>
+          <tr><td>Other</td><td class="n">11</td><td><div class="bar"><i style="width:13%"></i></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2>Regions</h2>
+    <div class="note">Sorted by distance from the 95% target</div>
+    <table>
+      <thead><tr><th>Region</th><th class="n">Availability</th><th class="n">Δ vs week 36</th><th class="n">Stores out of stock</th><th class="n">Mean days out of stock</th><th style="width:110px;padding-left:18px">Status</th></tr></thead>
+      <tbody>
+        <tr><td>North</td><td class="n">88.2%</td><td class="n down">−0.9</td><td class="n">64</td><td class="n">2.4</td><td style="padding-left:18px"><span class="pill b">at risk</span></td></tr>
+        <tr><td>South-East</td><td class="n">91.0%</td><td class="n up">+1.2</td><td class="n">48</td><td class="n">1.9</td><td style="padding-left:18px"><span class="pill w">watch</span></td></tr>
+        <tr><td>Centre</td><td class="n">93.8%</td><td class="n up">+2.4</td><td class="n">41</td><td class="n">1.5</td><td style="padding-left:18px"><span class="pill w">watch</span></td></tr>
+        <tr><td>West</td><td class="n">95.6%</td><td class="n up">+1.1</td><td class="n">33</td><td class="n">1.3</td><td style="padding-left:18px"><span class="pill ok">on target</span></td></tr>
+        <tr><td>Capital</td><td class="n">97.3%</td><td class="n up">+0.6</td><td class="n">18</td><td class="n">1.1</td><td style="padding-left:18px"><span class="pill ok">on target</span></td></tr>
+        <tr><td>East</td><td class="n">97.9%</td><td class="n flat">0.0</td><td class="n">14</td><td class="n">0.9</td><td style="padding-left:18px"><span class="pill ok">on target</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>Sources: DC stock extract, delivery log, store directory. The figures are generated for the OnePage documentation.</footer>
+</div>
+</body>
+</html>

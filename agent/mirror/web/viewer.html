@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OnePage</title>
+<link rel="icon" href="/library/icon.svg">
+<link rel="stylesheet" href="/library/mirror.css">
+</head>
+<body class="viewer">
+<header class="topbar">
+  <a class="btn" id="back" href="/library/">&larr;</a>
+  <span class="title" id="vtitle"></span>
+  <span class="asof" id="asof"></span>
+  <!-- Actions on the report. A person who is already inside and sees
+       yesterday's date next to it should not have to go back to the list to
+       press "Update from folders": it is the same button and calls the same
+       action (common.js). -->
+  <span class="acts" id="vacts"></span>
+</header>
+<!-- A bar under the header: run progress, its result and the reason for a refusal. Such
+     text does not live in the forty pixels of the header, and a silent button is the worst outcome. -->
+<div class="notice" id="vnotice" hidden><span id="vnotice-msg"></span><span class="alert-acts" id="vnotice-acts"></span></div>
+<div class="stage" id="stage"></div>
+<script src="/library/common.js"></script>
+<script src="/library/viewer.js"></script>
+</body>
+</html>

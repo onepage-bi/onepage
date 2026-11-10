@@ -1,0 +1,472 @@
+{
+  "_meta": {
+    "chunk": "16",
+    "count": 150,
+    "lang": "en",
+    "source_files": [
+      "templates/pages/presentation.html",
+      "templates/pages/presentation_show.html",
+      "templates/pages/presentation_slide.html",
+      "templates/pages/presentations.html",
+      "templates/pages/provenance.html",
+      "templates/pages/quests.html",
+      "templates/pages/reference.html",
+      "templates/pages/reference_detail.html",
+      "templates/pages/share.html",
+      "templates/pages/themes.html",
+      "templates/pages/upload.html"
+    ]
+  },
+  "strings": {
+    "'Show how' highlights where to click. 'Go' opens the section. Reward accrues automatically.": {
+      "ref": "templates/pages/quests.html:72"
+    },
+    "+ column": {
+      "ref": "templates/pages/reference.html:107"
+    },
+    "+ create presentation": {
+      "ref": "templates/pages/presentations.html:60"
+    },
+    "0 of 5": {
+      "ref": "templates/pages/quests.html:75"
+    },
+    "A presentation is the display order of already published reports plus images and PDF. The report shows as-is, at its own address. Visible only to you.": {
+      "ref": "templates/pages/presentations.html:44"
+    },
+    "Again": {
+      "ref": "templates/pages/quests.html:155"
+    },
+    "Allow pinning version on run": {
+      "ref": "templates/pages/reference.html:90"
+    },
+    "Applied": {
+      "ref": "templates/pages/provenance.html:120"
+    },
+    "Apply": {
+      "ref": "templates/pages/reference_detail.html:143"
+    },
+    "Author": {
+      "ref": "templates/pages/reference_detail.html:81"
+    },
+    "Autumn 2026. Collect all eight and get a profile frame.": {
+      "ref": "templates/pages/quests.html:119"
+    },
+    "Browser not showing PDF —": {
+      "ref": "templates/pages/presentation_slide.html:109"
+    },
+    "Bundle SHA": {
+      "ref": "templates/pages/provenance.html:64"
+    },
+    "Changes": {
+      "ref": "templates/pages/reference_detail.html:80"
+    },
+    "Close show (Esc)": {
+      "ref": "templates/pages/quests.html:158"
+    },
+    "Collection": {
+      "ref": "templates/pages/quests.html:30"
+    },
+    "Columns {ctx:2}": {
+      "ref": "templates/pages/reference.html:47"
+    },
+    "Completed {ctx:3}": {
+      "ref": "templates/pages/provenance.html:41"
+    },
+    "Configure slots": {
+      "ref": "templates/pages/upload.html:30"
+    },
+    "Create reference table": {
+      "ref": "templates/pages/reference.html:22"
+    },
+    "Daily quiz": {
+      "ref": "templates/pages/quests.html:86"
+    },
+    "Data slots": {
+      "ref": "templates/pages/upload.html:71"
+    },
+    "Date": {
+      "ref": "templates/pages/reference_detail.html:82"
+    },
+    "Day 1 of 15": {
+      "ref": "templates/pages/quests.html:90"
+    },
+    "Delete rows not in file": {
+      "ref": "templates/pages/reference_detail.html:134"
+    },
+    "Description": {
+      "ref": "templates/pages/reference.html:82"
+    },
+    "Detect type": {
+      "ref": "templates/pages/upload.html:29"
+    },
+    "Detection readout": {
+      "ref": "templates/pages/upload.html:77"
+    },
+    "Download template": {
+      "ref": "templates/pages/reference_detail.html:38"
+    },
+    "Drop a self-contained HTML dashboard. Type and data slots are detected automatically.": {
+      "ref": "templates/pages/upload.html:20"
+    },
+    "Drop your HTML file here, or click to browse": {
+      "ref": "templates/pages/upload.html:38"
+    },
+    "Enabled": {
+      "ref": "templates/pages/provenance.html:143"
+    },
+    "Esc · exit": {
+      "ref": "templates/pages/presentation_slide.html:89"
+    },
+    "Export to Excel": {
+      "ref": "templates/pages/reference_detail.html:24"
+    },
+    "File (.xlsx)": {
+      "ref": "templates/pages/reference_detail.html:129"
+    },
+    "Filter slots": {
+      "ref": "templates/pages/provenance.html:145"
+    },
+    "Fingerprint": {
+      "ref": "templates/pages/provenance.html:178"
+    },
+    "First week in OnePage": {
+      "ref": "templates/pages/quests.html:71"
+    },
+    "From generator": {
+      "ref": "templates/pages/reference.html:101"
+    },
+    "Frozen dependencies": {
+      "ref": "templates/pages/provenance.html:74"
+    },
+    "Full screen": {
+      "ref": "templates/pages/presentation_slide.html:88"
+    },
+    "Full screen (F)": {
+      "ref": "templates/pages/presentation_slide.html:88"
+    },
+    "Generator version": {
+      "ref": "templates/pages/provenance.html:58"
+    },
+    "Gift every business day": {
+      "ref": "templates/pages/quests.html:55"
+    },
+    "Got it": {
+      "ref": "templates/pages/quests.html:156"
+    },
+    "HTML slide": {
+      "ref": "templates/pages/presentation_slide.html:118"
+    },
+    "Image": {
+      "ref": "templates/pages/presentation.html:189"
+    },
+    "Import from Excel": {
+      "ref": "templates/pages/reference_detail.html:26"
+    },
+    "Key": {
+      "ref": "templates/pages/reference.html:46"
+    },
+    "Lake manifest": {
+      "ref": "templates/pages/provenance.html:159"
+    },
+    "Launched by": {
+      "ref": "templates/pages/provenance.html:44"
+    },
+    "Level up your AI skills": {
+      "ref": "templates/pages/quests.html:87"
+    },
+    "Loading report…": {
+      "ref": "templates/pages/presentation_show.html:39"
+    },
+    "Manual input": {
+      "ref": "templates/pages/reference.html:97"
+    },
+    "Metadata": {
+      "ref": "templates/pages/upload.html:31"
+    },
+    "Misses": {
+      "ref": "templates/pages/reference_detail.html:47"
+    },
+    "Name, order and notes save instantly; this button fixes everything again": {
+      "ref": "templates/pages/presentation.html:155"
+    },
+    "Next →": {
+      "ref": "templates/pages/presentation_slide.html:87"
+    },
+    "No reference tables yet. Create one or register a generator with platform input.": {
+      "ref": "templates/pages/reference.html:59"
+    },
+    "No source observations for this run.": {
+      "ref": "templates/pages/provenance.html:205"
+    },
+    "Note": {
+      "ref": "templates/pages/reference_detail.html:83"
+    },
+    "One sentence — what does this dashboard show?": {
+      "ref": "templates/pages/upload.html:56"
+    },
+    "OnePage — Lineage ·": {
+      "ref": "templates/pages/provenance.html:2"
+    },
+    "OnePage — Quests": {
+      "ref": "templates/pages/quests.html:2"
+    },
+    "OnePage — Reference tables": {
+      "ref": "templates/pages/reference.html:2"
+    },
+    "Open PDF": {
+      "ref": "templates/pages/presentation_slide.html:110"
+    },
+    "Open surprise": {
+      "ref": "templates/pages/quests.html:40"
+    },
+    "Owner (id or name)": {
+      "ref": "templates/pages/reference_detail.html:114"
+    },
+    "Owner {ctx:2}": {
+      "ref": "templates/pages/reference.html:50"
+    },
+    "PNG or JPG, up to 5 MB": {
+      "ref": "templates/pages/presentation.html:189"
+    },
+    "Package": {
+      "ref": "templates/pages/provenance.html:78"
+    },
+    "Partitions {ctx:2}": {
+      "ref": "templates/pages/provenance.html:165"
+    },
+    "Path fingerprint:": {
+      "ref": "templates/pages/provenance.html:188"
+    },
+    "Path reported by the app": {
+      "ref": "templates/pages/provenance.html:178"
+    },
+    "Pick a report to open its <strong>Colors</strong> editor. A saved theme recolors the published report for everyone.": {
+      "ref": "templates/pages/themes.html:35"
+    },
+    "Policy details visible only to those who can update this report's data.": {
+      "ref": "templates/pages/provenance.html:152"
+    },
+    "Policy hash": {
+      "ref": "templates/pages/provenance.html:146"
+    },
+    "Presentation": {
+      "ref": "templates/pages/presentation_slide.html:73"
+    },
+    "Presentation name": {
+      "ref": "templates/pages/presentation.html:147"
+    },
+    "Presentations — OnePage": {
+      "ref": "templates/pages/presentations.html:2"
+    },
+    "Publish": {
+      "ref": "templates/pages/upload.html:32"
+    },
+    "Publish dashboard": {
+      "ref": "templates/pages/upload.html:64"
+    },
+    "Publish immediately": {
+      "ref": "templates/pages/upload.html:60"
+    },
+    "RLS policy": {
+      "ref": "templates/pages/provenance.html:139"
+    },
+    "Recolor": {
+      "ref": "templates/pages/themes.html:53"
+    },
+    "Reference table name": {
+      "ref": "templates/pages/reference.html:80"
+    },
+    "Registered": {
+      "ref": "templates/pages/provenance.html:65"
+    },
+    "Report / generator": {
+      "ref": "templates/pages/reference.html:34"
+    },
+    "Report lineage": {
+      "ref": "templates/pages/provenance.html:20"
+    },
+    "Rows": {
+      "ref": "templates/pages/reference.html:48"
+    },
+    "Run ID": {
+      "ref": "templates/pages/provenance.html:163"
+    },
+    "Run exists, but details visible only to those who can update this report's data.": {
+      "ref": "templates/pages/provenance.html:49"
+    },
+    "Run input sources": {
+      "ref": "templates/pages/provenance.html:174"
+    },
+    "Run {ctx:2}": {
+      "ref": "templates/pages/provenance.html:34"
+    },
+    "Search by key…": {
+      "ref": "templates/pages/reference_detail.html:56"
+    },
+    "Select generator…": {
+      "ref": "templates/pages/reference.html:111"
+    },
+    "Semantics": {
+      "ref": "templates/pages/provenance.html:93"
+    },
+    "Set 'Fox analyst'": {
+      "ref": "templates/pages/quests.html:118"
+    },
+    "Settings": {
+      "ref": "templates/pages/reference_detail.html:27"
+    },
+    "Show": {
+      "ref": "templates/pages/presentation.html:169"
+    },
+    "Show: nothing clicks for you": {
+      "ref": "templates/pages/quests.html:154"
+    },
+    "Shows on each slide the report publication date and data date, and marks those that are outdated or no longer open.": {
+      "ref": "templates/pages/presentation.html:209"
+    },
+    "Slide": {
+      "ref": "templates/pages/presentation_slide.html:131"
+    },
+    "Slide file missing": {
+      "ref": "templates/pages/presentation_slide.html:95"
+    },
+    "Slides": {
+      "ref": "templates/pages/presentation.html:176"
+    },
+    "Slug": {
+      "ref": "templates/pages/reference.html:45"
+    },
+    "Split PDF into slides by page": {
+      "ref": "templates/pages/presentation.html:200"
+    },
+    "Started": {
+      "ref": "templates/pages/provenance.html:40"
+    },
+    "Streak:": {
+      "ref": "templates/pages/quests.html:58"
+    },
+    "Themes": {
+      "ref": "templates/pages/themes.html:2"
+    },
+    "This generator version did not freeze semantics.json.": {
+      "ref": "templates/pages/provenance.html:104"
+    },
+    "This generator version does not declare dependencies.": {
+      "ref": "templates/pages/provenance.html:87"
+    },
+    "This run did not resolve any reference table.": {
+      "ref": "templates/pages/provenance.html:133"
+    },
+    "This version is not associated with a generator run (loaded directly).": {
+      "ref": "templates/pages/provenance.html:51"
+    },
+    "Three work situations a day: what to hand to an AI assistant, how to frame the task, what to trust. Three weeks make a whole picture.": {
+      "ref": "templates/pages/quests.html:88"
+    },
+    "To report": {
+      "ref": "templates/pages/provenance.html:28"
+    },
+    "Type reference": {
+      "ref": "templates/pages/upload.html:88"
+    },
+    "Upload a dashboard": {
+      "ref": "templates/pages/themes.html:75"
+    },
+    "Verification": {
+      "ref": "templates/pages/presentation.html:207"
+    },
+    "Verify before show": {
+      "ref": "templates/pages/presentation.html:165"
+    },
+    "Visible only to those who can update this report's data.": {
+      "ref": "templates/pages/provenance.html:110"
+    },
+    "Waiting for file…": {
+      "ref": "templates/pages/upload.html:81"
+    },
+    "You don’t own any dashboards yet. Upload one to start theming.": {
+      "ref": "templates/pages/themes.html:72"
+    },
+    "Your rank": {
+      "ref": "templates/pages/quests.html:100"
+    },
+    "[ no reports to recolor ]": {
+      "ref": "templates/pages/themes.html:71"
+    },
+    "accepts": {
+      "ref": "templates/pages/upload.html:85"
+    },
+    "as-is, at its own address": {
+      "ref": "templates/pages/presentation.html:186"
+    },
+    "days {ctx:2}": {
+      "ref": "templates/pages/quests.html:58"
+    },
+    "e.g. Risk Exposure Heatmap": {
+      "ref": "templates/pages/upload.html:51"
+    },
+    "expires in": {
+      "ref": "templates/pages/share.html:33"
+    },
+    "has": {
+      "ref": "templates/pages/upload.html:92"
+    },
+    "idle": {
+      "ref": "templates/pages/upload.html:83"
+    },
+    "must be a self-contained file": {
+      "ref": "templates/pages/upload.html:39"
+    },
+    "new dashboard": {
+      "ref": "templates/pages/upload.html:17"
+    },
+    "presentation · display order": {
+      "ref": "templates/pages/presentation.html:144"
+    },
+    "read-only": {
+      "ref": "templates/pages/share.html:31"
+    },
+    "ready slide file, up to 10 MB": {
+      "ref": "templates/pages/presentation.html:195"
+    },
+    "show me in team ranking": {
+      "ref": "templates/pages/quests.html:105"
+    },
+    "slide(s) ·": {
+      "ref": "templates/pages/presentations.html:51"
+    },
+    "slides": {
+      "ref": "templates/pages/presentation.html:150"
+    },
+    "up to 20 MB, one page per slide": {
+      "ref": "templates/pages/presentation.html:192"
+    },
+    "version": {
+      "ref": "templates/pages/provenance.html:18"
+    },
+    "visible only to you": {
+      "ref": "templates/pages/presentation.html:149"
+    },
+    "without reference table": {
+      "ref": "templates/pages/provenance.html:126"
+    },
+    "workspace · display order": {
+      "ref": "templates/pages/presentations.html:38"
+    },
+    "workspace · platform reference tables for generators": {
+      "ref": "templates/pages/reference.html:17"
+    },
+    "workspace · recolor reports": {
+      "ref": "templates/pages/themes.html:17"
+    },
+    "you can recolor": {
+      "ref": "templates/pages/themes.html:29"
+    },
+    "· current": {
+      "ref": "templates/pages/provenance.html:18"
+    },
+    "← Back": {
+      "ref": "templates/pages/presentation_slide.html:85"
+    }
+  }
+}

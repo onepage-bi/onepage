@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}OnePage — {{ _('Generators') }}{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'generators' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '#', false], [_('Generators'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content fluid">
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow">{{ _('workspace') }} · {{ _('generated reports') }}</div>
+          <h1 class="page-title">{{ _('Generators') }}</h1>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="input-wrap" style="width:280px">
+          <svg class="ico ico-12 leading"><use href="#ic-search"/></svg>
+          <input id="dash-search" class="input sm" placeholder="{{ _('Search title…') }}" />
+        </div>
+        <div class="grow"></div>
+        <span class="mono" style="font-size:11px;color:var(--ink-dim)">
+          {{ _('{n} reports you can run', n=dashboards | length) }}
+        </span>
+        {% if user.role in ('administrator', 'superuser') %}
+        <button type="button" id="btn-new-generated" class="btn sm primary js-gen-create-trigger">
+          <svg class="ico ico-12"><use href="#ic-plus"/></svg>
+          {{ _('New generated report') }}
+        </button>
+        {% endif %}
+      </div>
+
+      {% if dashboards %}
+      <div style="font-size:12px;color:var(--ink-dim);font-family:var(--font-mono);margin:4px 2px 14px">
+        {{ _('Click a report to open its') }} <strong>{{ _('Data') }}</strong> {{ _('panel and run the generator.') }}
+      </div>
+      <div id="dash-grid" class="dash-grid">
+        {% for d in dashboards %}
+        {% set run = last_runs.get(d.id) %}
+        <a class="dash-card" href="/d/{{ d.id }}?dock=data"
+           data-search="{{ (d.title ~ ' ' ~ (d.description or '') ~ ' ' ~ generator_names.get(d.generator_id, '')) | lower }}">
+          <div class="preview">
+            <iframe class="preview-frame"
+                    data-src="/render/{{ d.id }}/"
+                    scrolling="no" tabindex="-1"
+                    style="position:absolute;top:0;left:0;width:1280px;height:800px;transform-origin:top left;border:none;pointer-events:none;opacity:0;transition:opacity .4s"></iframe>
+          </div>
+          <div class="meta-row">
+            {% if not d.is_published %}<span class="badge draft">{{ _('draft') }}</span>{% endif %}
+            <span class="mono" style="font-size:11px;color:var(--ink-dim)">{{ generator_names.get(d.generator_id, '—') }}</span>
+            <span class="grow"></span>
+            <span class="btn xs ghost" style="pointer-events:none">
+              <svg class="ico ico-12"><use href="#ic-zap"/></svg>
+              {{ _('Data') }}
+            </span>
+          </div>
+          <div class="name-row">{{ d.title }}</div>
+          {% if d.description %}<div class="desc-row">{{ d.description }}</div>{% endif %}
+          <div class="foot-row">
+            <span class="mono">v{{ d.current_version }}</span>
+            <span class="sep">·</span>
+            {% if not run %}
+              <span class="mono" style="color:var(--ink-dim)">{{ _('never run') }}</span>
+            {% elif run.status == 'running' %}
+              <span class="badge warning">{{ _('running…') }}</span>
+            {% elif run.status == 'success' %}
+              <span class="badge success">{{ _('ok') }} · {{ (run.finished_at or run.started_at).strftime('%Y-%m-%d') }}</span>
+            {% else %}
+              <span class="mono" style="color:var(--red, #f85149)">{{ run.status }} · {{ (run.finished_at or run.started_at).strftime('%Y-%m-%d') }}</span>
+            {% endif %}
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="dash-table-wrap">
+        <div class="empty">
+          <div class="ascii">[ {{ _('no generated reports') }} ]</div>
+          <p>{{ _('No generator-backed report is assigned to you yet.') }}</p>
+          {% if user.role in ('administrator', 'superuser') %}
+          <button type="button" class="btn sm primary js-gen-create-trigger" style="margin-top:12px">
+            <svg class="ico ico-12"><use href="#ic-plus"/></svg>
+            {{ _('New generated report') }}
+          </button>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+      {% if user.role in ('administrator', 'superuser') %}
+      <div id="gen-create-overlay" class="overlay">
+        <div class="modal">
+          <div class="card-head">
+            <span class="card-title">{{ _('New generated report') }}</span>
+            <span class="grow"></span>
+            <button type="button" id="gen-create-close" class="btn icon xs ghost" title="{{ _('Close') }}">
+              <svg class="ico ico-12"><use href="#ic-x"/></svg>
+            </button>
+          </div>
+          <div class="card-body">
+            <form id="gen-create-form" style="display:flex;flex-direction:column;gap:12px">
+              <div class="field">
+                <label class="field-label">{{ _('Title *') }}</label>
+                <input type="text" name="title" id="gen-create-title" class="input sm" maxlength="512" required placeholder="{{ _('Report name') }}">
+              </div>
+              <div class="field">
+                <label class="field-label">{{ _('Generator *') }}</label>
+                <select name="generator_id" id="gen-create-select" class="select sm">
+                  <option value="">{{ _('Loading…') }}</option>
+                </select>
+              </div>
+              <div id="gen-create-msg" class="mono" style="font-size:11px;color:var(--ink-dim)"></div>
+              <div style="display:flex;gap:8px;justify-content:flex-end">
+                <button type="button" id="gen-create-cancel" class="btn sm">{{ _('Cancel') }}</button>
+                <button type="submit" id="gen-create-submit" class="btn sm primary">{{ _('Create') }}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </main>
+</div>
+
+{% include "components/palette.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/palette.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/hotkeys.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/generators.js?v={{ asset_v }}" defer></script>
+{% endblock %}

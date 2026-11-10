@@ -1,0 +1,86 @@
+OnePage
+Copyright 2026 Vladislav Kozhukhov
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+It includes, or downloads at build time, the third-party software and assets
+listed below. Per-component detail (versions, sources, licenses) is in
+THIRD_PARTY.md.
+
+-------------------------------------------------------------------------
+1. Included in this repository
+-------------------------------------------------------------------------
+
+Dagre (@dagrejs/dagre 1.1.1) - MIT
+  static/js/vendor/dagre.min.js        License: static/js/vendor/dagre.LICENSE
+
+SheetJS Community Edition 0.20.3 - Apache-2.0
+  Copyright (C) 2013-present SheetJS
+  static/js/vendor/xlsx.full.min.js    License: static/js/vendor/xlsx.LICENSE
+
+pdf-lib - MIT
+  static/vendor/pdf-lib.min.js         License: static/vendor/pdf-lib.LICENSE
+
+PDF.js 4.10.38 - Apache-2.0
+  Copyright 2024 Mozilla Foundation
+  static/vendor/pdfjs/                 License: static/vendor/pdfjs/LICENSE
+
+Fonts - SIL Open Font License 1.1
+  Inter Tight       static/fonts/INTER-OFL.txt
+  JetBrains Mono    static/fonts/JETBRAINS-MONO-OFL.txt
+  Unbounded         static/fonts/UNBOUNDED-OFL.txt
+
+-------------------------------------------------------------------------
+2. Downloaded at build or install time (not stored in git)
+-------------------------------------------------------------------------
+
+These are fetched by scripts in deploy/ (make assets and related targets)
+into gitignored directories. They are listed here because a deployment that
+ran those scripts redistributes them.
+
+Pyodide v314.0.2 - MPL-2.0                       deploy/fetch-pyodide.py
+  and the packages loaded from its distribution (pandas, numpy,
+  python-calamine, xlrd, duckdb, micropip) plus the PyPI wheels openpyxl 3.1.5
+  and et_xmlfile 2.0.0. Each package keeps its own license; see the
+  pyodide-lock.json shipped with the download. pandas and numpy are BSD-3-Clause.
+DuckDB-WASM 1.32.0 (DuckDB engine v1.4.3) - MIT  deploy/fetch-duckdb-wasm.py
+  and DuckDB extensions mirrored from extensions.duckdb.org.
+Apache Arrow (apache-arrow 17.0.0, ESM build) - Apache-2.0
+  with flatbuffers 24.12.23 and tslib 2.8.1, fetched by the same script.
+
+-------------------------------------------------------------------------
+3. psycopg 3 (LGPL-3.0) - not distributed with this repository
+-------------------------------------------------------------------------
+
+psycopg is NOT listed in requirements.txt and is NOT included in this
+repository. The desktop agent (agent/gpsource.py) imports it lazily, and only
+when a Greenplum/PostgreSQL source is used. deploy/make-agent-kit.sh downloads
+"psycopg[binary]" wheels from PyPI into an offline kit (deploy/agent_tools/).
+
+If you build and hand out such a kit, you are redistributing psycopg, and the
+LGPL-3.0 obligations apply to you: provide the license text and keep the
+library replaceable by the recipient (the kit installs it as separate wheels,
+which can be swapped). The binary wheels also bundle libpq and other native
+libraries with their own licenses; check the wheel metadata before shipping.
+This is a description of the situation, not legal advice.
+
+-------------------------------------------------------------------------
+4. Generated images and video
+-------------------------------------------------------------------------
+
+Some media in this repository was generated with Higgsfield, an AI image and
+video service: the quest cards and companion sprites (static/img/quests/),
+the practicum illustrations (static/img/learn/), static/img/docs/hero.webp
+and static/video/season2-intro.mp4 (and its poster frame
+  static/video/season2-intro-poster.jpg).
+
+These files were generated under the copyright holder's paid Higgsfield
+subscription, whose terms grant the subscriber the rights to the generated
+results, including commercial use; the copyright holder licenses them with
+the rest of this repository under Apache-2.0. Two honest caveats remain:
+whether AI-generated images are protected by copyright at all is unsettled
+in many jurisdictions, so the license applies to them only to the extent any
+rights exist; and Higgsfield's terms do not allow using generated results to
+train models — please do not use these files for that.
+
+The other screenshots in static/img/docs/ were captured from the product by
+tools/docs_shots.py on a synthetic report.

@@ -1,0 +1,125 @@
+{# Sidebar — render given `user` and optional `active` #}
+<aside class="sidebar">
+  <div class="sidebar-head">
+    <a class="sidebar-logo" href="/" title="{{ _('Dashboards') }}">
+      <span class="mark">OP</span>
+      <span class="name">OnePage</span>
+    </a>
+    <button id="sidebar-collapse" class="sidebar-collapse-btn" title="{{ _('Collapse sidebar  [') }}"
+            data-title-expanded="{{ _('Collapse sidebar  [') }}" data-title-collapsed="{{ _('Expand sidebar  [') }}">
+      <svg class="ico ico-12"><use href="#ic-panel"/></svg>
+    </button>
+  </div>
+
+  <div class="sidebar-section-label">{{ _('Workspace') }}</div>
+  <nav class="sidebar-nav">
+    <a class="nav-item {% if active == 'dashboards' %}active{% endif %}" href="/">
+      <svg class="ico"><use href="#ic-grid"/></svg>
+      <span class="nav-label">{{ _('Dashboards') }}</span>
+      {% if dashboard_count is defined %}<span class="nav-meta">{{ dashboard_count }}</span>{% endif %}
+    </a>
+    {% if user and user.role in ('administrator', 'superuser') %}
+    <a class="nav-item {% if active == 'upload' %}active{% endif %}" href="/upload">
+      <svg class="ico"><use href="#ic-upload"/></svg>
+      <span class="nav-label">{{ _('Upload') }}</span>
+    </a>
+    {% endif %}
+    <a class="nav-item {% if active == 'presentations' %}active{% endif %}" href="/presentations">
+      <svg class="ico"><use href="#ic-play"/></svg>
+      <span class="nav-label">{{ _('Presentations') }}</span>
+    </a>
+    {% if settings.navigators_enabled %}
+    <a class="nav-item {% if active == 'navigators' %}active{% endif %}" href="/navigators">
+      <svg class="ico"><use href="#ic-compass"/></svg>
+      <span class="nav-label">{{ _('Navigators') }}</span>
+    </a>
+    {% endif %}
+    <a class="nav-item {% if active == 'generators' %}active{% endif %}" href="/generators">
+      <svg class="ico"><use href="#ic-zap"/></svg>
+      <span class="nav-label">{{ _('Generators') }}</span>
+    </a>
+    <a class="nav-item {% if active == 'data-sources' %}active{% endif %}" href="/data-sources">
+      <svg class="ico"><use href="#ic-database"/></svg>
+      <span class="nav-label">{{ _('Data Sources') }}</span>
+    </a>
+    <a class="nav-item {% if active == 'reference' %}active{% endif %}" href="/reference">
+      <svg class="ico"><use href="#ic-rows"/></svg>
+      <span class="nav-label">{{ _('Reference tables') }}</span>
+    </a>
+    <a class="nav-item {% if active == 'data-quality' %}active{% endif %}" href="/data-quality">
+      <svg class="ico"><use href="#ic-alert"/></svg>
+      <span class="nav-label">{{ _('Data Quality') }}</span>
+    </a>
+    <a class="nav-item {% if active == 'catalog' %}active{% endif %}" href="/catalog">
+      <svg class="ico"><use href="#ic-folder"/></svg>
+      <span class="nav-label">{{ _('Catalogue') }}</span>
+    </a>
+    {% if settings is defined and settings.explore_enabled %}
+    <a class="nav-item {% if active == 'explore' %}active{% endif %}" href="/explore">
+      <svg class="ico"><use href="#ic-search"/></svg>
+      <span class="nav-label">{{ _('Explore') }}</span>
+    </a>
+    {% endif %}
+    <a class="nav-item {% if active == 'anonymizer' %}active{% endif %}" href="/anonymizer">
+      <svg class="ico"><use href="#ic-eye-off"/></svg>
+      <span class="nav-label">{{ _('Anonymizer') }}</span>
+    </a>
+    {% if settings is defined and settings.quests_enabled %}
+    <a class="nav-item {% if active == 'quests' %}active{% endif %}" href="/quests">
+      <svg class="ico"><use href="#ic-gift"/></svg>
+      <span class="nav-label">{{ _('Quests') }}</span>
+    </a>
+    {% endif %}
+    <a class="nav-item {% if active == 'learn' %}active{% endif %}" href="/learn">
+      <svg class="ico"><use href="#ic-cap"/></svg>
+      <span class="nav-label">{{ _('Practicum') }}</span>
+    </a>
+    <a class="nav-item {% if active == 'docs' %}active{% endif %}" href="/docs">
+      <svg class="ico"><use href="#ic-book"/></svg>
+      <span class="nav-label">{{ _('Dev Guide') }}</span>
+    </a>
+  </nav>
+
+  {% if user and user.role == 'administrator' %}
+  <div class="sidebar-section-label">{{ _('Admin') }}</div>
+  <nav class="sidebar-nav">
+    <a class="nav-item {% if active == 'admin' %}active{% endif %}" href="/admin">
+      <svg class="ico"><use href="#ic-users"/></svg>
+      <span class="nav-label">{{ _('Users') }}</span>
+      {% if user_count is defined %}<span class="nav-meta">{{ user_count }}</span>{% endif %}
+    </a>
+    <a class="nav-item {% if active == 'audit' %}active{% endif %}" href="/admin/audit">
+      <svg class="ico"><use href="#ic-history"/></svg>
+      <span class="nav-label">{{ _('Audit log') }}</span>
+    </a>
+    <a class="nav-item {% if active == 'perf' %}active{% endif %}" href="/admin/perf">
+      <svg class="ico"><use href="#ic-zap"/></svg>
+      <span class="nav-label">{{ _('Performance') }}</span>
+    </a>
+    {% if settings is defined and settings.quests_enabled %}
+    <a class="nav-item {% if active == 'admin-quests' %}active{% endif %}" href="/admin/quests">
+      <svg class="ico"><use href="#ic-gift"/></svg>
+      <span class="nav-label">{{ _('Quests') }}</span>
+    </a>
+    {% endif %}
+  </nav>
+  {% endif %}
+
+  <div class="sidebar-foot">
+    {% if user %}
+    <div class="user-chip">
+      <span class="avatar">{{ user.person_id[:2] | upper }}</span>
+      <div class="who">
+        {# Link to the personal page: the only way to the desktop application keys,
+           so it must be where a person looks for "themselves". #}
+        <a class="person_id" href="/me" title="{{ _('My account') }}">{{ user.person_id }}</a>
+        <span class="role {{ user.role }}">{{ user.role }}</span>
+      </div>
+      {% with place = 'sidebar' %}{% include "components/lang_switch.html" %}{% endwith %}
+      <a class="btn icon xs ghost" href="/logout" title="{{ _('Sign out') }}">
+        <svg class="ico ico-12"><use href="#ic-logout"/></svg>
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</aside>

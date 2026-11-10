@@ -1,0 +1,525 @@
+{
+ "sources": [
+  {
+   "key": "folder:Stock_RDC",
+   "name": "Stock_RDC",
+   "source_id": 1,
+   "status": "error",
+   "findings": 7,
+   "open": 6,
+   "stale_after_days": null,
+   "min_files": null,
+   "thresholds": {
+    "min_rows": {},
+    "drop_pct": null
+   },
+   "owner_id": null,
+   "version": 2,
+   "stale_after_days_default": 7
+  },
+  {
+   "key": "folder:Branches_Data",
+   "name": "Branches_Data",
+   "source_id": 2,
+   "status": "warn",
+   "findings": 4,
+   "open": 4,
+   "stale_after_days": 14,
+   "min_files": 2,
+   "thresholds": {
+    "min_rows": {},
+    "drop_pct": 50
+   },
+   "owner_id": 7,
+   "version": 3,
+   "stale_after_days_default": 7
+  },
+  {
+   "key": "greenplum:gp_dwh",
+   "name": "gp_dwh",
+   "source_id": 3,
+   "status": "ok",
+   "findings": 1,
+   "open": 1,
+   "stale_after_days": 14,
+   "min_files": null,
+   "thresholds": {
+    "min_rows": {},
+    "drop_pct": null
+   },
+   "owner_id": null,
+   "version": 4,
+   "stale_after_days_default": 7
+  }
+ ],
+ "findings": [
+  {
+   "id": "f01schemacol0001",
+   "severity": "warn",
+   "kind": "schema_missing_column",
+   "source": "folder:Stock_RDC",
+   "source_id": 1,
+   "generator": "rdcstock",
+   "dashboard_ids": [
+    "d1"
+   ],
+   "file": "Stock_*.xlsx",
+   "sheet": "Sheet1",
+   "column": "SKU_Discription",
+   "message": "Column «SKU_Discription» is declared but not found on sheet «Sheet1»; looks like «SKU Description»",
+   "since_run": 101,
+   "first_seen_at": "2026-08-05T09:00:00",
+   "detail": {
+    "role": "data",
+    "suggest": "SKU Description",
+    "affected": [
+     {
+      "generator": "rdcstock",
+      "reports": [
+       {
+        "id": "d1",
+        "title": "RDC Stock Report"
+       }
+      ],
+      "confidence": "declared"
+     }
+    ]
+   },
+   "acked": false,
+   "ack": null
+  },
+  {
+   "id": "f02schemasheet002",
+   "severity": "warn",
+   "kind": "schema_missing_sheet",
+   "source": "folder:Stock_RDC",
+   "source_id": 1,
+   "generator": "rdcstock",
+   "dashboard_ids": [
+    "d1"
+   ],
+   "file": "Stock_*.xlsx",
+   "sheet": "Extra",
+   "column": null,
+   "message": "Sheet «Extra» not found in files «Stock_*.xlsx»",
+   "since_run": 103,
+   "first_seen_at": "2026-08-12T09:00:00",
+   "detail": {
+    "columns_declared": 3
+   },
+   "acked": false,
+   "ack": null
+  },
+  {
+   "id": "f03schemaextra003",
+   "severity": "info",
+   "kind": "schema_extra_column",
+   "source": "folder:Stock_RDC",
+   "source_id": 1,
+   "generator": "rdcstock",
+   "dashboard_ids": [
+    "d1"
+   ],
+   "file": "Stock_*.xlsx",
+   "sheet": "Sheet1",
+   "column": "Notes",
+   "message": "Column «Notes» is in the file but not declared",
+   "since_run": 105,
+   "first_seen_at": "2026-08-19T09:00:00",
+   "detail": {},
+   "acked": false,
+   "ack": null
+  },
+  {
+   "id": "f04filestale00004",
+   "severity": "warn",
+   "kind": "file_stale",
+   "source": "folder:Stock_RDC",
+   "source_id": 1,
+   "generator": "rdcstock",
+   "dashboard_ids": [
+    "d1"
+   ],
+   "file": null,
+   "sheet": null,
+   "column": null,
+   "message": "Data hasn't been updated for 20 days (threshold 14)",
+   "since_run": 101,
+   "first_seen_at": "2026-08-05T09:00:00",
+   "detail": {
+    "age_days": 20,
+    "stale_after_days": 14,
+    "newest_mtime": "2026-08-01T09:00:00"
+   },
+   "acked": true,
+   "ack": {
+    "id": 501,
+    "note": "known, waiting for IT",
+    "until_at": null,
+    "until_run_id": 110,
+    "created_by": 7
+   }
+  },
+  {
+   "id": "f05rowsdrop000005",
+   "severity": "warn",
+   "kind": "rows_drop",
+   "source": "folder:Stock_RDC",
+   "source_id": 1,
+   "generator": "rdcstock",
+   "dashboard_ids": [
+    "d1"
+   ],
+   "file": "Stock_2024.xlsx",
+   "sheet": "Sheet1",
+   "column": null,
+   "message": "Rows on sheet «Sheet1»: 40, was 100",
+   "since_run": 103,
+   "first_seen_at": "2026-08-12T09:00:00",
+   "detail": {
+    "rows": 40,
+    "previous": 100,
+    "drop_pct": 50
+   },
+   "acked": false,
+   "ack": null
+  },
+  {
+   "id": "f06checkfail00006",
+   "severity": "warn",
+   "kind": "check_fail",
+   "source": "folder:Stock_RDC",
+   "source_id": 1,
+   "generator": "rdcstock",
+   "dashboard_ids": [
+    "d1"
+   ],
+   "file": "Stock_2024.xlsx",
+   "sheet": "Sheet1",
+   "column": "Date",
+   "message": "Date is valid: 5 of 40 rows failed the «Date» check in «Stock_2024.xlsx»",
+   "since_run": 104,
+   "first_seen_at": "2026-08-15T09:00:00",
+   "detail": {
+    "count": 40,
+    "failed": 5,
+    "examples": [
+     "31.13.2024",
+     "—"
+    ],
+    "sampled": true,
+    "label": "Date is valid",
+    "type": "regex",
+    "check_id": "regex:Stock_*.xlsx/Sheet1/Date"
+   },
+   "acked": false,
+   "ack": null
+  },
+  {
+   "id": "f12rowszero000012",
+   "severity": "warn",
+   "kind": "rows_zero",
+   "source": "folder:Stock_RDC",
+   "source_id": 1,
+   "generator": "rdcstock",
+   "dashboard_ids": [
+    "d1"
+   ],
+   "file": "Stock_empty.xlsx",
+   "sheet": "Sheet2",
+   "column": null,
+   "message": "Sheet «Sheet2» of file «Stock_empty.xlsx» is empty (0 rows)",
+   "since_run": 105,
+   "first_seen_at": "2026-08-19T09:00:00",
+   "detail": {
+    "rows": 0
+   },
+   "acked": false,
+   "ack": null
+  },
+  {
+   "id": "f07newvalues00007",
+   "severity": "warn",
+   "kind": "new_values",
+   "source": "folder:Branches_Data",
+   "source_id": 2,
+   "generator": "branches",
+   "dashboard_ids": [
+    "d2"
+   ],
+   "file": "Branch_*.xlsx",
+   "sheet": "Sheet1",
+   "column": "Region",
+   "message": "New values in «Region» (2): South-2, Coast",
+   "since_run": 210,
+   "first_seen_at": "2026-08-20T09:00:00",
+   "detail": {
+    "new": [
+     "South-2",
+     "Coast"
+    ],
+    "baseline_version": 3,
+    "baseline_size": 12,
+    "files": [
+     "Branch_2024.xlsx"
+    ]
+   },
+   "acked": false,
+   "ack": null
+  },
+  {
+   "id": "f08reqfilegone008",
+   "severity": "error",
+   "kind": "required_file_gone",
+   "source": "folder:Branches_Data",
+   "source_id": 2,
+   "generator": "branches",
+   "dashboard_ids": [
+    "d2"
+   ],
+   "file": "Branch_*.xlsx",
+   "sheet": null,
+   "column": null,
+   "message": "Mandatory files «Branch_*.xlsx» disappeared: was 2, now 0",
+   "since_run": 209,
+   "first_seen_at": "2026-08-19T10:00:00",
+   "detail": {
+    "previous": 2
+   },
+   "acked": false,
+   "ack": null
+  },
+  {
+   "id": "f09headershift009",
+   "severity": "info",
+   "kind": "header_shift",
+   "source": "folder:Branches_Data",
+   "source_id": 2,
+   "generator": "branches",
+   "dashboard_ids": [
+    "d2"
+   ],
+   "file": "Branch_2024.xlsx",
+   "sheet": "Sheet1",
+   "column": null,
+   "message": "The header row on sheet «Sheet1» has shifted: 1 → 2",
+   "since_run": 208,
+   "first_seen_at": "2026-08-18T09:00:00",
+   "detail": {
+    "header_row": 2,
+    "previous": 1
+   },
+   "acked": false,
+   "ack": null
+  },
+  {
+   "id": "f10deaddecl00010",
+   "severity": "info",
+   "kind": "dead_declaration",
+   "source": "folder:Branches_Data",
+   "source_id": 2,
+   "generator": "branches",
+   "dashboard_ids": [
+    "d2"
+   ],
+   "file": "Branch_*.xlsx",
+   "sheet": "Sheet1",
+   "column": "Comment",
+   "message": "Column «Comment» is declared and present in the file, but the generator never read it",
+   "since_run": 210,
+   "first_seen_at": "2026-08-20T09:00:00",
+   "detail": {
+    "runs_checked": 3
+   },
+   "acked": false,
+   "ack": null
+  },
+  {
+   "id": "f11unexpfile00011",
+   "severity": "info",
+   "kind": "schema_unexpected_file",
+   "source": "greenplum:gp_dwh",
+   "source_id": 3,
+   "generator": "dwhreject",
+   "dashboard_ids": [
+    "d3"
+   ],
+   "file": "extra_report.csv",
+   "sheet": null,
+   "column": null,
+   "message": "File «extra_report.csv» is in the folder but doesn't match any input",
+   "since_run": 55,
+   "first_seen_at": "2026-08-20T09:00:00",
+   "detail": {
+    "reason": "not declared in inputs"
+   },
+   "acked": false,
+   "ack": null
+  },
+  {
+   "id": "f13unmapped000013",
+   "severity": "warn",
+   "kind": "unmapped_values",
+   "source": "greenplum:gp_dwh",
+   "source_id": 3,
+   "generator": "dwhreject",
+   "dashboard_ids": [
+    "d3"
+   ],
+   "file": "nwd_bv_map.xlsx",
+   "sheet": "Sheet1",
+   "column": "BV",
+   "message": "Not in reference table «BV NWD→CONTOSO» (3): 1001, 1002, 1003",
+   "since_run": 55,
+   "first_seen_at": "2026-08-20T09:00:00",
+   "detail": {
+    "table": "nwd_bv",
+    "title": "BV NWD→CONTOSO",
+    "exists": true,
+    "current_version": 7,
+    "responsible": {
+     "id": 4,
+     "display_name": "Alex N."
+    },
+    "overflow": false,
+    "values": [
+     "1001",
+     "1002",
+     "1003"
+    ],
+    "total": 3,
+    "more": 0,
+    "reference_url": "/reference/nwd_bv",
+    "template_url": "/api/reference/nwd_bv/template?unmapped=1&keys=1001%0A1002%0A1003",
+    "files": [
+     "SL_1.xlsx"
+    ]
+   },
+   "acked": false,
+   "ack": null
+  },
+  {
+   "id": "f14rerunneeded0014",
+   "severity": "warn",
+   "kind": "rerun_needed",
+   "source": "greenplum:gp_dwh",
+   "source_id": 3,
+   "generator": "dwhreject",
+   "dashboard_ids": [
+    "d3"
+   ],
+   "file": null,
+   "sheet": null,
+   "column": null,
+   "message": "«DWH Reject» is built on reference table «BV NWD→CONTOSO» v6, current is v7: a recalculation is needed",
+   "since_run": 55,
+   "first_seen_at": "2026-08-20T09:00:00",
+   "detail": {
+    "dashboard_id": "d3",
+    "title": "DWH Reject",
+    "slug": "nwd_bv",
+    "table_title": "BV NWD→CONTOSO",
+    "used_version": 6,
+    "current_version": 7,
+    "applied": true,
+    "run_id": 55,
+    "responsible": {
+     "id": 4,
+     "display_name": "Alex N."
+    },
+    "reference_url": "/reference/nwd_bv",
+    "dashboard_url": "/d/d3"
+   },
+   "acked": false,
+   "ack": null
+  }
+ ],
+ "pending_values": [
+  {
+   "source_id": 2,
+   "generator": "branches",
+   "generator_id": 20,
+   "match": "Branch_*.xlsx",
+   "sheet": "Sheet1",
+   "column": "Region",
+   "new": [
+    "South-2",
+    "Coast"
+   ],
+   "baseline_version": 3
+  }
+ ],
+ "history": {
+  "folder:Stock_RDC|rdcstock": {
+   "runs": [
+    105,
+    104,
+    103,
+    102,
+    101
+   ],
+   "file_count": [
+    3,
+    3,
+    4,
+    4,
+    5
+   ],
+   "rows": {
+    "Stock_2024.xlsx/Sheet1": [
+     40,
+     42,
+     88,
+     95,
+     100
+    ],
+    "Stock_empty.xlsx/Sheet2": [
+     0,
+     0,
+     5,
+     5,
+     5
+    ]
+   }
+  },
+  "folder:Branches_Data|branches": {
+   "runs": [
+    210,
+    209,
+    208
+   ],
+   "file_count": [
+    1,
+    2,
+    2
+   ],
+   "rows": {
+    "Branch_2024.xlsx/Sheet1": [
+     30,
+     29,
+     28
+    ]
+   }
+  },
+  "greenplum:gp_dwh|dwhreject": {
+   "runs": [
+    55,
+    54
+   ],
+   "file_count": [
+    2,
+    2
+   ],
+   "rows": {}
+  }
+ },
+ "stats": {
+  "sources_ok": 1,
+  "sources_warn": 1,
+  "sources_error": 1,
+  "open": 13,
+  "acked": 1,
+  "pending_values": 1,
+  "stale": 1
+ }
+}

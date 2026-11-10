@@ -1,0 +1,97 @@
+{# Declared-vs-observed schema diff, rendered from `app/services/schemadiff.diff()`
+   output. One macro, two call sites (viewer.html's Data dock, the /data-sources
+   drawer) so a report team and a data-catalogue admin read the exact same
+   compact list — the point of this partial is that there is only one place
+   that decides what "declared" and "observed" look like on screen.
+
+   `diff` is `schemadiff.diff(inputs, files)` output, or None when there is
+   nothing observed yet (no run has recorded a SourceObservation). `inputs`
+   is `genmanifest.inputs_for(manifest)` output — may be `[]` for a legacy
+   generator that declared nothing (it reads every Excel file it finds).
+   `observed_at` and `dirs` are optional context for the trailing caveat
+   line — `observed_at` is a display-ready date string (started_at of the
+   run the observation came from), not the run's id: GenerationRun.id is a
+   global autoincrement no other part of the page labels runs by, so "run
+   #137" would read as a typo rather than as a date a person can place.
+
+   Root class `sd-diff` is a stable hook: tests pin its presence on both
+   /d/{id} and /data-sources so a template edit can't silently drop the
+   whole block. #}
+{% macro render_diff(diff, inputs, observed_at=none, dirs=none) %}
+<div class="sd-diff">
+  {% if not inputs %}
+  <div class="sd-note">
+    {{ _('No declared inputs — this generator reads every Excel file it finds') }}{% if dirs %} {{ _('in') }}
+    {% for d in dirs %}<span class="mono">{{ d }}</span>{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}.
+  </div>
+  {% else %}
+  <div class="sd-patterns">
+    {% for item in inputs %}
+    {% set match = item.match %}
+    {% set info = diff.per_pattern.get(match) if diff else none %}
+    {% set unmatched = diff and match in diff.unmatched_patterns %}
+    <div class="sd-pattern">
+      <div class="sd-pattern-head">
+        <code class="mono">{{ match }}</code>
+        <span class="sd-role mono">{{ item.role }}{% if item.required %} · {{ _('required') }}{% endif %}</span>
+        <span class="sd-count mono">
+          {% if diff is none %}{{ _('not yet observed') }}
+          {% elif unmatched %}{{ _n(0, '{n} file|{n} files') }}
+          {% else %}{{ _n(info.files if info else 0, '{n} file|{n} files') }}{% endif %}
+        </span>
+        {% if unmatched and item.required %}
+        <span class="sd-badge sd-err" title="{{ _('A required pattern with no matching file blocks the generator.') }}">{{ _('missing') }}</span>
+        {% elif unmatched %}
+        <span class="sd-badge sd-warn" title="{{ _('Declared, but no file in the observed folder matched it.') }}">{{ _('unmatched') }}</span>
+        {% endif %}
+        {% if info %}
+          {% for sheet_pattern, sh in info.sheets.items() %}
+            {% if not sh.observed %}
+            <span class="sd-badge sd-info" title="{{ _('No file matching {match} had a sheet matching {pattern} in the observed set (cached, unreadable, or excluded).', match=match, pattern=sheet_pattern) }}">{{ _('sheet not observed') }}</span>
+            {% elif sh.missing_columns and item.role == 'data' %}
+            <span class="sd-badge sd-warn" title="{{ _('Declared column(s) not found in sheet {pattern}', pattern=sheet_pattern) }}">{{ _('missing cols') }}</span>
+            {% endif %}
+            {% if sh.observed and sh.extra_columns %}
+            <span class="sd-badge sd-info" title="{{ _('Observed column(s) beyond what {pattern} declares', pattern=sheet_pattern) }}">{{ _('extra cols') }}</span>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      </div>
+      {% if info %}
+        {% for sheet_pattern, sh in info.sheets.items() %}
+          {% if not sh.observed %}
+          <div class="sd-sheet mono">{{ sheet_pattern }}</div>
+          <div class="sd-note">{{ _h('sheet not observed — no schema was read for it this run (cached file, unreadable, or excluded), so "missing columns" cannot be judged.') }}</div>
+          {% elif sh.missing_columns or sh.extra_columns %}
+          <div class="sd-sheet mono">{{ sheet_pattern }}</div>
+          {% if sh.missing_columns %}
+          <div class="sd-chiprow">
+            {% for c in sh.missing_columns %}<span class="sd-chip sd-chip-missing mono">{{ c }}</span>{% endfor %}
+          </div>
+          {% endif %}
+          {% if sh.extra_columns %}
+          <div class="sd-chiprow">
+            {% for c in sh.extra_columns %}<span class="sd-chip sd-chip-extra mono">{{ c }}</span>{% endfor %}
+          </div>
+          {% endif %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% if diff and diff.consumed_but_undeclared %}
+  <div class="sd-info-line mono">
+    {{ _('consumed but undeclared:') }}
+    {% for cu in diff.consumed_but_undeclared[:6] %}{{ cu.file }}/{{ cu.sheet }}: {{ cu.columns | join(', ') }}{% if not loop.last %} · {% endif %}{% endfor %}
+    {% if diff.consumed_but_undeclared | length > 6 %} {{ _('… and {n} more', n=diff.consumed_but_undeclared | length - 6) }}{% endif %}
+  </div>
+  {% endif %}
+  {% if observed_at %}
+  <div class="sd-asof mono">{{ _('observed as of {date} (cached files reflect their last cold read)', date=observed_at) }}</div>
+  {% elif diff is none %}
+  <div class="sd-asof mono">{{ _('not yet observed — declared inputs only, from the frozen manifest') }}</div>
+  {% endif %}
+  {% endif %}
+</div>
+{% endmacro %}

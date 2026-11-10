@@ -1,0 +1,470 @@
+{
+  "_meta": {
+    "chunk": "03",
+    "count": 150,
+    "lang": "en",
+    "source_files": [
+      "static/js/account.js",
+      "static/js/admin-employees.js",
+      "static/js/admin-llm.js",
+      "static/js/admin-quests.js",
+      "static/js/admin-scopes.js",
+      "static/js/admin.js",
+      "static/js/anonymizer.js",
+      "static/js/autumn.js",
+      "static/js/catalog.js"
+    ]
+  },
+  "strings": {
+    " Active OnePage accounts for inactive employees: {p1}.": {
+      "ref": "static/js/admin-employees.js:37"
+    },
+    " · (check, no save)": {
+      "ref": "static/js/admin-quests.js:240"
+    },
+    " · browser": {
+      "ref": "static/js/admin-llm.js:25"
+    },
+    " · days: ": {
+      "ref": "static/js/admin-quests.js:240"
+    },
+    " · questions: ": {
+      "ref": "static/js/admin-quests.js:239"
+    },
+    " · server": {
+      "ref": "static/js/admin-llm.js:25"
+    },
+    "% files": {
+      "ref": "static/js/catalog.js:337"
+    },
+    "(empty)": {
+      "ref": "static/js/anonymizer.js:118"
+    },
+    "1 day ago": {
+      "ref": "static/js/catalog.js:53"
+    },
+    "<canvas></canvas><div class=\"op-greet\" role=\"status\"><div class=\"title\">Happy autumn!</div></div><button class=\"op-hide\" type=\"button\">Hide falling leaves ✕</button>": {
+      "ref": "static/js/autumn.js:69"
+    },
+    "A ready sample for the prompt: header plus three masked rows — paste this, not the file.": {
+      "ref": "static/js/anonymizer.js:208"
+    },
+    "Added {id}": {
+      "ref": "static/js/admin.js:158"
+    },
+    "Address": {
+      "ref": "static/js/anonymizer.js:13"
+    },
+    "After declaring inputs, the engine will NOT pass files from the list below – 'unmatched'.": {
+      "ref": "static/js/catalog.js:433"
+    },
+    "Assign": {
+      "ref": "static/js/catalog.js:301"
+    },
+    "Assign owner": {
+      "ref": "static/js/catalog.js:295"
+    },
+    "Bank has errors": {
+      "ref": "static/js/admin-quests.js:303"
+    },
+    "Bank must be a list (JSON array)": {
+      "ref": "static/js/admin-quests.js:54"
+    },
+    "Before you send this file anywhere, check what else is inside": {
+      "ref": "static/js/anonymizer.js:167"
+    },
+    "Boolean": {
+      "ref": "static/js/anonymizer.js:13"
+    },
+    "Built-in bank failed validation": {
+      "ref": "static/js/admin-quests.js:347"
+    },
+    "Built-in bank loaded": {
+      "ref": "static/js/admin-quests.js:361"
+    },
+    "Calculating…": {
+      "ref": "static/js/catalog.js:222"
+    },
+    "Cell notes ({n}) — masking does not touch them": {
+      "ref": "static/js/anonymizer.js:156"
+    },
+    "Changed by someone else – refreshing…": {
+      "ref": "static/js/catalog.js:251"
+    },
+    "Check see_all or specify a node": {
+      "ref": "static/js/admin-scopes.js:97"
+    },
+    "City": {
+      "ref": "static/js/anonymizer.js:13"
+    },
+    "Code": {
+      "ref": "static/js/anonymizer.js:13"
+    },
+    "Column": {
+      "ref": "static/js/anonymizer.js:140"
+    },
+    "Company": {
+      "ref": "static/js/anonymizer.js:13"
+    },
+    "Confirm": {
+      "ref": "static/js/catalog.js:257"
+    },
+    "Copy JSON": {
+      "ref": "static/js/catalog.js:419"
+    },
+    "Copy sample": {
+      "ref": "static/js/anonymizer.js:214"
+    },
+    "Could not copy — select the text manually": {
+      "ref": "static/js/anonymizer.js:218"
+    },
+    "Could not process the file": {
+      "ref": "static/js/anonymizer.js:89"
+    },
+    "Could not reach the server.": {
+      "ref": "static/js/catalog.js:249"
+    },
+    "Could not read this file": {
+      "ref": "static/js/anonymizer.js:293"
+    },
+    "Could not save the file": {
+      "ref": "static/js/anonymizer.js:86"
+    },
+    "Could not start the masking engine": {
+      "ref": "static/js/anonymizer.js:53"
+    },
+    "Data is fresh as of {p1} days ago.": {
+      "ref": "static/js/catalog.js:513"
+    },
+    "Deactivate": {
+      "ref": "static/js/admin.js:109"
+    },
+    "Deactivate {p1}? Sessions will be closed.": {
+      "ref": "static/js/admin.js:121"
+    },
+    "Delete failed": {
+      "ref": "static/js/admin.js:57"
+    },
+    "Delete user {name}? Their permissions and audit history are preserved.": {
+      "ref": "static/js/admin.js:54"
+    },
+    "Done: ": {
+      "ref": "static/js/admin-scopes.js:44"
+    },
+    "Done: {p1}": {
+      "ref": "static/js/admin-scopes.js:101"
+    },
+    "Done: {p1} rows, +{p2} new, ~{p3} updated, −{p4} deactivated.{p5} Refreshing page…": {
+      "ref": "static/js/admin-employees.js:39"
+    },
+    "Email": {
+      "ref": "static/js/anonymizer.js:13"
+    },
+    "Empty": {
+      "ref": "static/js/admin-quests.js:46"
+    },
+    "Error ({p1}).": {
+      "ref": "static/js/catalog.js:252"
+    },
+    "Error: {p1}": {
+      "ref": "static/js/admin-employees.js:32"
+    },
+    "Failed": {
+      "ref": "static/js/catalog.js:425"
+    },
+    "Failed to deactivate": {
+      "ref": "static/js/admin.js:138"
+    },
+    "Failed to load config": {
+      "ref": "static/js/admin-llm.js:17"
+    },
+    "Failed to load suggestion.": {
+      "ref": "static/js/catalog.js:413"
+    },
+    "Failed to load table.": {
+      "ref": "static/js/catalog.js:493"
+    },
+    "Failed to revoke": {
+      "ref": "static/js/admin-llm.js:95"
+    },
+    "Failed: {msg}": {
+      "ref": "static/js/anonymizer.js:89"
+    },
+    "File is too large or could not be read — cancelled": {
+      "ref": "static/js/anonymizer.js:291"
+    },
+    "First run validation without text changes": {
+      "ref": "static/js/admin-quests.js:314"
+    },
+    "First seen": {
+      "ref": "static/js/catalog.js:509"
+    },
+    "Formulas ({n}) — a formula keeps the source even where the value looks harmless": {
+      "ref": "static/js/anonymizer.js:155"
+    },
+    "Full access (see_all). Roles: {p1}": {
+      "ref": "static/js/admin-scopes.js:128"
+    },
+    "Full name": {
+      "ref": "static/js/anonymizer.js:13"
+    },
+    "Header not recognized (same source)": {
+      "ref": "static/js/catalog.js:462"
+    },
+    "Hidden rows or columns ({n})": {
+      "ref": "static/js/anonymizer.js:157"
+    },
+    "Hidden sheets — they travel with the file and are one click from being seen": {
+      "ref": "static/js/anonymizer.js:151"
+    },
+    "INN": {
+      "ref": "static/js/anonymizer.js:13"
+    },
+    "Import not completed": {
+      "ref": "static/js/admin-quests.js:326"
+    },
+    "Imported": {
+      "ref": "static/js/admin-quests.js:322"
+    },
+    "Importing…": {
+      "ref": "static/js/admin-scopes.js:33"
+    },
+    "Invalid JSON: {p1}": {
+      "ref": "static/js/admin-quests.js:51"
+    },
+    "Invalid dates found": {
+      "ref": "static/js/admin-quests.js:163"
+    },
+    "Invalid rows: {p1}": {
+      "ref": "static/js/admin-quests.js:162"
+    },
+    "Keys: {p1}. Roles: {p2}": {
+      "ref": "static/js/admin-scopes.js:129"
+    },
+    "Last time": {
+      "ref": "static/js/catalog.js:510"
+    },
+    "Links to other files ({n}) — the path itself may reveal a project or a person": {
+      "ref": "static/js/anonymizer.js:154"
+    },
+    "List is empty – DeepSeek is not available to anyone": {
+      "ref": "static/js/admin-llm.js:106"
+    },
+    "Loading… {ctx:2}": {
+      "ref": "static/js/admin-employees.js:25"
+    },
+    "Manual grants removed for {p1}": {
+      "ref": "static/js/admin-scopes.js:108"
+    },
+    "Mask": {
+      "ref": "static/js/anonymizer.js:140"
+    },
+    "Masked file saved. Two things before you use it": {
+      "ref": "static/js/anonymizer.js:202"
+    },
+    "Masked {n} cells — file downloaded": {
+      "ref": "static/js/anonymizer.js:84"
+    },
+    "Masking engine crashed — the file may be too large": {
+      "ref": "static/js/anonymizer.js:59"
+    },
+    "Masking is taking too long — cancelled": {
+      "ref": "static/js/anonymizer.js:306"
+    },
+    "Masking replaces cell values. It does not remove any of the above — delete what you do not need in Excel and run the file through again.": {
+      "ref": "static/js/anonymizer.js:185"
+    },
+    "Name cannot be empty.": {
+      "ref": "static/js/catalog.js:277"
+    },
+    "Named ranges ({n}) — often a lookup table or a link to another workbook": {
+      "ref": "static/js/anonymizer.js:153"
+    },
+    "Network: {p1}": {
+      "ref": "static/js/admin-employees.js:42"
+    },
+    "No permission for this action.": {
+      "ref": "static/js/catalog.js:250"
+    },
+    "No row in user_scopes – user won't see any rows in the RLS report.": {
+      "ref": "static/js/admin-scopes.js:123"
+    },
+    "No such user.": {
+      "ref": "static/js/catalog.js:317"
+    },
+    "No tables found in the file": {
+      "ref": "static/js/anonymizer.js:71"
+    },
+    "Not found: {p1}": {
+      "ref": "static/js/admin-scopes.js:48"
+    },
+    "Nothing found": {
+      "ref": "static/js/admin-employees.js:74"
+    },
+    "Number": {
+      "ref": "static/js/anonymizer.js:13"
+    },
+    "PII": {
+      "ref": "static/js/anonymizer.js:126"
+    },
+    "Passport": {
+      "ref": "static/js/anonymizer.js:13"
+    },
+    "Phone": {
+      "ref": "static/js/anonymizer.js:13"
+    },
+    "Reading…": {
+      "ref": "static/js/anonymizer.js:286"
+    },
+    "Reject": {
+      "ref": "static/js/catalog.js:259"
+    },
+    "Rename": {
+      "ref": "static/js/catalog.js:271"
+    },
+    "Renamed.": {
+      "ref": "static/js/catalog.js:289"
+    },
+    "Replace with": {
+      "ref": "static/js/anonymizer.js:141"
+    },
+    "Reset error ({p1})": {
+      "ref": "static/js/admin-quests.js:143"
+    },
+    "Reset {ctx:2}": {
+      "ref": "static/js/catalog.js:265"
+    },
+    "Role change failed": {
+      "ref": "static/js/admin.js:29"
+    },
+    "Role changed to {role}": {
+      "ref": "static/js/admin.js:27"
+    },
+    "SNILS": {
+      "ref": "static/js/anonymizer.js:13"
+    },
+    "Sample": {
+      "ref": "static/js/anonymizer.js:141"
+    },
+    "Sample copied": {
+      "ref": "static/js/anonymizer.js:217"
+    },
+    "Save error ({p1})": {
+      "ref": "static/js/admin-quests.js:124"
+    },
+    "Saved": {
+      "ref": "static/js/admin-llm.js:57"
+    },
+    "Saved · {p1} dates": {
+      "ref": "static/js/admin-quests.js:171"
+    },
+    "Saved.": {
+      "ref": "static/js/catalog.js:319"
+    },
+    "Saving…": {
+      "ref": "static/js/admin-llm.js:43"
+    },
+    "Self-check — what stayed unmasked:": {
+      "ref": "static/js/anonymizer.js:229"
+    },
+    "Self-check: nothing that looks like personal data is left in the columns you kept.": {
+      "ref": "static/js/anonymizer.js:226"
+    },
+    "Sheet: {name} · {n} table(s)": {
+      "ref": "static/js/anonymizer.js:104"
+    },
+    "Sheets hidden from the sheet menu — visible only in the VBA editor": {
+      "ref": "static/js/anonymizer.js:152"
+    },
+    "Specify person_id": {
+      "ref": "static/js/admin-scopes.js:89"
+    },
+    "Specify user ID.": {
+      "ref": "static/js/catalog.js:325"
+    },
+    "Status change failed": {
+      "ref": "static/js/admin.js:45"
+    },
+    "Suggest inputs for «{p1}»": {
+      "ref": "static/js/catalog.js:393"
+    },
+    "Table {n} · {rows} data rows · {cols} cols": {
+      "ref": "static/js/anonymizer.js:134"
+    },
+    "Text": {
+      "ref": "static/js/anonymizer.js:13"
+    },
+    "The file remembers who made it": {
+      "ref": "static/js/anonymizer.js:158"
+    },
+    "Unset": {
+      "ref": "static/js/catalog.js:302"
+    },
+    "User ID": {
+      "ref": "static/js/catalog.js:298"
+    },
+    "Validating…": {
+      "ref": "static/js/admin-scopes.js:33"
+    },
+    "Validation passed": {
+      "ref": "static/js/admin-quests.js:300"
+    },
+    "Validation: ": {
+      "ref": "static/js/admin-scopes.js:44"
+    },
+    "Will mask {masked} of {total} columns": {
+      "ref": "static/js/anonymizer.js:275"
+    },
+    "Working…": {
+      "ref": "static/js/anonymizer.js:304"
+    },
+    "failed": {
+      "ref": "static/js/admin.js:157"
+    },
+    "header row:": {
+      "ref": "static/js/anonymizer.js:135"
+    },
+    "issued {p1} · valid until {p2} · last used {p3}": {
+      "ref": "static/js/account.js:66"
+    },
+    "issued {p1} · valid until {p2} · not used yet": {
+      "ref": "static/js/account.js:70"
+    },
+    "now: {p1}{p2} · {p3}": {
+      "ref": "static/js/admin-llm.js:25"
+    },
+    "row {n}: {label}": {
+      "ref": "static/js/anonymizer.js:119"
+    },
+    "row {p1}": {
+      "ref": "static/js/admin-quests.js:242"
+    },
+    "without reference table entry: {p1}": {
+      "ref": "static/js/admin.js:116"
+    },
+    "{p1} deactivated": {
+      "ref": "static/js/admin.js:136"
+    },
+    "{p1}{p2} rows, persons {p3} (found {p4}, not found {p5}), nodes {p6}.": {
+      "ref": "static/js/admin-scopes.js:45"
+    },
+    "«{col}» on sheet «{sheet}» kept its real values (e.g. «{sample}») — tick it if those are client or site names": {
+      "ref": "static/js/anonymizer.js:239"
+    },
+    "«{col}» on sheet «{sheet}» still looks like personal data ({cat})": {
+      "ref": "static/js/anonymizer.js:236"
+    },
+    "«{col}» on sheet «{sheet}»: almost every value is unique — a row can be recognised by it": {
+      "ref": "static/js/anonymizer.js:238"
+    },
+    "· not set": {
+      "ref": "static/js/admin-llm.js:12"
+    },
+    "· set": {
+      "ref": "static/js/admin-llm.js:12"
+    },
+    "— keep —": {
+      "ref": "static/js/anonymizer.js:13"
+    }
+  }
+}

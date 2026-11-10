@@ -1,0 +1,58 @@
+# What must NOT be sent to the daemon when building the image.
+#
+# Without this file `docker compose up --build` sends the whole directory, which
+# is 7.9 GB, 7.6 of it in dist/ (built bundles and kits). The build does not
+# fail, it just drags on for minutes for no reason, and the promise of "up and
+# running in five minutes" stops being true before Docker even gets to pip.
+#
+# The rule is simple: source code and what is built from it go into the context.
+# Data, build artefacts and the local environment do not.
+
+# ── Build and delivery artefacts ──────────────────────────────────────────
+dist/
+build/
+*.tar.gz
+*.zip
+*.whl
+
+# ── Live data: database, uploads, perf logs, backups ──────────────────────
+# Mounted as a volume (./data:/data); they have no business inside the image,
+# and this is the only way they could leak into an image layer.
+data/
+backups/
+
+# ── Local developer environment ───────────────────────────────────────────
+.venv/
+venv/
+node_modules/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ── Vendored engine assets ────────────────────────────────────────────────
+# ~150 MB, downloaded by deploy/fetch-*.py. They reach the image not via this
+# context but as the named build context `engine-assets` that
+# deploy/make-bundle.sh passes (see the Dockerfile); the dev profile loads
+# Pyodide from the CDN.
+static/pyodide/
+static/duckdb-wasm/
+static/duckdb-ext/
+static/arrow-esm/
+static/xlsx-arrow/
+engine/xlsx-arrow/target/
+
+# ── History and housekeeping ──────────────────────────────────────────────
+.git/
+.github/
+.claude/
+scratchpad/
+scratch-ui/
+*.log
+.DS_Store
+
+# ── Tests and developer tools ─────────────────────────────────────────────
+# Not executed inside the image; excluded for context size, not for secrecy.
+tests/
+docs/

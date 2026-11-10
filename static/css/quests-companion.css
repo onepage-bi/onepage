@@ -1,0 +1,186 @@
+/* ADR-17b "Companion" — the creature on workspace pages. Loaded lazily with
+   quests-companion.js; nothing here applies to anyone else. Sits above the
+   sidebar edge, below every overlay (z 55 < FAB 60 < overlays 1000).
+
+   Since 2026-09-11 the creature is FRAME animation (sprite strips driven by
+   requestAnimationFrame in the JS), not a PNG pushed around by keyframes —
+   the old gait/skid/breathe/stretch image transforms are gone with it. What
+   stays in CSS: placement, the dust puff, the first-day halo, the click
+   spark, the entrance/exit ramp that the JS times to the clip duration, and
+   every «do not show at all» rule. */
+#op-companion {
+  position: fixed;
+  /* The sprite cell is the generator's full square frame, so the creature is
+     ~56% of the cell and its feet sit at ~77% of it: the box is sized for a
+     ~132 px fox and pulled down by the empty strip under the feet. */
+  /* The RIGHT corner, since 2026-09-11: the head strip turns one way only,
+     towards the left of the frame, and from this corner that is where the
+     page is. Sitting on the left meant every glance at the content had to be
+     the strip MIRRORED, which swapped the tail from side to side (owner:
+     "why does she change pose from left to right, let her sit in one position"). */
+  right: 22px;
+  /* The resting pose stands ~26 px above the window edge: a stretch reaches a
+     good 15 px lower than a sit, and at -19px its paws crossed the bottom of
+     the window (owner, stand 2026-09-12: "she sat lower than the whole scene"). */
+  bottom: -6px;
+  width: 215px; height: 215px;
+  z-index: 55;
+  cursor: pointer;
+  user-select: none;
+  opacity: 0;
+  /* No drop-shadow filter: it forces the whole element — sprite sheet and all
+     — to be re-rasterised on every frame, and on a modest machine the browser
+     cannot always finish that in time, so the picture drops out (owner, stand
+     2026-09-12: "white holes all the time"). The creature's own render carries its
+     shading; the contact shadow is the ellipse below. */
+}
+#op-companion.is-in { opacity: 1; }
+/* the frame player: one strip as the background, shifted a cell at a time */
+#op-companion .op-comp-sprite {
+  position: relative;
+  overflow: hidden;
+  /* Its transform changes every frame (the ground line, the breath), so give
+     it its own layer and keep those changes off the paint path. */
+  will-change: transform;
+  width: 100%; height: 100%;
+  display: block;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  transform-origin: 50% 100%;
+  pointer-events: none;
+}
+/* mirrored when it trots off to the left */
+/* Mirroring is written INLINE by the module (translateX(...) scaleX(-1)), so
+   the character's own centre stays put instead of jumping when it turns; the
+   rules below only cover the PNG fallback, which has no cell padding. */
+#op-companion.is-mirror img,
+#op-companion.is-flip img { transform: scaleX(-1); }
+/* fallback: the original single PNG poses when sheets.json is unreachable */
+#op-companion img { position: relative; width: 100%; height: 100%; display: block; object-fit: contain; transform-origin: 50% 100%; pointer-events: none; }
+/* dust puff where the run ends */
+#op-companion .op-comp-dust { position: absolute; left: 50%; margin-left: -26px; bottom: 26px; width: 52px; height: 18px; border-radius: 50%; background: radial-gradient(closest-side, rgba(190,150,110,.55), rgba(190,150,110,0)); opacity: 0; pointer-events: none; }
+#op-companion.is-skid .op-comp-dust { animation: op-comp-dust .7s ease-out 1; }
+/* first meetings: a soft warm halo so the arrival is not missed */
+#op-companion .op-comp-glow { position: absolute; left: 50%; bottom: 24px; width: 180px; height: 180px; transform: translate(-50%, 30%); border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 196, 120, .55), rgba(255, 196, 120, 0)); opacity: 0; pointer-events: none; }
+#op-companion[data-glow="1"].is-in .op-comp-glow { animation: op-comp-halo 3.2s ease-out 1; }
+/* a click on it */
+#op-companion.is-happy::after { content: ''; position: absolute; left: 50%; top: 62px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: #ffd166; box-shadow: 0 0 12px #ffd166; animation: op-comp-spark .9s ease-out 1; pointer-events: none; }
+/* peek: at the right edge instead of the corner */
+#op-companion[data-pos="edge"] { left: auto; right: -34px; bottom: 110px; width: 190px; height: 190px; }
+@keyframes op-comp-dust { 0% { opacity: .9; transform: scale(.6) translateX(0); } 100% { opacity: 0; transform: scale(1.6) translateX(-24px); } }
+@keyframes op-comp-halo { 0% { opacity: 0; } 20% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes op-comp-spark { 0% { opacity: 1; transform: translateY(0) scale(.6); } 100% { opacity: 0; transform: translateY(-28px) scale(1.4); } }
+body[data-mode="standalone"] #op-companion { display: none; }
+@media (max-width: 900px) { #op-companion { display: none; } }
+/* With "reduce motion" everything that moves is hidden. The still variant
+   (class is-still — one frame, no animations, no handlers) stays:
+   otherwise a person with that setting never sees the reward at all and cannot
+   tell it from a breakage. */
+@media (prefers-reduced-motion: reduce) {
+  #op-companion:not(.is-still) { display: none; }
+  #op-companion.is-still, #op-companion.is-still * { animation: none !important; transition: none !important; }
+}
+
+/* The strip itself: one image, clipped to a cell by the box above and moved a
+   cell at a time with a transform. Compositing moves it; nothing repaints. */
+#op-companion .op-comp-film {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: none;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* The contact shadow the drop-shadow filter used to give, as a cheap static
+   ellipse: it never repaints with the frames. */
+#op-companion::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 30px;
+  width: 96px;
+  height: 20px;
+  margin-left: -48px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(40, 20, 0, .26), rgba(40, 20, 0, 0));
+  pointer-events: none;
+}
+
+/* Debug readout under the creature (`?fox=1`): the second on the clock, the
+   clip and the frame, so a fault on another machine can be reported by the
+   moment it happened. Never present unless asked for. */
+#op-companion .op-comp-readout {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  font: 500 10px/13px var(--mono, ui-monospace, "JetBrains Mono", monospace);
+  color: #6b7280;
+  background: rgba(255, 255, 255, .88);
+  border: 1px solid rgba(0, 0, 0, .08);
+  border-radius: 4px;
+  padding: 0 5px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Debug transport (`?fox=1`): pause, step, scrub, pick a clip, replay the
+   entrance. Sits above the creature so it never covers it, and is the one
+   part of this element that IS hit-tested. */
+#op-companion .op-comp-dbg {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% - 12px);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, .94);
+  border: 1px solid rgba(0, 0, 0, .1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+  font: 500 11px/1 var(--mono, ui-monospace, "JetBrains Mono", monospace);
+  cursor: default;
+}
+#op-companion .op-comp-dbg button {
+  font: inherit;
+  min-width: 24px;
+  height: 20px;
+  padding: 0 4px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, .14);
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+}
+#op-companion .op-comp-dbg button:hover { background: #f3f4f6; }
+#op-companion .op-comp-dbg input[type="range"] { width: 96px; height: 20px; cursor: pointer; }
+#op-companion .op-comp-dbg select {
+  font: inherit;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, .14);
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+}
+
+/* Carried over from the previous page: no fade at all, or the page change
+   reads as the creature arriving again (owner, 2026-09-12). */
+#op-companion.is-instant { transition: none !important; }
+
+/* The bottom-right corner is also home to the "Surprise of the day" capsule (#op-quests-fab,
+   styled in quests.js): right 20, bottom 90, width ~194. The fox, 215 high from the very
+   bottom, covered it completely — the capsule landed on her face
+   (owner, 05.10: "looks strange, although the fox did actually
+   appear"). The fox moves BEHIND the capsule, not the other way round: the capsule is an action
+   and must not be touched, while the fox is decorative and stays in the corner.
+   `:has()` fits here: the capsule appears after the badge response, and the rule
+   picks it up by itself once it is in place. */
+body:has(#op-quests-fab) #op-companion { right: 240px; }
+@media (max-width: 1180px) {
+  body:has(#op-quests-fab) #op-companion { right: 228px; }
+}

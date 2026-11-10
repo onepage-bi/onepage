@@ -1,0 +1,477 @@
+{
+  "_meta": {
+    "chunk": "01",
+    "count": 150,
+    "lang": "en",
+    "source_files": [
+      "app/api/admin.py",
+      "app/api/auth.py",
+      "app/api/employees.py",
+      "app/api/explore.py",
+      "app/api/files.py",
+      "app/api/generators.py",
+      "app/api/glossary.py",
+      "app/api/learn.py",
+      "app/api/me.py",
+      "app/api/permissions.py",
+      "app/api/quests.py",
+      "app/api/reference.py",
+      "app/services/genmanifest.py",
+      "app/services/learn.py",
+      "app/services/quality.py",
+      "app/services/quests.py"
+    ]
+  },
+  "strings": {
+    " (mandatory input)": {
+      "ref": "app/services/quality.py:300"
+    },
+    " and {more} more": {
+      "ref": "app/services/genmanifest.py:1533"
+    },
+    " — increase the limit / use fewer sheets": {
+      "ref": "app/services/quality.py:413"
+    },
+    ", minimum {min}": {
+      "ref": "app/services/quality.py:853"
+    },
+    ", was {previous}": {
+      "ref": "app/services/quality.py:851"
+    },
+    ", {more} more": {
+      "ref": "app/services/genmanifest.py:1553"
+    },
+    "; looks like «{suggest}»": {
+      "ref": "app/services/quality.py:336"
+    },
+    "A highly confidential report cannot be exported as a single file: that file opens without the password and then lives on its own.": {
+      "ref": "app/api/files.py:954"
+    },
+    "A report with row-level security cannot be exported as one file: its rows are filtered per viewer at serve time, and a file carries no filter.": {
+      "ref": "app/api/files.py:951"
+    },
+    "Add a report to favourites": {
+      "ref": "app/services/quests.py:650"
+    },
+    "Annotator toad": {
+      "ref": "app/services/quests.py:375"
+    },
+    "Answer not found": {
+      "ref": "app/api/explore.py:1558"
+    },
+    "Arrived when the fox had stopped waiting. Bowed, and took her place beside him.": {
+      "ref": "app/services/quests.py:412"
+    },
+    "Asks the report a question in the chat. Excel gets the day off.": {
+      "ref": "app/services/quests.py:387"
+    },
+    "Asks «Explore» instead of flipping through a hundred tabs.": {
+      "ref": "app/services/quests.py:319"
+    },
+    "Assemble your first presentation from two dashboards": {
+      "ref": "app/services/quests.py:641"
+    },
+    "Assembles dashboards from building blocks while others are still writing specs.": {
+      "ref": "app/services/quests.py:324"
+    },
+    "Attempt not found": {
+      "ref": "app/api/quests.py:400"
+    },
+    "Auditor toad": {
+      "ref": "app/services/quests.py:395"
+    },
+    "Below are {n} questions from every chapter of the unit. There is no review along the way: you answer them all, then see the score and the explanations.\n\nThe pass mark is {need} of {n}. Retake as often as you like — the questions are the same: this checks understanding, not luck.": {
+      "ref": "app/services/learn.py:271"
+    },
+    "Cartographer toad": {
+      "ref": "app/services/quests.py:390"
+    },
+    "Change the theme via Ctrl+K": {
+      "ref": "app/services/quests.py:659"
+    },
+    "Check {type}{label} on column {column} of sheet {sheet} in {file}: {failed} of {count} rows failed": {
+      "ref": "app/services/genmanifest.py:1518"
+    },
+    "Checks the data folder before the generator runs, not after.": {
+      "ref": "app/services/quests.py:397"
+    },
+    "Column «{column}» is declared and present in the file, but the generator never read it": {
+      "ref": "app/services/quality.py:1498"
+    },
+    "Column «{column}» is declared but not found on sheet «{sheet}»": {
+      "ref": "app/services/quality.py:334"
+    },
+    "Column «{column}» is in the file but not declared": {
+      "ref": "app/services/quality.py:344"
+    },
+    "Confident user": {
+      "ref": "app/services/quests.py:594"
+    },
+    "Create a link to your report via Share": {
+      "ref": "app/services/quests.py:679"
+    },
+    "Data hasn't been updated for {days} days (threshold {threshold})": {
+      "ref": "app/services/quality.py:830"
+    },
+    "DeepSeek access is granted by designated admin only": {
+      "ref": "app/api/admin.py:482"
+    },
+    "DeepSeek model is available to a limited group – contact administrator": {
+      "ref": "app/api/explore.py:883"
+    },
+    "Delivers everything on time. Logs in every working day, even on Mondays.": {
+      "ref": "app/services/quests.py:339"
+    },
+    "Drops rarely. Safe to show off to colleagues.": {
+      "ref": "app/services/quests.py:344"
+    },
+    "Expert": {
+      "ref": "app/services/quests.py:595"
+    },
+    "File cannot be read as UTF-8 or CP1251": {
+      "ref": "app/api/employees.py:127"
+    },
+    "File does not have id and person_id columns – not a v_employees export": {
+      "ref": "app/api/employees.py:161"
+    },
+    "File has no data rows": {
+      "ref": "app/api/employees.py:234"
+    },
+    "File is larger than 10 MB": {
+      "ref": "app/api/employees.py:230"
+    },
+    "File «{name}» is in the folder but doesn't match any input": {
+      "ref": "app/services/quality.py:357"
+    },
+    "Files in the source: {count}": {
+      "ref": "app/services/quality.py:850"
+    },
+    "Finish every chapter of the unit first": {
+      "ref": "app/api/learn.py:178"
+    },
+    "Finished the base course on working with the platform: knows how a report is built and where trust in a number comes from.": {
+      "ref": "app/services/quests.py:1410"
+    },
+    "Finishes the course to the last step — including the one everybody skips.": {
+      "ref": "app/services/quests.py:402"
+    },
+    "First to notice when a chart has gone sideways.": {
+      "ref": "app/services/quests.py:314"
+    },
+    "Five matching cards are needed": {
+      "ref": "app/services/quests.py:1203"
+    },
+    "Fox the Builder": {
+      "ref": "app/services/quests.py:322"
+    },
+    "Fox the Conversationalist": {
+      "ref": "app/services/quests.py:317"
+    },
+    "Fox the Deadline": {
+      "ref": "app/services/quests.py:337"
+    },
+    "Fox the Keeper": {
+      "ref": "app/services/quests.py:332"
+    },
+    "Fox the Observer": {
+      "ref": "app/services/quests.py:312"
+    },
+    "Fox the Presenter": {
+      "ref": "app/services/quests.py:327"
+    },
+    "Fox the Stargazer": {
+      "ref": "app/services/quests.py:347"
+    },
+    "Generator not found": {
+      "ref": "app/api/glossary.py:94"
+    },
+    "Generator unavailable": {
+      "ref": "app/api/explore.py:622"
+    },
+    "Generator «{name}» is already registered": {
+      "ref": "app/api/generators.py:510"
+    },
+    "Golden Fox": {
+      "ref": "app/services/quests.py:342"
+    },
+    "Header not found in {where}: {reason}": {
+      "ref": "app/services/quality.py:411"
+    },
+    "Mandatory files «{pattern}» disappeared: was {previous}, now 0": {
+      "ref": "app/services/quality.py:867"
+    },
+    "Model returned not a SELECT query; try rephrasing the question": {
+      "ref": "app/api/explore.py:1208"
+    },
+    "More than {p1} rows": {
+      "ref": "app/api/employees.py:167"
+    },
+    "New values appeared in column {column} ({file}/{sheet}): {values}{tail} — confirm them on the Data Quality page": {
+      "ref": "app/services/genmanifest.py:1534"
+    },
+    "New values in «{column}» ({count}): {values}": {
+      "ref": "app/services/quality.py:1305"
+    },
+    "No files found matching pattern «{pattern}»": {
+      "ref": "app/services/quality.py:299"
+    },
+    "No such OnePage user – add them first": {
+      "ref": "app/api/admin.py:497"
+    },
+    "No such course": {
+      "ref": "app/api/learn.py:104"
+    },
+    "No such lesson": {
+      "ref": "app/api/learn.py:198"
+    },
+    "No such unit": {
+      "ref": "app/api/learn.py:176"
+    },
+    "Not in reference table «{title}» ({count}): {values}": {
+      "ref": "app/services/quality.py:1223"
+    },
+    "Only one SELECT query can be saved": {
+      "ref": "app/api/explore.py:1386"
+    },
+    "Pattern {pattern} from inputs didn't match any file in this run — no source was found for it.": {
+      "ref": "app/services/genmanifest.py:1497"
+    },
+    "Question already answered": {
+      "ref": "app/api/quests.py:435"
+    },
+    "Questions for today not loaded": {
+      "ref": "app/api/quests.py:369"
+    },
+    "Questions from the whole unit. The review comes after you submit.": {
+      "ref": "app/services/learn.py:265"
+    },
+    "RLS: snapshot not stored for reports with a scope policy": {
+      "ref": "app/api/files.py:374"
+    },
+    "Reference table {p1}: declared columns cannot be added to schema – {p2}": {
+      "ref": "app/api/generators.py:348"
+    },
+    "Reference table «{name}» is empty — upload an Excel file (owner: {who})": {
+      "ref": "app/services/genmanifest.py:1559"
+    },
+    "Reference table «{name}»: {count} new values ({values}{tail}) — owner {who}": {
+      "ref": "app/services/genmanifest.py:1562"
+    },
+    "Reference table «{slug}» has not been created yet — there's nothing to check «{column}» against": {
+      "ref": "app/services/quality.py:1196"
+    },
+    "Reference table «{title}» is empty — upload an Excel file, there's nothing to check «{column}» against yet": {
+      "ref": "app/services/quality.py:1207"
+    },
+    "Reference table «{title}»: too many mismatches in «{column}» — the list is incomplete": {
+      "ref": "app/services/quality.py:1214"
+    },
+    "Rows on sheet «{sheet}»: {rows}": {
+      "ref": "app/services/quality.py:909"
+    },
+    "SSO sign-in was declined: {p1}": {
+      "ref": "app/api/auth.py:232"
+    },
+    "Saved questions limit reached ({p1})": {
+      "ref": "app/api/explore.py:1382"
+    },
+    "Sheet «{sheet}» not found in files «{pattern}»": {
+      "ref": "app/services/quality.py:318"
+    },
+    "Sheet «{sheet}» of file «{file}» is empty (0 rows)": {
+      "ref": "app/services/quality.py:891"
+    },
+    "Suggestion has already been resolved": {
+      "ref": "app/api/explore.py:1605"
+    },
+    "Suggestion not found": {
+      "ref": "app/api/explore.py:1600"
+    },
+    "Term not found": {
+      "ref": "app/api/glossary.py:149"
+    },
+    "The companion appears only with a full collection": {
+      "ref": "app/api/quests.py:501"
+    },
+    "The data embedded in this file did not load: ": {
+      "ref": "app/api/files.py:965"
+    },
+    "The header row on sheet «{sheet}» has shifted: {previous} → {now}": {
+      "ref": "app/services/quality.py:923"
+    },
+    "The model did not return SQL; rephrase the question": {
+      "ref": "app/api/explore.py:1205"
+    },
+    "The provider did not return an authorization code.": {
+      "ref": "app/api/auth.py:239"
+    },
+    "The reference set of values for «{column}» has not been set yet — there's nothing to check against": {
+      "ref": "app/services/quality.py:1295"
+    },
+    "The reference table schema doesn't match the declaration: {problems}": {
+      "ref": "app/api/generators.py:299"
+    },
+    "The report is {size} MB, while the live preview threshold is {limit} MB — the card on the «Dashboards» page will show a placeholder instead of a preview. Keep the data in a slot, not in the HTML.": {
+      "ref": "app/services/genmanifest.py:1459"
+    },
+    "The report with its data would take {p1} MB, over the {p2} MB limit.": {
+      "ref": "app/api/files.py:968"
+    },
+    "The request was rejected by the engine's safeguard: {error}": {
+      "ref": "app/api/explore.py:1212"
+    },
+    "This account is not registered in OnePage. Ask an administrator.": {
+      "ref": "app/api/auth.py:262"
+    },
+    "This browser is too old: no DecompressionStream.": {
+      "ref": "app/api/files.py:964"
+    },
+    "This callback does not belong to the sign-in you started.": {
+      "ref": "app/api/auth.py:247"
+    },
+    "This generator version has no semantics": {
+      "ref": "app/api/explore.py:628"
+    },
+    "This lesson is still locked": {
+      "ref": "app/api/learn.py:201"
+    },
+    "This term is already defined in this scope": {
+      "ref": "app/api/glossary.py:109"
+    },
+    "Today's quiz already completed": {
+      "ref": "app/api/quests.py:365"
+    },
+    "Today's surprise has already been opened": {
+      "ref": "app/api/quests.py:278"
+    },
+    "Too many distinct values in «{column}» — reconciliation with the reference table was not performed": {
+      "ref": "app/services/quality.py:1284"
+    },
+    "Unavailable or unknown tables: {p1}": {
+      "ref": "app/api/explore.py:494"
+    },
+    "Unit test": {
+      "ref": "app/services/learn.py:489"
+    },
+    "Unit test {ctx:2}": {
+      "ref": "app/services/learn.py:270"
+    },
+    "Unit test: {unit}": {
+      "ref": "app/services/learn.py:264"
+    },
+    "Unknown UI language": {
+      "ref": "app/api/me.py:65"
+    },
+    "User not found": {
+      "ref": "app/api/me.py:71"
+    },
+    "Wrong username or password.": {
+      "ref": "app/api/auth.py:427"
+    },
+    "You already have {p1} keys — revoke one before issuing another.": {
+      "ref": "app/api/me.py:145"
+    },
+    "a platform input requires declared inputs with role=data": {
+      "ref": "app/services/genmanifest.py:800"
+    },
+    "column «{name}»: type {a} in one declaration and {b} in the other (the manifest and semantics.json must match)": {
+      "ref": "app/api/generators.py:243"
+    },
+    "empty sheet": {
+      "ref": "app/api/reference.py:561"
+    },
+    "id is not a number: {p1}": {
+      "ref": "app/api/employees.py:144"
+    },
+    "no access to reference table {slug}": {
+      "ref": "app/api/explore.py:265"
+    },
+    "not assigned": {
+      "ref": "app/services/genmanifest.py:1554"
+    },
+    "prev_intent must be an object": {
+      "ref": "app/api/explore.py:544"
+    },
+    "prev_intent.dims is too long": {
+      "ref": "app/api/explore.py:553"
+    },
+    "prev_intent.filters is too long": {
+      "ref": "app/api/explore.py:556"
+    },
+    "prev_intent.filters: invalid filter shape": {
+      "ref": "app/api/explore.py:559"
+    },
+    "prev_intent.filters: invalid op": {
+      "ref": "app/api/explore.py:561"
+    },
+    "prev_intent.filters: missing value": {
+      "ref": "app/api/explore.py:563"
+    },
+    "prev_intent.kpi is required": {
+      "ref": "app/api/explore.py:550"
+    },
+    "prev_intent: invalid keys {keys}": {
+      "ref": "app/api/explore.py:547"
+    },
+    "prev_intent: metric {p1} not found in report semantics": {
+      "ref": "app/api/explore.py:599"
+    },
+    "provider: ollama or deepseek": {
+      "ref": "app/api/admin.py:430"
+    },
+    "reference table {slug} has not been created": {
+      "ref": "app/api/explore.py:259"
+    },
+    "reference table {slug} v{version}": {
+      "ref": "app/api/explore.py:278"
+    },
+    "reference table {slug}: too many rows for a single response": {
+      "ref": "app/api/explore.py:273"
+    },
+    "reference table {slug}: {problem}": {
+      "ref": "app/api/generators.py:290"
+    },
+    "slot_{index} ({name}) is declared in the manifest but not published — on the first version the dashboard will be left without this data and hang on loading.": {
+      "ref": "app/services/genmanifest.py:1481"
+    },
+    "slot_{index} ({name}) takes up {pct}% of the publish ceiling — further data growth will hit a 413. Trim the export in the generator.": {
+      "ref": "app/services/genmanifest.py:1491"
+    },
+    "slot_{index} was published, but it's not in the version manifest's outputs.slots — the dashboard isn't expecting it.": {
+      "ref": "app/services/genmanifest.py:1473"
+    },
+    "slot_{index}: the published file is {got}, but the manifest declares {want}. The extension sets the Content-Encoding, so a mismatch changes what the page receives.": {
+      "ref": "app/services/genmanifest.py:1476"
+    },
+    "the file has more than {max} rows": {
+      "ref": "app/api/reference.py:585"
+    },
+    "the file is missing columns: {columns}": {
+      "ref": "app/api/reference.py:574"
+    },
+    "{check}: the «{column}» check in «{file}» could not be run ({reason})": {
+      "ref": "app/services/quality.py:1023"
+    },
+    "{check}: {failed} of {count} rows failed the «{column}» check in «{file}»": {
+      "ref": "app/services/quality.py:1010"
+    },
+    "{pattern}, sheet {sheet}: declared columns not found in the header — {columns}.": {
+      "ref": "app/services/genmanifest.py:1503"
+    },
+    "{where}.on_fail \"block\" is not supported in this version": {
+      "ref": "app/services/genmanifest.py:1138"
+    },
+    "«{dashboard}» is built on reference table «{title}» v{used}, current is v{current}: a recalculation is needed": {
+      "ref": "app/services/quality.py:1389"
+    },
+    "«{dashboard}»: the last run was without reference table «{title}» (current version v{current})": {
+      "ref": "app/services/quality.py:1398"
+    },
+    "«{p1}» not found in users or employee reference table": {
+      "ref": "app/api/permissions.py:77"
+    },
+    "… and {extra} more": {
+      "ref": "app/services/genmanifest.py:1525"
+    }
+  }
+}

@@ -1,0 +1,319 @@
+/* Self-contained styles of the desktop mirror.
+   Not a platform page: base.html and main.css do not reach here (the server
+   is down, and the agent serves only this directory), so the tokens and
+   components are duplicated from static/css/main.css ON PURPOSE and as close
+   to verbatim as possible — the report list here must look like "Dashboards"
+   on the platform, otherwise on a bad day the person opens an unfamiliar
+   program. Fonts are system only: the machine is offline, and an @font-face
+   on external addresses would give blank text for the length of the timeout,
+   so Inter Tight is used if it is present on the system.
+   The theme follows the system one (on the platform it is the data-theme
+   attribute; there is no switch here and nothing to switch yet). */
+:root {
+  color-scheme: light dark;
+  --font-sans: "Inter Tight", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --fs-10: 10px; --fs-11: 11px; --fs-12: 12px; --fs-13: 13px; --fs-15: 15px; --fs-22: 22px;
+  --lh-tight: 1.2; --lh-ui: 1.35;
+  --fw-regular: 400; --fw-medium: 500; --fw-semi: 600;
+  --tracking-tight: -0.01em; --tracking-wide: 0.04em;
+
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px;
+
+  --r-2: 2px; --r-3: 3px; --r-4: 4px; --r-6: 6px; --r-8: 8px;
+
+  --row-h: 28px; --btn-xs: 22px; --btn-sm: 26px; --btn-md: 30px;
+
+  --ease: cubic-bezier(.2,.8,.2,1);
+  --dur-fast: 100ms; --dur: 150ms;
+
+  --accent: oklch(0.700 0.180 245);
+  --accent-hover: oklch(0.745 0.175 245);
+  --accent-press: oklch(0.655 0.180 245);
+  --accent-soft: color-mix(in oklab, var(--accent) 14%, transparent);
+  --accent-ink: oklch(0.985 0 0);
+
+  --success: oklch(0.580 0.140 155);
+  --warning: oklch(0.660 0.150 70);
+  --danger:  oklch(0.575 0.205 25);
+  --success-soft: color-mix(in oklab, var(--success) 14%, transparent);
+  --warning-soft: color-mix(in oklab, var(--warning) 14%, transparent);
+  --danger-soft:  color-mix(in oklab, var(--danger) 14%, transparent);
+
+  /* light — like [data-theme="light"] on the platform */
+  --bg-base: oklch(0.985 0.002 250);
+  --surface-1: oklch(1 0 0);
+  --surface-2: oklch(0.965 0.003 250);
+  --surface-3: oklch(0.945 0.004 250);
+  --surface-inset: oklch(0.955 0.003 250);
+  --border-strong: oklch(0.755 0.010 250);
+  --border: oklch(0.860 0.008 250);
+  --border-soft: oklch(0.905 0.006 250);
+  --border-subtle: oklch(0.935 0.005 250);
+  --ink: oklch(0.205 0.010 250);
+  --ink-muted: oklch(0.395 0.010 250);
+  --ink-dim: oklch(0.555 0.010 250);
+  --ink-faint: oklch(0.685 0.008 250);
+  --ring: 0 0 0 1px var(--accent), 0 0 0 3px color-mix(in oklab, var(--accent) 16%, transparent);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-base: oklch(0.165 0.005 250);
+    --surface-1: oklch(0.205 0.006 250);
+    --surface-2: oklch(0.245 0.007 250);
+    --surface-3: oklch(0.285 0.008 250);
+    --surface-inset: oklch(0.145 0.005 250);
+    --border-strong: oklch(0.395 0.010 250);
+    --border: oklch(0.305 0.008 250);
+    --border-soft: oklch(0.255 0.007 250);
+    --border-subtle: oklch(0.225 0.006 250);
+    --ink: oklch(0.965 0.003 250);
+    --ink-muted: oklch(0.775 0.006 250);
+    --ink-dim: oklch(0.605 0.008 250);
+    --ink-faint: oklch(0.475 0.008 250);
+    --success: oklch(0.700 0.140 155);
+    --warning: oklch(0.770 0.140 75);
+    --danger:  oklch(0.665 0.195 25);
+    --accent-ink: oklch(0.985 0 0);
+  }
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--bg-base); color: var(--ink);
+  font: var(--fs-13)/var(--lh-ui) var(--font-sans); }
+.mono, .num, time { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.muted { color: var(--ink-muted); }
+[hidden] { display: none !important; }
+a { color: inherit; }
+
+/* ── Buttons (port of main.css) ─────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  height: var(--btn-md); padding: 0 var(--space-3);
+  border: 0; border-radius: var(--r-4);
+  font: var(--fw-medium) var(--fs-13)/1 var(--font-sans);
+  color: var(--ink); background: var(--surface-2);
+  box-shadow: 0 0 0 1px var(--border) inset;
+  white-space: nowrap; cursor: pointer; text-decoration: none; user-select: none;
+  transition: background var(--dur) var(--ease), box-shadow var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.btn:hover { background: var(--surface-3); }
+.btn:focus-visible, a:focus-visible { outline: none; box-shadow: var(--ring); }
+.btn.sm { height: var(--btn-sm); padding: 0 var(--space-3); font-size: var(--fs-12); }
+.btn.xs { height: var(--btn-xs); padding: 0 var(--space-2); font-size: var(--fs-11); border-radius: var(--r-3); }
+.btn.primary { background: var(--accent); color: var(--accent-ink);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 60%, black) inset; }
+.btn.primary:hover { background: var(--accent-hover); }
+.btn.ghost { background: transparent; box-shadow: none; color: var(--ink-muted); }
+.btn.ghost:hover { background: var(--surface-2); color: var(--ink); }
+.btn[disabled] { opacity: .4; pointer-events: none; }
+/* A muted but LIVE button: the action is impossible right now, and pressing
+   it expands the reason. `[disabled]` would also remove the events
+   (pointer-events: none) — that is, bring back the very silence that makes a
+   person press a second time and go ask. */
+.btn.off { color: var(--ink-dim); background: transparent; box-shadow: none; }
+.btn.off:hover { background: var(--surface-2); color: var(--ink-muted); }
+
+/* ── Badges and pills (port of main.css) ────────────────────────────── */
+.pill {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  height: 22px; padding: 0 var(--space-2); border-radius: 999px;
+  font-size: var(--fs-11); color: var(--ink-muted);
+  background: var(--surface-2); box-shadow: 0 0 0 1px var(--border-soft) inset;
+  white-space: nowrap;
+}
+.pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-dim); }
+.pill.success .dot { background: var(--success); box-shadow: 0 0 0 3px var(--success-soft); }
+.pill.warning .dot { background: var(--warning); box-shadow: 0 0 0 3px var(--warning-soft); }
+.pill.danger  .dot { background: var(--danger);  box-shadow: 0 0 0 3px var(--danger-soft); }
+.pill.success, .pill.warning, .pill.danger { color: var(--ink); }
+
+/* ── Page ───────────────────────────────────────────────────────────── */
+.wrap { max-width: 1120px; margin: 0 auto; padding: var(--space-6) var(--space-6) var(--space-8); }
+.page-title { font-size: var(--fs-22); font-weight: var(--fw-semi);
+  letter-spacing: var(--tracking-tight); margin: 0; line-height: var(--lh-tight); }
+.page-subtitle { margin: var(--space-2) 0 0; color: var(--ink-muted); font-size: var(--fs-13); }
+
+/* The panel above the list — the same as on "Dashboards": state on the left,
+   counter and actions on the right, a thin line below. It has no fill of its
+   own: "all is well" is the background of work, not news, and a full-width
+   green bar would devalue the yellow one when it is really needed. */
+.toolbar { position: sticky; top: 0; z-index: 4; background: var(--bg-base);
+  display: flex; align-items: center; gap: var(--space-2);
+  padding: var(--space-3) 0; margin-top: var(--space-5);
+  border-bottom: 1px solid var(--border-soft); }
+.toolbar .msg { color: var(--ink-muted); font-size: var(--fs-12); min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.toolbar .grow { flex: 1; }
+.toolbar .vsep { width: 1px; height: 18px; background: var(--border); flex: none; }
+.toolbar .count { font-size: var(--fs-11); color: var(--ink-dim); flex: none; }
+.toolbar .acts { display: flex; gap: var(--space-2); flex: none; }
+.bar { height: 2px; background: var(--border-subtle); overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .2s; }
+
+/* ── Report table (port of .tbl + .dash-table-wrap) ─────────────────── */
+.tbl-wrap { background: var(--surface-1); border-radius: var(--r-8);
+  box-shadow: 0 0 0 1px var(--border-soft) inset; overflow: hidden; margin-top: var(--space-3); }
+/* `table-layout: fixed` is mandatory: with automatic layout the content
+   dictates the width, and one long explanation next to a title (and here they
+   are long — these are texts for a bad day) stretched the table wider than
+   the container, which has `overflow: hidden`. The actions column was simply
+   cut off: the buttons were in the markup and did not exist on screen. */
+.tbl { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: var(--fs-12); }
+.tbl thead th { height: 28px; padding: 0 var(--space-3); text-align: left;
+  font-family: var(--font-mono); font-size: var(--fs-10); font-weight: var(--fw-medium);
+  text-transform: uppercase; letter-spacing: var(--tracking-wide);
+  color: var(--ink-dim); background: var(--surface-1);
+  border-bottom: 1px solid var(--border); white-space: nowrap; }
+.tbl tbody tr { border-bottom: 1px solid var(--border-subtle);
+  transition: background var(--dur-fast) var(--ease); }
+.tbl tbody tr:last-child { border-bottom: 0; }
+.tbl tbody tr:hover { background: var(--surface-2); }
+.tbl tbody td { height: var(--row-h); padding: 0 var(--space-3); vertical-align: middle;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tbl tbody td.mono { font-family: var(--font-mono); font-size: var(--fs-11); }
+.tbl tbody td.muted { color: var(--ink-muted); }
+.col-title { width: 55%; }
+.col-state { width: 150px; }
+.col-updated { width: 150px; }
+.col-actions { width: 230px; }
+
+.row-title { display: flex; align-items: baseline; gap: var(--space-2); min-width: 0; }
+/* The title shrinks last: the explanation gives up room first. While both
+   parts shrank equally, "Delta Sales Report" turned into "Delta …" for the
+   sake of ten extra characters of explanation — and the title is the main thing here. */
+.row-title .name { flex: 0 1 auto; color: var(--ink); font-size: var(--fs-13);
+  text-decoration: none; overflow: hidden; text-overflow: ellipsis; }
+.row-title a.name:hover { color: var(--accent); }
+.row-title .name-desc { flex: 1 1 0; min-width: 0; color: var(--ink-dim);
+  font-size: var(--fs-11); overflow: hidden; text-overflow: ellipsis; }
+
+/* Row actions: on the platform they appear on hover, but there the whole
+   row is a link to the report, while here "Update from folders" can be found
+   nowhere else with the mouse. So we use the platform's second device (the
+   folder buttons in "Dashboards"): always visible at half strength, full on hover. */
+.row-actions { display: flex; gap: var(--space-1); justify-content: flex-end;
+  opacity: .55; transition: opacity var(--dur) var(--ease); }
+.tbl tbody tr:hover .row-actions, .row-actions:focus-within { opacity: 1; }
+
+/* The second line under a report — run progress, the catch-up question, links to
+   local versions. The table row is too narrow for them, and moving them out of the table
+   would tear them off the report they belong to. */
+/* The selector is longer than one would like, and that is forced: `.tbl tbody td` above is
+   more specific than the short `.sub-row > td`, so `white-space: nowrap`
+   from there won — the catch-up paragraph went on one line and was cut at the edge. */
+.tbl tbody tr.sub-row > td { height: auto; padding: 0 var(--space-3) var(--space-3);
+  white-space: normal; overflow: visible; }
+.sub { display: grid; gap: var(--space-2); justify-items: start; }
+/* The catch-up bar stretches to the full row width, not to the content: in a grid with
+   `justify-items: start` the element gets max-content, and a three-line paragraph
+   ran off the right edge of the table, where `overflow: hidden` cut it. */
+.sub > .notice { justify-self: stretch; width: 100%; margin-top: 0; }
+.sub .s { font-size: var(--fs-12); color: var(--ink-muted); }
+.sub .s.bad { color: var(--danger); }
+.sub .s.ok { color: var(--success); }
+
+.empty { text-align: center; padding: var(--space-8) var(--space-4); color: var(--ink-muted); }
+.empty h3 { margin: 0 0 var(--space-2); color: var(--ink); font-size: var(--fs-15); font-weight: var(--fw-semi); }
+.empty .btn { margin-top: var(--space-4); }
+
+/* ── Notice bars ────────────────────────────────────────────────────── */
+.notice { margin-top: var(--space-3); padding: var(--space-3) var(--space-4);
+  border-radius: var(--r-6); background: var(--surface-1);
+  box-shadow: 0 0 0 1px var(--border-soft) inset; font-size: var(--fs-12); }
+.notice .t { font-weight: var(--fw-semi); margin-bottom: var(--space-1); }
+.notice .why { color: var(--ink-muted); margin-top: var(--space-1); }
+.notice .btn { margin-top: var(--space-2); }
+.notice.warn { background: var(--warning-soft); box-shadow: 0 0 0 1px color-mix(in oklab, var(--warning) 40%, transparent) inset; }
+/* The "incomplete kit" bar (inserted into the HTML by the agent itself — libui._send_page):
+   red, because this is the state of the PROGRAM, not of the reports, and whoever
+   unpacked it must read it. The bar's colors are also written inline: in an
+   incomplete kit this file may be missing along with the rest. */
+.notice.bad { background: var(--danger-soft); box-shadow: 0 0 0 1px color-mix(in oklab, var(--danger) 40%, transparent) inset; }
+.alert-acts { display: flex; gap: var(--space-2); margin-top: var(--space-2); }
+
+dialog { border: 0; border-radius: var(--r-8); background: var(--surface-1); color: var(--ink);
+  max-width: 480px; padding: var(--space-5); box-shadow: 0 0 0 1px var(--border) inset; }
+dialog::backdrop { background: rgba(0,0,0,.45); }
+dialog p { margin: 0 0 var(--space-2); font-size: var(--fs-12); color: var(--ink-muted); }
+dialog input { width: 100%; font: var(--fs-12) var(--font-mono); padding: var(--space-2);
+  border: 0; box-shadow: 0 0 0 1px var(--border) inset; border-radius: var(--r-4);
+  background: var(--bg-base); color: var(--ink); margin: var(--space-3) 0 var(--space-4); }
+dialog .row { display: flex; gap: var(--space-2); justify-content: flex-end; }
+.toast { position: fixed; bottom: var(--space-5); left: 50%; transform: translateX(-50%);
+  background: var(--ink); color: var(--bg-base); padding: var(--space-2) var(--space-4);
+  border-radius: var(--r-6); font-size: var(--fs-12); z-index: 20; }
+
+/* ── Viewer shell ───────────────────────────────────────────────────── */
+body.viewer { display: flex; flex-direction: column; height: 100vh; }
+.topbar { display: flex; align-items: center; gap: var(--space-3);
+  height: 40px; padding: 0 var(--space-4); border-bottom: 1px solid var(--border-soft);
+  background: var(--surface-1); flex: none; }
+.topbar .title { font-weight: var(--fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.topbar .asof { color: var(--ink-muted); font-size: var(--fs-11); margin-left: auto; white-space: nowrap; }
+.topbar .asof.outdated { color: var(--warning); }
+/* Actions in the header — the same row of buttons as in the panel above the list. */
+.topbar .acts { display: flex; align-items: center; gap: var(--space-2); flex: none; }
+.stage { flex: 1 1 auto; min-height: 0; position: relative; }
+.stage iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #fff; }
+.stage .fail { padding: var(--space-8) var(--space-5); text-align: center; color: var(--ink-muted); }
+/* The same bar in the viewer: it is a full-height flex column, so without
+   flex: none it would stretch and the report frame would shrink. */
+body.viewer > .notice { flex: none; border-radius: 0; margin: 0;
+  display: flex; align-items: center; gap: var(--space-3); }
+body.viewer > .notice[hidden] { display: none; }
+body.viewer > .notice .alert-acts { margin-top: 0; }
+
+/* ── View switch, folders and tiles (port of main.css) ──────────────── */
+.seg { display: inline-flex; background: var(--surface-2); border-radius: var(--r-4);
+  padding: 2px; box-shadow: 0 0 0 1px var(--border) inset; flex: none; }
+.seg button { height: 22px; padding: 0 var(--space-3); border: 0; background: none;
+  font: var(--fw-medium) var(--fs-11)/1 var(--font-sans); color: var(--ink-muted);
+  border-radius: var(--r-3); cursor: pointer; white-space: nowrap;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease); }
+.seg button:hover { color: var(--ink); }
+.seg button.active { background: var(--surface-1); color: var(--ink);
+  box-shadow: 0 0 0 1px var(--border) inset; }
+
+.folder-row td { padding: 0; background: var(--surface-inset, var(--surface-2));
+  border-top: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft); }
+.folder-head { display: flex; align-items: center; gap: var(--space-2);
+  padding: 7px var(--space-3); font-size: var(--fs-12); font-weight: var(--fw-semi);
+  color: var(--ink-muted); user-select: none; }
+.folder-sec { grid-column: 1 / -1; display: flex; align-items: center; gap: var(--space-2);
+  padding: var(--space-2) var(--space-1) 2px; font-size: var(--fs-12);
+  font-weight: var(--fw-semi); color: var(--ink-muted); }
+.folder-sec:first-child { padding-top: 0; }
+.count { font-size: var(--fs-10); color: var(--ink-faint); background: var(--surface-2);
+  border-radius: 999px; padding: 1px 7px; }
+
+.dash-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-3); margin-top: var(--space-3); }
+.dash-card { display: block; background: var(--surface-1); border-radius: var(--r-6);
+  box-shadow: 0 0 0 1px var(--border-soft) inset; overflow: hidden;
+  text-decoration: none; color: inherit;
+  transition: box-shadow var(--dur) var(--ease); }
+a.dash-card:hover { box-shadow: 0 0 0 1px var(--border) inset,
+  0 8px 24px -10px rgba(20,20,30,.28); }
+/* The report frame is drawn at 1280 px and shrunk by a transform — the same as the
+   preview on the platform: the report is laid out for desktop, and showing it in
+   280 px of width means showing not what the person will see on opening. */
+.dash-card .preview { position: relative; height: 132px; overflow: hidden;
+  background: var(--surface-inset, var(--surface-2));
+  border-bottom: 1px solid var(--border-soft); }
+.dash-card .preview-frame { position: absolute; top: 0; left: 0; width: 1280px;
+  height: 800px; border: 0; transform-origin: top left; opacity: 0;
+  pointer-events: none; transition: opacity .4s; background: #fff; }
+.dash-card .preview-note { position: absolute; inset: 0; display: flex;
+  align-items: center; justify-content: center; text-align: center; padding: 0 var(--space-4);
+  font-size: var(--fs-11); color: var(--ink-dim); }
+.dash-card .meta-row { padding: var(--space-3) var(--space-3) var(--space-2);
+  display: flex; gap: var(--space-2); align-items: center; }
+.dash-card .name-row { padding: 0 var(--space-3); font-size: var(--fs-13);
+  font-weight: var(--fw-semi); color: var(--ink); overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; }
+.dash-card .foot-row { padding: var(--space-2) var(--space-3) var(--space-3);
+  font-family: var(--font-mono); font-size: var(--fs-10); color: var(--ink-dim);
+  min-height: 14px; }

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Presentations — OnePage') }}{% endblock %}
+
+{% block head %}
+<style>
+  /* Page-local CSS (main.css is off limits while it is being edited elsewhere). */
+  .pres-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .pres-card {
+    display: flex; flex-direction: column; gap: 6px;
+    border: 1px solid var(--border); border-radius: 12px;
+    background: var(--surface-1); padding: 12px; text-decoration: none; color: var(--ink);
+  }
+  .pres-card-name { font-size: 15px; font-weight: 650; overflow-wrap: anywhere; }
+  .pres-card-meta { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); }
+  .pres-card-acts { display: flex; gap: 6px; margin-top: 4px; }
+  .pres-card.new {
+    align-items: center; justify-content: center; border-style: dashed;
+    color: var(--ink-dim); font-size: 13px; cursor: pointer; min-height: 108px;
+    font-family: inherit;
+  }
+  .pres-card.new:hover { border-color: var(--accent); color: var(--accent); }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'presentations' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('My reports'), '/', false], [_('Presentations'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content fluid">
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow">{{ _('workspace · display order') }}</div>
+          <h1 class="page-title">{{ _('Presentations') }}</h1>
+        </div>
+      </div>
+
+      <div style="font-size:12px;color:var(--ink-dim);margin:0 2px 14px">
+        {{ _('A presentation is the display order of already published reports plus images and PDF. The report shows as-is, at its own address. Visible only to you.') }}
+      </div>
+
+      <div class="pres-cards">
+        {% for p in presentations %}
+        <div class="pres-card">
+          <div class="pres-card-name">{{ p.title }}</div>
+          <div class="pres-card-meta">{{ p.items_count }} {{ _('slide(s) ·') }} {{ p.updated_at }}</div>
+          <div class="pres-card-acts">
+            {# /slide/0 redirects to the report's own viewer when slide 1 is a
+               report — one entry point, whatever the first slide happens to be. #}
+            {% if p.items_count %}<a class="btn xs primary" href="/presentations/{{ p.id }}/slide/0">{{ _('Show') }}</a>{% endif %}
+            <a class="btn xs ghost" href="/presentations/{{ p.id }}">{{ _('Edit') }}</a>
+          </div>
+        </div>
+        {% endfor %}
+        <button class="pres-card new" type="button" data-pres-create>{{ _('+ create presentation') }}</button>
+      </div>
+
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/presentations.js?v={{ asset_v }}" defer></script>
+{% endblock %}

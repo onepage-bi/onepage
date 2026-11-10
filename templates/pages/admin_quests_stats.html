@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+{% block title %}{{ _('OnePage — Admin · Quests · Stats') }}{% endblock %}
+
+{% block head %}
+<style>
+  .qs-verdict { display:flex; gap:18px; align-items:flex-start; padding:18px 20px; border-radius:var(--r-6); margin-top:16px;
+    background:var(--surface-1); box-shadow:0 0 0 1px var(--border-soft) inset; border-left:5px solid var(--ink-dim); }
+  .qs-verdict.ok { border-left-color: oklch(0.62 0.15 155); }
+  .qs-verdict.warn { border-left-color: oklch(0.72 0.17 70); }
+  .qs-verdict.bad { border-left-color: oklch(0.62 0.19 25); }
+  .qs-verdict.wait { border-left-color: var(--accent); }
+  .qs-verdict h2 { margin:0 0 4px; font-size:20px; letter-spacing:-.01em; }
+  .qs-verdict p { margin:0; color:var(--ink-dim); font-size:13px; line-height:1.5; max-width:70ch; }
+  .qs-verdict .when { margin-left:auto; font-family:var(--font-mono); font-size:11px; color:var(--ink-dim); white-space:nowrap; }
+
+  .qs-qs { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:12px; }
+  @media (max-width:1200px) { .qs-qs { grid-template-columns:repeat(2,1fr); } }
+  .qs-q { background:var(--surface-1); border-radius:var(--r-6); padding:14px 16px; box-shadow:0 0 0 1px var(--border-soft) inset; display:flex; flex-direction:column; gap:6px; }
+  .qs-q .q { font-size:13px; font-weight:600; }
+  .qs-q .v { font-size:30px; font-weight:600; letter-spacing:-.02em; font-variant-numeric:tabular-nums; line-height:1.1; }
+  .qs-q .v.ok { color: oklch(0.55 0.15 155); } .qs-q .v.warn { color: oklch(0.62 0.17 70); } .qs-q .v.bad { color: oklch(0.58 0.19 25); } .qs-q .v.none { color: var(--ink-dim); }
+  .qs-q .l { font-size:12px; color:var(--ink-dim); line-height:1.45; }
+  .qs-q .r { font-family:var(--font-mono); font-size:10px; color:var(--ink-dim); margin-top:auto; padding-top:4px; }
+
+  .qs-two { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }
+  @media (max-width:1100px) { .qs-two { grid-template-columns:1fr; } }
+
+  .qs-funnel { display:flex; flex-direction:column; gap:8px; }
+  .qs-f { display:grid; grid-template-columns: 1fr 120px; gap:10px; align-items:center; }
+  .qs-f .bar { height:26px; border-radius:4px; background:var(--surface-2); position:relative; overflow:hidden; }
+  .qs-f .bar i { position:absolute; inset:0 auto 0 0; background:var(--accent); opacity:.85; border-radius:4px; }
+  .qs-f .bar span { position:absolute; left:10px; top:0; line-height:26px; font-size:12px; color:var(--ink); mix-blend-mode:normal; }
+  .qs-f .n { font-family:var(--font-mono); font-size:12px; text-align:right; font-variant-numeric:tabular-nums; }
+  .qs-f .n b { font-size:13px; }
+  .qs-f .n small { color:var(--ink-dim); }
+
+  .qs-chart { display:flex; align-items:flex-end; gap:4px; height:150px; padding-top:18px; border-bottom:1px solid var(--border-soft); }
+  .qs-c { flex:1; min-width:10px; max-width:44px; height:100%; display:flex; align-items:flex-end; justify-content:center; gap:2px; position:relative; }
+  .qs-c .v { width:45%; border-radius:3px 3px 0 0; background:var(--border-soft); min-height:1px; }
+  .qs-c.season .v { background: color-mix(in oklab, var(--ink) 35%, transparent); }
+  .qs-c .s { width:45%; border-radius:3px 3px 0 0; background:var(--accent); min-height:0; }
+  .qs-c.today .v, .qs-c.today .s { outline:2px dashed var(--ink-dim); outline-offset:1px; }
+  .qs-c .lbl { position:absolute; bottom:-16px; left:0; right:0; text-align:center; font-family:var(--font-mono); font-size:9px; color:var(--ink-dim); }
+  .qs-c .top { position:absolute; top:-16px; left:0; right:0; text-align:center; font-family:var(--font-mono); font-size:10px; color:var(--ink-dim); }
+  .qs-c.off { opacity:.45; }
+  .qs-start { width:2px; align-self:stretch; background:var(--accent); opacity:.6; margin:0 4px; }
+  .qs-legend { display:flex; gap:16px; margin-top:22px; font-size:11px; color:var(--ink-dim); flex-wrap:wrap; }
+  .qs-legend i { display:inline-block; width:10px; height:10px; border-radius:2px; vertical-align:-1px; margin-right:5px; }
+  .qs-hint { font-size:12px; color:var(--ink-dim); line-height:1.5; margin-top:8px; }
+  .tbl td.numeric, .tbl th.numeric { text-align:right; }
+  .qs-src { display:inline-block; font-family:var(--font-mono); font-size:10px; padding:1px 6px; border-radius:4px; background:var(--surface-2); }
+  .qs-src.daily { background: color-mix(in oklab, var(--accent) 16%, transparent); }
+  .qs-tick { color: oklch(0.55 0.15 155); font-weight:600; }
+  details.qs-det { margin-top:16px; }
+  details.qs-det > summary { cursor:pointer; font-weight:600; font-size:14px; padding:10px 0; list-style:none; display:flex; align-items:center; gap:8px; }
+  details.qs-det > summary::before { content:'▸'; color:var(--ink-dim); font-size:12px; }
+  details.qs-det[open] > summary::before { content:'▾'; }
+  details.qs-det > summary .mono { font-weight:400; color:var(--ink-dim); font-size:11px; }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'admin' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '/', false], [_('Admin'), '/admin', false], [_('Quests'), '/admin/quests', false], [_('Stats'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content fluid">
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow">{{ _('administration · quests · season day') }} {{ s.season_day }} {{ _('· start') }} {{ s.season_start }}</div>
+          <h1 class="page-title">{{ _('Does the mechanic work') }}</h1>
+        </div>
+        <div class="actions">
+          <a class="btn sm ghost" href="/admin/quests">{{ _('← Settings') }}</a>
+        </div>
+      </div>
+
+      <div class="tabbar">
+        <a class="tab" href="/admin">{{ _('Users') }}</a>
+        <a class="tab" href="/admin/audit">{{ _('Audit log') }}</a>
+        <a class="tab" href="/admin/perf">{{ _('Performance') }}</a>
+        <a class="tab" href="/admin/errors">{{ _('Errors') }}</a>
+        <a class="tab" href="/admin/generators">{{ _('Generators') }}</a>
+        <a class="tab" href="/admin/employees">{{ _('Staff') }}</a>
+        <a class="tab" href="/admin/scopes">{{ _('Scopes') }}</a>
+        <a class="tab active" href="/admin/quests">{{ _('Quests') }}</a>
+      </div>
+
+      {% set m = s.summary %}
+
+      <!-- ── Verdict ─────────────────────────────────────────────────── -->
+      <div class="qs-verdict {{ s.verdict.kind }}">
+        <div>
+          <h2>{{ s.verdict.title }}</h2>
+          <p>{{ s.verdict.text }}</p>
+        </div>
+        <div class="when">{{ _('working days of season:') }} {{ s.judge_days }} / {{ s.min_judge_days }}</div>
+      </div>
+
+      <div class="qs-qs">
+        {% for q in s.questions %}
+        <div class="qs-q">
+          <div class="q">{{ q.q }}</div>
+          <div class="v {{ q.grade }}">{{ q.value }}</div>
+          <div class="l">{{ q.line }}</div>
+          <div class="r">{{ q.rule }}</div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="qs-two">
+
+        <!-- ── Platform before and during the season ──────────────────────────────── -->
+        <div class="card">
+          <div class="card-head"><span class="card-title">{{ _('Do they visit platform more often') }}</span>
+            <span class="mono" style="font-size:11px;color:var(--ink-dim)">{{ _('unique users per day') }}</span></div>
+          <div class="card-body">
+            <div class="qs-chart">
+              {% set ns = namespace(started=false) %}
+              {% for c in s.chart %}
+                {% if c.season and not ns.started %}<div class="qs-start" title="{{ _('season start') }}"></div>{% set ns.started = true %}{% endif %}
+                <div class="qs-c {{ 'season' if c.season else '' }} {{ 'today' if c.today else '' }} {{ '' if c.working else 'off' }}"
+                     title="{{ _('{day}: visitors {visitors}, daily rewards {daily}', day=c.day, visitors=(c.visitors if c.visitors is not none else _('no data')), daily=c.daily) }}">
+                  {% if c.visitors is not none %}<div class="top">{{ c.visitors }}</div>{% endif %}
+                  <div class="v" style="height:{{ ((c.visitors or 0) / s.chart_peak * 100) | round(0) | int }}%"></div>
+                  <div class="s" style="height:{{ (c.daily / s.chart_peak * 100) | round(0) | int }}%"></div>
+                  <div class="lbl">{{ c.day.strftime('%d.%m') }}</div>
+                </div>
+              {% endfor %}
+            </div>
+            <div class="qs-legend">
+              <span><i style="background:var(--border-soft)"></i>{{ _('visitors before season') }}</span>
+              <span><i style="background:color-mix(in oklab, var(--ink) 35%, transparent)"></i>{{ _('visitors in season') }}</span>
+              <span><i style="background:var(--accent)"></i>{{ _('opened daily surprise') }}</span>
+              <span><i style="background:var(--accent);width:2px"></i>{{ _('season start') }}</span>
+            </div>
+            {% set t = s.traffic %}
+            <div class="qs-hint">
+              {% if t.base_avg is not none %}
+              {{ _h('Average per working day before season {b}{base}{b_} ({base_days} days.), in season {b}{season}{b_} ({season_days} completed days.), today {b}{today}{b_}.', b='<b>', b_='</b>', base=t.base_avg|e, base_days=t.base_days|e, season=(t.season_avg if t.season_avg is not none else '—')|e, season_days=t.season_days|e, today=t.today|e) }}
+              {% if t.sampled %}{{ _('Perf log is sampled, figures are lower bound estimate.') }}{% endif %}
+              {% else %}
+              {{ _('No perf log entries before start date: telemetry was off or retention period ({n} days) expired. «Before/after» comparison will appear if you enable telemetry ahead of next season.', n=settings.perf_retention_days) }}
+              {% endif %}
+              {{ _('Visitor = user who opened at least one page (not API or static).') }}
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Funnel ─────────────────────────────────────────────── -->
+        <div class="card">
+          <div class="card-head"><span class="card-title">{{ _('How many people reached each step') }}</span>
+            <span class="mono" style="font-size:11px;color:var(--ink-dim)">{{ _('for the entire season') }}</span></div>
+          <div class="card-body">
+            <div class="qs-funnel">
+              {% for f in s.funnel %}
+              <div class="qs-f">
+                <div class="bar"><i style="width:{{ f.pct }}%"></i><span>{{ f.label }}</span></div>
+                <div class="n"><b>{{ f.n }}</b> <small>· {{ f.pct }}%</small></div>
+              </div>
+              {% endfor %}
+            </div>
+            <div class="qs-hint">
+              {{ _('Core —') }} {{ s.core }} {{ _('people.: opened surprise on at least 80% of working days since first open (counted when 3 such days accumulated). Didn\'t open today and yesterday, though opened before:') }} {{ m.lost }} {{ _('people. Earned surprise but didn\'t open:') }} {{ m.pending_today }}.
+            </div>
+            <table class="tbl" style="margin-top:12px">
+              <thead><tr><th>{{ _('Task') }}</th><th class="numeric">{{ _('Completed {ctx:2}') }}</th><th class="numeric">{{ _('% viewed') }}</th></tr></thead>
+              <tbody>
+                {% set opened_any = s.funnel[2].n %}
+                {% for q in s.quests_by_id %}
+                <tr><td>{{ q.title }}</td><td class="mono numeric">{{ q.done }}</td><td class="mono numeric">{{ (q.done / opened_any * 100) | round(0) | int if opened_any else 0 }}%</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Details (collapsed) ────────────────────────────────── -->
+      <details class="qs-det">
+        <summary>{{ _('Daily rewards by day') }} <span class="mono">· {{ s.timeline | length }} {{ _('days') }}</span></summary>
+        <div class="card"><div class="card-body">
+          <table class="tbl">
+            <thead><tr><th>{{ _('Day') }}</th><th class="numeric">{{ _('Daily reward') }}</th><th class="numeric">{{ _('First time') }}</th><th class="numeric">{{ _('Tasks') }}</th><th class="numeric">{{ _('Quiz') }}</th><th class="numeric">{{ _('Bonus reveals') }}</th></tr></thead>
+            <tbody>
+              {% for t in s.timeline | reverse %}
+              <tr {% if not t.working %}style="color:var(--ink-dim)"{% endif %}>
+                <td class="mono">{{ t.day }}{% if not t.working %} {{ _('· exits') }}{% endif %}</td>
+                <td class="mono numeric">{{ t.daily }}</td>
+                <td class="mono numeric">{{ t.new }}</td>
+                <td class="mono numeric">{{ t.quests }}</td>
+                <td class="mono numeric">{{ t.quiz_finished }}{% if t.quiz_started != t.quiz_finished %} <span style="color:var(--ink-dim)">/ {{ t.quiz_started }}</span>{% endif %}</td>
+                <td class="mono numeric">{{ t.extra }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <div class="qs-hint">{{ _('\'First time\' — person\'s first daily reward. \'Quiz\' — completed / started. \'Bonus reveals\' — cards from tasks, quiz and exchange.') }}</div>
+        </div></div>
+      </details>
+
+      <details class="qs-det">
+        <summary>{{ _('Reveals today, {n}', n=s.today) }} <span class="mono">· {{ _('{n} pcs.', n=s.today_rows | length) }}</span></summary>
+        <div class="card"><div class="card-body">
+          {% if s.today_rows %}
+          <table class="tbl">
+            <thead><tr><th>{{ _('Time (quests time zone)') }}</th><th>{{ _('Who') }}</th><th>{{ _('Source') }}</th><th>{{ _('Card') }}</th><th>{{ _('Rarity') }}</th><th>{{ _('Opened') }}</th></tr></thead>
+            <tbody>
+              {% for r in s.today_rows %}
+              <tr>
+                <td class="mono">{{ (r.at.replace(tzinfo=none) + s.tz_offset).strftime('%H:%M') if r.at else '—' }}</td>
+                <td>{{ r.name }} <span class="mono" style="color:var(--ink-dim)">{{ r.person_id }}</span></td>
+                <td><span class="qs-src {{ 'daily' if r.source == 'daily' else '' }}">{{ r.source }}</span></td>
+                <td>{{ r.card }}</td>
+                <td class="mono">{{ r.rarity }}</td>
+                <td class="mono">{{ '✓' if r.revealed else _('waiting') }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <div class="qs-hint">{{ _('No one opened today.') }}</div>
+          {% endif %}
+        </div></div>
+      </details>
+
+      <details class="qs-det" style="margin-bottom:24px">
+        <summary>{{ _('Participants') }} <span class="mono">· {{ s.people | length }} {{ _('people · by points') }}</span></summary>
+        <div class="card"><div class="card-body" style="overflow-x:auto">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>#</th><th>{{ _('Who') }}</th><th>{{ _('Department') }}</th>
+                <th class="numeric">{{ _('Points') }}</th><th class="numeric">{{ _('Streak') }}</th><th class="numeric">{{ _('Best') }}</th><th class="numeric">{{ _('Days') }}</th>
+                <th>{{ _('Latest') }}</th><th>{{ _('Today') }}</th>
+                <th class="numeric">{{ _('Tasks') }}</th><th class="numeric">{{ _('Quizzes') }}</th><th class="numeric">{{ _('Correct') }}</th><th class="numeric">{{ _('Card count') }}</th><th>{{ _('Ranking') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in s.people %}
+              <tr>
+                <td class="mono" style="color:var(--ink-dim)">{{ loop.index }}</td>
+                <td>{{ p.name }} <span class="mono" style="color:var(--ink-dim)">{{ p.person_id }}</span></td>
+                <td style="color:var(--ink-dim)">{{ p.dept }}</td>
+                <td class="mono numeric">{{ p.points }}</td>
+                <td class="mono numeric">{{ p.streak }}</td>
+                <td class="mono numeric">{{ p.best_streak }}</td>
+                <td class="mono numeric">{{ p.days }}</td>
+                <td class="mono">{{ p.last_open or '—' }}</td>
+                <td class="mono">{% if p.today %}<span class="qs-tick">✓</span>{% else %}—{% endif %}</td>
+                <td class="mono numeric">{{ p.quests }}/{{ s.quests_by_id | length }}</td>
+                <td class="mono numeric">{{ p.quiz_finished }}</td>
+                <td class="mono numeric">{{ p.quiz_correct }}</td>
+                <td class="mono numeric">{{ p.cards }}</td>
+                <td class="mono">{{ _('yes') if p.optin else '—' }}</td>
+              </tr>
+              {% else %}
+              <tr><td colspan="14" style="color:var(--ink-dim)">{{ _('No one has visited yet.') }}</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div></div>
+      </details>
+
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/palette.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/hotkeys.js?v={{ asset_v }}" defer></script>
+{% endblock %}

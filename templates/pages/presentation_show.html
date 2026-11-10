@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% block title %}{{ pres_ctx.title }} — OnePage{% endblock %}
+{% block mode %}standalone{% endblock %}
+
+{% block head %}
+<style>
+  /* The shell: black, no chrome of its own. The slide inside draws the
+     presenter bar; this document only owns fullscreen and the frame. */
+  html, body { height: 100%; margin: 0; background: #0c0d10; overflow: hidden; }
+  .sidebar, .topbar { display: none !important; }
+  .shell, .main, .content { display: block !important; height: 100vh; padding: 0 !important; margin: 0 !important; max-width: none !important; }
+  #pres-stage2 { position: fixed; inset: 0; background: #0c0d10; }
+  .pres-buf { position: absolute; inset: 0; width: 100vw; height: 100vh; border: 0; background: #0c0d10; opacity: 1; transition: opacity .18s ease; }
+  .pres-buf.is-back { opacity: 0; pointer-events: none; }
+  @media (prefers-reduced-motion: reduce) { .pres-buf { transition: none; } }
+  /* A report slide loads on demand (it is too heavy to keep two alive), so
+     "Next" has a visible answer while the hidden frame builds it. */
+  #pres-wait {
+    position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
+    display: none; align-items: center; gap: 8px; padding: 6px 14px;
+    background: rgba(20, 22, 26, .92); color: #c6cbd2; border-radius: 999px;
+    font: 12px/1 var(--font-mono, monospace); z-index: 10;
+    box-shadow: 0 4px 18px rgba(0,0,0,.4);
+  }
+  #pres-wait.on { display: inline-flex; }
+  #pres-wait i {
+    width: 10px; height: 10px; border-radius: 50%; border: 2px solid #3a3f47;
+    border-top-color: #e8eaed; animation: preswait 1s linear infinite;
+  }
+  @keyframes preswait { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { #pres-wait i { animation: none; } }
+</style>
+{% endblock %}
+
+{% block body %}
+<div id="pres-stage2">
+  <iframe class="pres-buf" id="pres-buf-a" src="{{ first_url }}" title="{{ pres_ctx.title }}" allow="fullscreen"></iframe>
+  <iframe class="pres-buf is-back" id="pres-buf-b" title="" allow="fullscreen" aria-hidden="true"></iframe>
+  <div id="pres-wait"><i></i>{{ _('Loading report…') }}</div>
+</div>
+<script>
+  // Double-buffered show: the visible frame stays on screen while the next
+  // slide loads AND paints in the hidden one; then a short crossfade. The
+  // spare frame speculatively preloads the next slide, so "Next" is
+  // usually instant. All messages are same-origin only.
+  (function () {
+    var A = document.getElementById('pres-buf-a');
+    var B = document.getElementById('pres-buf-b');
+    var front = A, back = B;
+    var backUrl = null;      // what the back frame holds (or is loading)
+    var backReady = false;
+    var pending = null;      // url the user asked for and is waiting on
+    var nextUrl = null;
+    var meta = { }; // frame id -> {i, next} from its op_pres_slide
+    var wait = document.getElementById('pres-wait');
+    var waitTimer = null;
+    function sameOrigin(e) { return e.origin === location.origin; }
+    function frameOf(e) { return e.source === (front.contentWindow || null) ? front : e.source === (back.contentWindow || null) ? back : null; }
+    // A /slide/ page (image, pdf, html file) is one light document — cheap to
+    // hold speculatively. A report (/d/…) is a whole viewer with its data:
+    // keeping TWO alive doubles memory on office laptops, so reports load
+    // only when the user actually navigates. The strategy is chosen per URL.
+    function isLight(url) { return !!url && url.indexOf('/slide/') >= 0; }
+    function preload(url) {
+      if (!url || url === backUrl) return;
+      backUrl = url; backReady = false;
+      back.src = url;
+    }
+    function showWait() {
+      // Only after 250 ms — a preloaded (or fast) swap should never flash it.
+      clearTimeout(waitTimer);
+      waitTimer = setTimeout(function () { if (pending) wait.classList.add('on'); }, 250);
+    }
+    function hideWait() { clearTimeout(waitTimer); wait.classList.remove('on'); }
+    // The user asked for this url: swap now if it is already sitting ready in
+    // the back frame, otherwise load it there and swap on its ready signal.
+    // (Missing "already ready" check here was a real deadlock: the speculative
+    // preload had long finished, so no future event would ever call swap.)
+    function navTo(url) {
+      if (!url) return;
+      if (backUrl === url && backReady) { swap(); return; }
+      pending = url;
+      showWait();
+      preload(url);
+    }
+    function applyMeta(m) {
+      if (!m) return;
+      var i = Number(m.i);
+      if (isFinite(i) && i >= 0) history.replaceState(null, '', location.pathname + '?i=' + Math.floor(i));
+      nextUrl = m.next || null;
+      if (isLight(nextUrl)) preload(nextUrl);
+    }
+    function swap() {
+      var f = front; front = back; back = f;
+      front.classList.remove('is-back'); front.removeAttribute('aria-hidden');
+      back.classList.add('is-back'); back.setAttribute('aria-hidden', 'true');
+      try { front.contentWindow.focus(); } catch (e) {}
+      pending = null; backUrl = null; backReady = false;
+      hideWait();
+      applyMeta(meta[front.id]);
+      // free the old document soon; the next preload will reuse the frame
+      setTimeout(function () { if (back.src !== 'about:blank' && !backUrl) back.src = 'about:blank'; }, 400);
+    }
+    window.addEventListener('message', function (e) {
+      if (!sameOrigin(e)) return;
+      var d = e.data || {};
+      if (d.type === 'op_pres_full') {
+        try {
+          if (document.fullscreenElement) document.exitFullscreen();
+          else document.documentElement.requestFullscreen();
+        } catch (err) {}
+        return;
+      }
+      if (d.type === 'op_pres_nav' && d.url) {
+        navTo(d.url);
+        return;
+      }
+      if (d.type === 'op_pres_slide') {
+        var fr = frameOf(e);
+        if (fr) meta[fr.id] = { i: d.i, next: d.next };
+        if (fr === front) applyMeta(meta[fr.id]);
+        return;
+      }
+      if (d.type === 'op_pres_ready') {
+        var fr2 = frameOf(e);
+        if (fr2 === back) {
+          backReady = true;
+          if (pending && backUrl === pending) swap();
+        } else if (fr2 === front && isLight(nextUrl)) {
+          preload(nextUrl);   // the visible slide is painted — fetch the next one
+        }
+        return;
+      }
+    });
+    // Dashboards never post op_pres_ready — their frame 'load' is the paint.
+    function wireLoad(f) {
+      f.addEventListener('load', function () {
+        if (f !== back || !backUrl) return;
+        var isSlidePage = backUrl.indexOf('/slide/') >= 0;
+        if (!isSlidePage) {
+          backReady = true;
+          if (pending && backUrl === pending) swap();
+        }
+      });
+    }
+    wireLoad(A); wireLoad(B);
+    // Keys when focus is on the shell itself (after a swap it moves back in).
+    document.addEventListener('keydown', function (e) {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.code === 'KeyF') {
+        // Layout-independent (e.key is the Cyrillic letter U+0430 on a Russian layout).
+        e.preventDefault();
+        try {
+          if (document.fullscreenElement) document.exitFullscreen();
+          else document.documentElement.requestFullscreen();
+        } catch (err) {}
+        return;
+      }
+      try {
+        var doc = front.contentDocument;
+        var a = e.key === 'ArrowRight' ? doc.getElementById('pres-next')
+              : e.key === 'ArrowLeft' ? doc.getElementById('pres-prev') : null;
+        if (a && !a.classList.contains('is-off')) { e.preventDefault(); navTo(a.getAttribute('href')); }
+      } catch (err) {}
+    });
+  })();
+</script>
+{% endblock %}

@@ -1,0 +1,532 @@
+{% extends "base.html" %}
+{% block title %}OnePage — {{ _('Dev Guide') }}{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/docs.css?v={{ asset_v }}" />
+{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'docs' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '/', false], [_('Dev Guide'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content">
+      <div class="dg" id="dg-root" data-track="analyst">
+
+      {# ── Cover: the platform thesis + map ─────────────────────────── #}
+      <section class="dg-hero">
+        <div class="dg-hero-eyebrow">dev guide · v3</div>
+        <h1>{{ _('A report where the origin of every number is visible') }}</h1>
+        <p class="dg-hero-lead">
+          {{ _h('OnePage is where a report lives after it has been made: people open it, ask it questions in plain language, rebuild it every week — and at any moment it is visible {b}which folder, which file and which sheet{b_} a number came from. The source data does not travel to the server on the way: the calculation runs in the analyst\'s browser.', b='<b>', b_='</b>') }}
+        </p>
+
+        <div class="dg-map">
+          {# The illustration IS the map: folder -> build -> report ->
+             question -> control. It ships with a transparent background so
+             the page's own surface shows through in every theme. #}
+          <img class="dg-map-art" src="/static/img/docs/hero.webp?v={{ asset_v }}"
+               alt="{{ _('The path of the data: files → build → report → questions → control') }}" />
+          <div class="dg-map-nodes">
+            <button type="button" class="dg-node" data-goto="dg-where">
+              <span class="dg-node-k">01</span>
+              <span class="dg-node-t">{{ _('Data') }}</span>
+              <span class="dg-node-d">{{ _('Your files on your machine — a folder, not a server') }}</span>
+            </button>
+            <button type="button" class="dg-node" data-goto="dg-a1" data-goto-track="analyst">
+              <span class="dg-node-k">02</span>
+              <span class="dg-node-t">{{ _('Build') }}</span>
+              <span class="dg-node-d">{{ _('A file from a model, or a generator that computes in the browser') }}</span>
+            </button>
+            <button type="button" class="dg-node" data-goto="dg-a4" data-goto-track="analyst">
+              <span class="dg-node-k">03</span>
+              <span class="dg-node-t">{{ _('Report') }}</span>
+              <span class="dg-node-d">{{ _('One self-contained HTML with versions and access') }}</span>
+            </button>
+            <button type="button" class="dg-node" data-goto="dg-b8" data-goto-track="author">
+              <span class="dg-node-k">04</span>
+              <span class="dg-node-t">{{ _('Questions') }}</span>
+              <span class="dg-node-d">{{ _('Questions in plain language — the SQL is written by the engine, not by the model') }}</span>
+            </button>
+            <button type="button" class="dg-node" data-goto="dg-b5" data-goto-track="author">
+              <span class="dg-node-k">05</span>
+              <span class="dg-node-t">{{ _('Control') }}</span>
+              <span class="dg-node-d">{{ _('Lineage, quality checks, shared lookup tables') }}</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {# ── Numbers that set expectations ─────────────────────────────── #}
+      <div class="dg-facts">
+        <div class="dg-fact">
+          <div class="dg-fact-v">0</div>
+          <div class="dg-fact-l">{{ _('external requests from a finished report — the file is self-contained') }}</div>
+        </div>
+        <div class="dg-fact">
+          <div class="dg-fact-v">≤ 2 {{ _('MB') }}</div>
+          <div class="dg-fact-l">{{ _('HTML budget: heavier than that, and the data moves into a separate file') }}</div>
+        </div>
+        <div class="dg-fact">
+          <div class="dg-fact-v">~500</div>
+          <div class="dg-fact-l">{{ _('files and up to 500 MB in a folder — the browser engine\'s recommendation') }}</div>
+        </div>
+        <div class="dg-fact">
+          <div class="dg-fact-v">9,8 {{ _('s') }}</div>
+          <div class="dg-fact-l">{{ _('a cold start of the engine on a corporate laptop (7.0 s warm)') }}</div>
+        </div>
+      </div>
+
+      {# ── Where it lives ────────────────────────────────────────────── #}
+      <section class="dg-sec" id="dg-where">
+        <div class="dg-sec-head">
+          <h2>{{ _('Where this lives') }}</h2>
+          <span class="dg-sec-note">{{ _('one page, where everyone starts') }}</span>
+        </div>
+        <p class="dg-lede">
+          {{ _('The workspace is the list of reports you have access to, with folders, favourites and live previews. Everything else in the left menu is a tool around that list: upload, generators, sources, quality, lookup tables, questions.') }}
+        </p>
+        <div class="dg-art">
+          <figure>
+            <div class="dg-art-bar"><i></i><i></i><i></i><span>onepage / dashboards</span></div>
+            <img src="/static/img/docs/workspace.webp?v={{ asset_v }}" loading="lazy"
+                 alt="{{ _('The report list in the workspace') }}" />
+            <figcaption>{{ _('A real screen of the platform. Screenshots in this guide are taken automatically (tools/docs_shots.py), so they never drift away from the interface.') }}</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      {# ── Choosing a road ───────────────────────────────────────────── #}
+      <section class="dg-sec dg-tracks">
+        <div class="dg-sec-head">
+          <h2>{{ _('Two roads') }}</h2>
+          <span class="dg-sec-note">{{ _('pick yours — the page will show only its steps') }}</span>
+        </div>
+        <div class="dg-note" style="margin:0 0 14px">
+          {{ _h('Not sure where to start — then don\'t start here: the {a}School{a_} takes the same ground step by step, with checks and tasks on the platform. This guide is the better companion once you already know what you are doing.', a='<a href="/learn">', a_='</a>') }}
+        </div>
+        <div class="dg-tracks-q">{{ _('What are you doing right now?') }}</div>
+        <div class="dg-track-row">
+          <button type="button" class="dg-track" data-track-btn="analyst" aria-pressed="true">
+            <span class="dg-track-t">{{ _('I need a report') }}<span class="dg-track-badge">~1 {{ _('hour') }}</span></span>
+            <span class="dg-track-d">{{ _('The data is already in Excel. A model writes a single HTML file, you upload it to the platform and share the link. No programming required.') }}</span>
+          </button>
+          <button type="button" class="dg-track" data-track-btn="author" aria-pressed="false">
+            <span class="dg-track-t">{{ _('The report must rebuild itself') }}<span class="dg-track-badge">~1–2 {{ _('days {ctx:3}') }}</span></span>
+            <span class="dg-track-d">{{ _('The same report every week on new files. You write a generator in Python, the platform runs it in the analyst\'s browser and publishes the result.') }}</span>
+          </button>
+        </div>
+      </section>
+
+      {# ══ Road 1: analyst ══════════════════════════════════════════════ #}
+      <section class="dg-sec" data-track="analyst">
+        <div class="dg-sec-head">
+          <h2>{{ _('A report in an hour') }}</h2>
+          <span class="dg-sec-note">{{ _('from the task to a link you can send') }}</span>
+        </div>
+
+        <div class="dg-step" id="dg-a1">
+          <div class="dg-step-n">01</div>
+          <div>
+            <h3>{{ _('Describe the task to the model — together with a piece of the data') }}</h3>
+            <p>{{ _('Models (Claude, ChatGPT, Gemini) are good at writing a single self-contained HTML file: all the CSS and JavaScript inside, no external links. What matters is giving them the structure of the data rather than a description of it: paste 5–10 rows of your own extract straight into the request.') }}</p>
+            <div class="dg-code">
+              <div class="dg-code-head">
+                <span class="dg-code-name">{{ _('prompt · the base') }}</span>
+                <button type="button" class="dg-copy" data-copy="dg-code-base">{{ _('Copy') }}</button>
+              </div>
+              <pre id="dg-code-base">{{ artifacts.base }}</pre>
+            </div>
+            <div class="dg-note">
+              <b>{{ _('Data and the model.') }}</b>
+              {{ _('What travels into the request is the structure and a few example rows, never the whole extract. Commercial and personal data are not sent to a model — that is a platform rule, not a recommendation.') }}
+            </div>
+          </div>
+        </div>
+
+        <div class="dg-step" id="dg-a2">
+          <div class="dg-step-n">02</div>
+          <div>
+            <h3>{{ _('Check the file before uploading — with a double click') }}</h3>
+            <p>{{ _('If the file works when opened from a folder, it will almost certainly work on the platform too. Check four things:') }}</p>
+            <ul>
+              <li>{{ _h('the source carries no {c}src="https://…"{c_} — otherwise the report stays blank on an isolated page;', c='<code>', c_='</code>') }}</li>
+              <li>{{ _('the file is ≤ 2 MB (data over a few hundred KB has no business living inside the HTML);') }}</li>
+              <li>{{ _('the numbers look the way they do in the source — a model can round silently;') }}</li>
+              <li>{{ _('the page reads on a laptop width, not only on a large monitor.') }}</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="dg-step" id="dg-a3">
+          <div class="dg-step-n">03</div>
+          <div>
+            <h3>{{ _('Upload it — the platform works out what kind of report this is') }}</h3>
+            <p>{{ _h('«Upload» in the left menu, then drop the file. The result of the analysis appears on the right: the kind of report and the number of data slots. The kind is decided by the markup — {c}&lt;input type="file"&gt;{c_} makes the report interactive, the {c}bootstrap-snapshot{c_} tag makes it a snapshot, and without either it is static. The difference is in the reference at the bottom of this page.', c='<code>', c_='</code>') }}</p>
+            <div class="dg-art">
+              <figure>
+                <div class="dg-art-bar"><i></i><i></i><i></i><span>onepage / upload</span></div>
+                <img src="/static/img/docs/upload.webp?v={{ asset_v }}" loading="lazy"
+                     alt="{{ _('The upload page') }}" />
+                <figcaption>{{ _('A title and a description help colleagues find the report; publishing can wait until you have looked at the draft.') }}</figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+
+        <div class="dg-step" id="dg-a4">
+          <div class="dg-step-n">04</div>
+          <div>
+            <h3>{{ _('The report is in place — and a workbench appears around it') }}</h3>
+            <p>{{ _('From this moment the report is not a file in an inbox. It has an address, versions (the old one stays and can be downloaded), an access list, a link for outside viewing, comments laid over the page, and a colours tab where the owner re-paints the report right in the browser.') }}</p>
+            <div class="dg-art">
+              <figure>
+                <div class="dg-art-bar"><i></i><i></i><i></i><span>onepage / d / …</span></div>
+                <img src="/static/img/docs/report.webp?v={{ asset_v }}" loading="lazy"
+                     alt="{{ _('A published report as its reader sees it') }}" />
+                <figcaption>{{ _('A demonstration report: every value on the screenshot is invented.') }}</figcaption>
+              </figure>
+            </div>
+            <div class="dg-note">
+              <b>{{ _('Refreshing the data means a new version, not a new report.') }}</b>
+              {{ _('Upload the fresh HTML on the Settings tab: the address and the permissions stay as they were, and nothing breaks for the readers.') }}
+            </div>
+          </div>
+        </div>
+
+        <div class="dg-step" id="dg-a5">
+          <div class="dg-step-n">05</div>
+          <div>
+            <h3>{{ _('Assemble a show out of reports') }}</h3>
+            <p>{{ _('A presentation is a list of slides, and a slide can be a live report, a picture, a PDF or an HTML page. In show mode the arrows page through the slides and a report opens for real rather than as a screenshot — the numbers in the meeting are fresh.') }}</p>
+            <div class="dg-art">
+              <figure>
+                <div class="dg-art-bar"><i></i><i></i><i></i><span>onepage / presentations</span></div>
+                <img src="/static/img/docs/presentations.webp?v={{ asset_v }}" loading="lazy"
+                     alt="{{ _('Presentations built from reports') }}" />
+                <figcaption>{{ _('A PDF is split into pages automatically — each becomes its own slide.') }}</figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+
+        <div class="dg-note">
+          {{ _('From here on the report needs no manual update. If the same table arrives every week, take the second road: a generator will assemble this very report by itself, and the platform will remember which files it came from.') }}
+        </div>
+      </section>
+
+      {# ══ Road 2: generator author ═════════════════════════════════════ #}
+      <section class="dg-sec" data-track="author">
+        <div class="dg-sec-head">
+          <h2>{{ _('A report that rebuilds itself') }}</h2>
+          <span class="dg-sec-note">{{ _('generator: Python in the analyst\'s browser, the data stays with them') }}</span>
+        </div>
+
+        <div class="dg-step" id="dg-b1">
+          <div class="dg-step-n">01</div>
+          <div>
+            <h3>{{ _('What a generator is') }}</h3>
+            <p>{{ _('A generator is a trusted Python package that the platform runs not on itself but on the analyst\'s machine: the browser starts Python in WebAssembly, reads the chosen folder through the system file access and sends up only the result — a finished HTML and its data files. The source Excel workbooks never leave the computer.') }}</p>
+            <p>{{ _('The analyst presses Run, picks a folder and gets a new version of the report. Your work is one zip archive.') }}</p>
+            <div class="dg-code">
+              <div class="dg-code-head">
+                <span class="dg-code-name">{{ _('what is in the bundle') }}</span>
+                <button type="button" class="dg-copy" data-copy="dg-code-bundle">{{ _('Copy') }}</button>
+              </div>
+              <pre id="dg-code-bundle">{{ artifacts.bundle }}</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="dg-step" id="dg-b2">
+          <div class="dg-step-n">02</div>
+          <div>
+            <h3>{{ _('The contract: three functions and one rule about memory') }}</h3>
+            <p>{{ _h('The engine opens a session, hands over the files {b}one at a time{b_} and asks for the result. After add_file returns, only aggregates may remain of a file: collecting frames in a list and concatenating them in finish() is forbidden — on a year of data the naive version hit the tab\'s ceiling (~2.75 GB), while the disciplined one held 468 MB flat.', b='<b>', b_='</b>') }}</p>
+            <div class="dg-code">
+              <div class="dg-code-head">
+                <span class="dg-code-name">{{ _('the engine contract') }}</span>
+                <button type="button" class="dg-copy" data-copy="dg-code-contract">{{ _('Copy') }}</button>
+              </div>
+              <pre id="dg-code-contract">{{ artifacts.contract }}</pre>
+            </div>
+            <ul>
+              <li>{{ _h('{b}Determinism.{b_} The same inputs give byte-identical outputs: sort anything that comes out of the OS\'s sets and dictionaries, fix the column order, never bake the generation time into the data. The equivalence gate and an honest cache both stand on this.', b='<b>', b_='</b>') }}</li>
+              <li>{{ _h('{b}No input or output{b_} outside out_dir, cache_dir and the paths you are handed. No network, no threads, no subprocesses — WebAssembly has none of them, and the same code must keep working in plain CPython, because that is where it is tested.', b='<b>', b_='</b>') }}</li>
+              <li>{{ _h('{b}progress(stage, done, total, msg){b_} crosses the worker boundary. Call it once per file and once per major phase, never inside a loop over rows.', b='<b>', b_='</b>') }}</li>
+              <li>{{ _h('{b}The generator never sees folders.{b_} An analyst may connect up to eight of them; the engine hands over a flat union, so classify files strictly by name.', b='<b>', b_='</b>') }}</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="dg-step" id="dg-b3">
+          <div class="dg-step-n">03</div>
+          <div>
+            <h3>{{ _('manifest.json — the contract the platform checks for you') }}</h3>
+            <p>{{ _('An unknown top-level key is a registration error: a typo in a contract has to be visible at once, not a month later on somebody else\'s machine. Declared inputs are not documentation: the engine reads exactly the files that match, and the platform builds the lineage map out of them.') }}</p>
+            <div class="dg-code">
+              <div class="dg-code-head">
+                <span class="dg-code-name">manifest.json</span>
+                <button type="button" class="dg-copy" data-copy="dg-code-manifest">{{ _('Copy') }}</button>
+              </div>
+              <pre id="dg-code-manifest">{{ artifacts.manifest }}</pre>
+            </div>
+            <div class="dg-scroll">
+              <table class="dg-kv">
+                <tr><td>inputs</td><td>{{ _('up to 32 entries: a glob over file names plus the sheets and columns you read. When the block is not empty, the engine skips everything else in the folder.') }}</td></tr>
+                <tr><td>outputs.slots</td><td>{{ _('data files next to the HTML; write_back: true also writes the file back into the analyst\'s folder.') }}</td></tr>
+                <tr><td>required_files</td><td>{{ _('up to 8 strict names of supporting workbooks. A missing one stops the run with a diagnosis card instead of degrading quietly inside the calculation.') }}</td></tr>
+                <tr><td>aux_inputs</td><td>{{ _('up to 3 files the analyst brings along (assigned reasons, say) — the platform gives them a second run button.') }}</td></tr>
+                <tr><td>deps</td><td>{{ _('exact version pins; the server checks each one for WebAssembly at registration and freezes the verdict into the version.') }}</td></tr>
+                <tr><td>rls</td><td>{{ _('an optional block: the column that splits the file\'s rows between territories. The server filters on delivery — the report never does it for itself.') }}</td></tr>
+              </table>
+            </div>
+            <div class="dg-note">
+              {{ _h('The full reference for fields, quality checks, slot tables and semantics is the repository file {c}docs/GENERATOR_AUTHORING.md{c_}; this page gives you the road, that one gives you the letter of the contract.', c='<code>', c_='</code>') }}
+            </div>
+          </div>
+        </div>
+
+        <div class="dg-step" id="dg-b4">
+          <div class="dg-step-n">04</div>
+          <div>
+            <h3>{{ _('Registration and the first run') }}</h3>
+            <p>{{ _('An administrator uploads the bundle, the platform checks the manifest, the dependencies and the semantics — and only then does the version appear in the list. After that a report is created from the generator: a draft, a first run on a real folder, publication.') }}</p>
+            <div class="dg-art">
+              <figure>
+                <div class="dg-art-bar"><i></i><i></i><i></i><span>onepage / generators</span></div>
+                <img src="/static/img/docs/generators.webp?v={{ asset_v }}" loading="lazy"
+                     alt="{{ _('The list of generators') }}" />
+                <figcaption>{{ _('When a run is taken by another analyst, the platform says by whom and for how long instead of silently losing the calculation.') }}</figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+
+        <div class="dg-step" id="dg-b5">
+          <div class="dg-step-n">05</div>
+          <div>
+            <h3>{{ _('Lineage: which folder the number came from') }}</h3>
+            <p>{{ _('Every run records which folders were connected, which files were read, which sheets and columns were opened — and how that differs from what the manifest declared. The result is a graph: folder → pattern → sheet → generator → output → report. This is the answer to «where does this number come from», a question that usually has none.') }}</p>
+            <div class="dg-art">
+              <figure>
+                <div class="dg-art-bar"><i></i><i></i><i></i><span>onepage / data-sources</span></div>
+                <img src="/static/img/docs/lineage.webp?v={{ asset_v }}" loading="lazy"
+                     alt="{{ _('The data lineage graph') }}" />
+                <figcaption>{{ _('The platform shows its honest limits itself: a file taken from the cache was never opened by the generator — so nobody knows anything about its columns.') }}</figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+
+        <div class="dg-step" id="dg-b6">
+          <div class="dg-step-n">06</div>
+          <div>
+            <h3>{{ _('Checks that travel with the calculation') }}</h3>
+            <p>{{ _h('The manifest declares checks on the content of columns — {c}not_null{c_}, {c}unique{c_}, {c}range{c_}, {c}regex{c_}, {c}enum{c_}, {c}known_values{c_} — and the platform evaluates them on every run: the freshness of a source, a change in the number of rows, a column that went away, new values against a lookup table. A finding carries its own id, so «the same problem» is recognised across runs and a decision already made («we know, it is meant to be like that») does not have to be made again.', c='<code>', c_='</code>') }}</p>
+            <div class="dg-art">
+              <figure>
+                <div class="dg-art-bar"><i></i><i></i><i></i><span>onepage / data-quality</span></div>
+                <img src="/static/img/docs/quality.webp?v={{ asset_v }}" loading="lazy"
+                     alt="{{ _('The data quality page') }}" />
+                <figcaption>{{ _('When a check looked at part of the rows, the platform says so — «sampled», not a silent «all clear».') }}</figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+
+        <div class="dg-step" id="dg-b7">
+          <div class="dg-step-n">07</div>
+          <div>
+            <h3>{{ _('Lookup tables: one mapping for the whole platform') }}</h3>
+            <p>{{ _('Customer codes, the mapping of outlets to territories — what used to live as a hard-coded dictionary inside the code. Declare a lookup table as an input in the manifest: the platform creates it for you, keeps its versions, shows who is responsible for it and which values found no match. Whoever is responsible updates it — with no new version of your bundle.') }}</p>
+            <div class="dg-art">
+              <figure>
+                <div class="dg-art-bar"><i></i><i></i><i></i><span>onepage / reference</span></div>
+                <img src="/static/img/docs/reference.webp?v={{ asset_v }}" loading="lazy"
+                     alt="{{ _('The platform\'s lookup tables') }}" />
+                <figcaption>{{ _('An Excel import goes through a preview with a diff: what exactly will change is visible before a version is written.') }}</figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+
+        <div class="dg-step" id="dg-b8">
+          <div class="dg-step-n">08</div>
+          <div>
+            <h3>{{ _('semantics.json — and the report can be asked questions in plain language') }}</h3>
+            <p>{{ _('An optional file next to the manifest describes what the report means: canonical tables, views, metrics with their formula, rules and a glossary. The platform validates it against empty typed tables at registration time, so a typo in a column name is an error for the author, not an empty answer for the user.') }}</p>
+            <p>{{ _h('What that buys: the question «what was service level by chain in July» turns into SQL written by {b}the engine, from your own formula{b_}, and that SQL is shown before any number appears. The model here picks the cut, it does not do the counting: cell values never enter a request to a model.', b='<b>', b_='</b>') }}</p>
+            <div class="dg-art">
+              <figure>
+                <div class="dg-art-bar"><i></i><i></i><i></i><span>onepage / explore</span></div>
+                <img src="/static/img/docs/explore.webp?v={{ asset_v }}" loading="lazy"
+                     alt="{{ _('Asking a report questions in plain language') }}" />
+                <figcaption>{{ _('The same conversation is available inside the report itself — as a pane on the right, without covering the numbers.') }}</figcaption>
+              </figure>
+            </div>
+            <div class="dg-note">
+              <b>{{ _('The boundary worth knowing by heart.') }}</b>
+              {{ _('Only names and descriptions travel into the request to the model — of tables, of columns, of metrics. Not one cell of your data crosses that boundary: the calculation runs in the browser or on the platform\'s own server, and the model works with definitions.') }}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {# ══ Reference: what you need exactly once ════════════════════════ #}
+      <section class="dg-sec dg-ref" id="dg-ref">
+        <div class="dg-sec-head">
+          <h2>{{ _('Reference table') }}</h2>
+          <span class="dg-sec-note">{{ _('opens when you need it') }}</span>
+        </div>
+
+        <details>
+          <summary>{{ _('Three kinds of report and how they differ')
+            }}<span class="dg-ref-hint">{{ _('the kind is decided by the markup') }}</span></summary>
+          <div class="dg-ref-body">
+            <p>{{ _h('{b}interactive{b_} — the markup carries {c}&lt;input type="file"&gt;{c_}. The reader brings the data: they load their own extract and the report draws it. Right when everyone has their own folder.', b='<b>', b_='</b>', c='<code>', c_='</code>') }}</p>
+            <p>{{ _h('{b}snapshot{b_} — the markup carries {c}&lt;script id="bootstrap-snapshot"&gt;{c_}. The data is shared and updated centrally: the platform injects fresh JSON on every open. This is also the kind generators publish.', b='<b>', b_='</b>', c='<code>', c_='</code>') }}</p>
+            <p>{{ _h('{b}static{b_} — no special tags, the data is baked in at creation time. For a snapshot on a date and for presentations that must not change after the fact.', b='<b>', b_='</b>') }}</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>{{ _('The file transfer protocol (interactive)')
+            }}<span class="dg-ref-hint">postMessage</span></summary>
+          <div class="dg-ref-body">
+            <p>{{ _('The report lives in an isolated window with no access to the platform, so files arrive as messages. The platform embeds its half of the protocol itself — your job is to listen and answer.') }}</p>
+            <table class="dg-kv">
+              <tr><td>op_ready</td><td>{{ _('report → platform, on load: { slots: [0, 1, …] }') }}</td></tr>
+              <tr><td>op_file</td><td>{{ _('platform → report: { slot, name, data: ArrayBuffer }') }}</td></tr>
+              <tr><td>op_save_file</td><td>{{ _('report → platform, when the reader changed the file') }}</td></tr>
+              <tr><td>sandbox</td><td>{{ _('allow-scripts allow-forms, but NOT allow-same-origin — the report sees neither the session nor the platform\'s storage') }}</td></tr>
+              <tr><td>SheetJS</td><td><code>/static/js/vendor/xlsx.full.min.js</code> — {{ _('read .xlsx right inside the report — no need to convert to CSV') }}</td></tr>
+            </table>
+            <p>{{ _('The platform\'s libraries sit on the same server as the report and need no login — this is neither an external request nor a CDN. One caveat: a file downloaded to the desktop and opened with a double click will not find that address, so keep the file-picker zone from point 4 either way.') }}</p>
+            <div class="dg-code">
+              <div class="dg-code-head">
+                <span class="dg-code-name">{{ _('prompt · the exact protocol') }}</span>
+                <button type="button" class="dg-copy" data-copy="dg-code-proto">{{ _('Copy') }}</button>
+              </div>
+              <pre id="dg-code-proto">{{ artifacts.proto }}</pre>
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary>{{ _('Injecting the data snapshot (snapshot)')
+            }}<span class="dg-ref-hint">bootstrap-snapshot</span></summary>
+          <div class="dg-ref-body">
+            <p>{{ _h('The platform finds the {c}&lt;script id="bootstrap-snapshot" type="application/json"&gt;{c_} tag and replaces its content with fresh JSON on every render. Leave a placeholder in the file.', c='<code>', c_='</code>') }}</p>
+            <div class="dg-code">
+              <div class="dg-code-head">
+                <span class="dg-code-name">html + js</span>
+                <button type="button" class="dg-copy" data-copy="dg-code-snap">{{ _('Copy') }}</button>
+              </div>
+              <pre id="dg-code-snap">&lt;script id="bootstrap-snapshot" type="application/json"&gt;{}&lt;/script&gt;
+
+&lt;script&gt;
+  const data = JSON.parse(
+    document.getElementById('bootstrap-snapshot').textContent
+  );
+&lt;/script&gt;</pre>
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary>{{ _('Weight and speed: putting a heavy report on a diet')
+            }}<span class="dg-ref-hint">{{ _('the most common reason for «it is slow»') }}</span></summary>
+          <div class="dg-ref-body">
+            <p>{{ _h('The server hands a report over in a fraction of a millisecond — all the time the reader sees goes into transferring and parsing the HTML in their browser. So the only effective optimisation is to {b}reduce what the browser parses{b_}. A report heavier than 1.5 MB no longer shows a live preview in the list; heavier than 2 MB and the upload page warns you.', b='<b>', b_='</b>') }}</p>
+            <p>{{ _('The typical «giant» is a small amount of visualisation code plus megabytes of JSON inside the markup. The cure is separation: an empty snapshot in the HTML and the data as a separate slot file, which the platform delivers to the report itself while the browser caches and decompresses it on the fly.') }}</p>
+            <div class="dg-code">
+              <div class="dg-code-head">
+                <span class="dg-code-name">{{ _('prompt · put my report on a diet') }}</span>
+                <button type="button" class="dg-copy" data-copy="dg-code-diet">{{ _('Copy') }}</button>
+              </div>
+              <pre id="dg-code-diet">{{ artifacts.diet }}</pre>
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary>{{ _('Colours and charts: how to make a report re-colourable')
+            }}<span class="dg-ref-hint">op:theme</span></summary>
+          <div class="dg-ref-body">
+            <p>{{ _h('The owner of a report can re-colour it right in the browser — the {b}Colors{b_} tab on the report page. Everything that lives in CSS and in SVG attributes is re-coloured. Charts on {c}&lt;canvas&gt;{c_} are painted pixels and CSS does not reach them: the platform changes plain colour strings through the library\'s API, but gradients, colour functions and scales stay as they were.', b='<b>', b_='</b>', c='<code>', c_='</code>') }}</p>
+            <p>{{ _('The move that ends the problem: do not bake colours into the chart — read them from CSS variables and redraw the chart on the event the platform sends when the theme changes.') }}</p>
+            <div class="dg-code">
+              <div class="dg-code-head">
+                <span class="dg-code-name">{{ _('a line for the prompt') }}</span>
+                <button type="button" class="dg-copy" data-copy="dg-code-theme">{{ _('Copy') }}</button>
+              </div>
+              <pre id="dg-code-theme">{{ artifacts.theme }}</pre>
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary>{{ _('It did not work after uploading')
+            }}<span class="dg-ref-hint">{{ _('three reasons out of four') }}</span></summary>
+          <div class="dg-ref-body">
+            <p>{{ _h('{b}A white screen.{b_} A library is linked to an external site. The report runs in an isolated window and cannot reach out — ask the model to embed the library\'s code in the file.', b='<b>', b_='</b>') }}</p>
+            <p>{{ _h('{b}The file upload works locally but not on the platform.{b_} The report reads the file input directly instead of listening to the protocol. Take the exact-protocol prompt above.', b='<b>', b_='</b>') }}</p>
+            <p>{{ _h('{b}The report shows yesterday\'s data.{b_} Nearly always an old version in the browser cache: reload the page bypassing the cache, and in future publish the data as a slot — its address changes together with its content.', b='<b>', b_='</b>') }}</p>
+            <p>{{ _h('{b}A picture or a script next to the file is missing.{b_} Upload the missing file as a slot — relative links inside the report resolve to it, and the markup needs no rework.', b='<b>', b_='</b>') }}</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>{{ _('Limits of the browser engine')
+            }}<span class="dg-ref-hint">{{ _('checked before a run starts') }}</span></summary>
+          <div class="dg-ref-body">
+            <div class="dg-scroll">
+              <table class="dg-kv">
+                <tr><td>{{ _('Files across the folders') }}</td><td>{{ _('≲ 500 — a recommendation; more than that no longer blocks a run, the engine warns with the actual numbers') }}</td></tr>
+                <tr><td>{{ _('Total size') }}</td><td>{{ _('≲ 500 MB — the measured engine ceiling') }}</td></tr>
+                <tr><td>{{ _('A single file') }}</td><td>{{ _('≲ 35 MB — the measured parsing ceiling') }}</td></tr>
+                <tr><td>{{ _('Tab memory') }}</td><td>{{ _('a wall at ~2.75 GB; a warning from 2.4 GiB') }}</td></tr>
+                <tr><td>{{ _('The analyst\'s machine') }}</td><td>{{ _('≥ 2 GB of RAM, ≥ 2 cores') }}</td></tr>
+                <tr><td>{{ _('Bundle archive') }}</td><td>{{ _('≤ 20 MB') }}</td></tr>
+                <tr><td>{{ _('A published file') }}</td><td>{{ _('≤ 50 MB each') }}</td></tr>
+              </table>
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary>{{ _('Addresses and storage')
+            }}<span class="dg-ref-hint">API</span></summary>
+          <div class="dg-ref-body">
+            <div class="dg-scroll">
+              <table class="dg-kv">
+                <tr><td>GET /render/{id}/</td><td>{{ _('the report\'s markup — this is the address of the inner window') }}</td></tr>
+                <tr><td>GET /render/{id}/files/{slot}</td><td>{{ _('the slot\'s data file') }}</td></tr>
+                <tr><td>PUT /api/dashboards/{id}/files/{slot}</td><td>{{ _('update the data file') }}</td></tr>
+                <tr><td>PUT /api/dashboards/{id}/snapshot</td><td>{{ _('update the data snapshot') }}</td></tr>
+                <tr><td>POST /api/dashboards/{id}/version</td><td>{{ _('upload a new version of the markup') }}</td></tr>
+                <tr><td>PATCH /api/dashboards/{id}</td><td>{{ _('title, publication, availability to everyone') }}</td></tr>
+                <tr><td>uploads/{id}/v{n}/</td><td>{{ _('the markup, the snapshot and the slot files of this version — older versions are never overwritten') }}</td></tr>
+              </table>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      </div>{# /.dg #}
+    </div>
+  </main>
+</div>
+{% include "components/palette.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/palette.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/hotkeys.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/docs.js?v={{ asset_v }}" defer></script>
+{% endblock %}

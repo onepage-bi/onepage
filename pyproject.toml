@@ -1,0 +1,21 @@
+# Lint configuration for OnePage.
+#
+# Deliberately minimal: only real errors (syntax errors and undefined names),
+# no style rules and no formatter. A mass reformat would destroy `git blame`
+# history, so formatting is not enforced here.
+
+[tool.ruff]
+line-length = 120
+extend-exclude = [
+    "static/pyodide",
+    "static/duckdb-wasm",
+    "dist",
+    "node_modules",
+    "docs/agent_m2_kit",
+    "app/migrations/versions",
+]
+
+[tool.ruff.lint]
+# E9: syntax errors / IO errors. F63: invalid comparisons. F7: misplaced
+# statements (return/yield outside function, etc.). F82: undefined names.
+select = ["E9", "F63", "F7", "F82"]

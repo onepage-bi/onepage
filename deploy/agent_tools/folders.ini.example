@@ -1,0 +1,64 @@
+; op-agent: WHERE TO READ FILES FROM. Copy to folders.ini next to the program.
+;
+; This file lives NEXT TO THE PROGRAM, not in the Windows profile: the agent folder
+; is portable and moves as a whole, together with which report reads which
+; exports. There are no secrets here, only paths. Passwords and the device key live in
+; DPAPI (agent/creds.py), GreenPlum connections in agent.ini.
+;
+; One section per report. <dashboard_id> is the report number from its address on the platform
+; (https://onepage.example.com/d/17  ->  [folders:17]).
+;
+; THE KEY POINT, the reason this file exists at all: the application reads the path as
+; text, so you can see WHICH EXACT file was read. A browser cannot do that:
+; there a folder is identified by its name and has no path, by design.
+
+[folders:17]
+; A folder. A section can have any number of them: repeat the `dir` key.
+; ONE level is read: subfolders are not scanned (same as in the
+; browser, so that "what was read" does not depend on where it runs).
+dir = \\server\share\Reports\2026
+dir = D:\Exports\Week
+
+; A specific file. Masks are NOT applied to it: you have already named it exactly, and that
+; is the filter. Handy for a reference workbook kept apart from the exports.
+file = D:\Exports\sl.xlsx
+
+; Masks. Exactly the same semantics as on the platform (app/services/globmatch.py):
+;   *   any characters except the path separator
+;   ?   exactly one character
+;   **  any characters, including the separator
+;   case-insensitive; there are NO character classes: [ab].xlsx is a literal name
+; Several masks are comma-separated. An empty include = all files are taken.
+include = *.xlsx, *.csv
+; Excel junk (`~$...`, files of open workbooks) and temporary files.
+exclude = ~$*, *.tmp
+
+; A second report: its own section and its own folders.
+[folders:42]
+dir = \\fs01\plan$\Reporting
+include = *.xlsx
+
+; A NAMED SCENARIO: the same report, a different set of files: [folders:<id>:<name>]
+; (compute "the same, but without the North region" and compare with the regular run).
+[folders:42:without-north]
+dir = \\fs01\plan$\Reporting
+include = *.xlsx
+exclude = *North*
+
+; --------------------------------------------------------------------------- #
+; What happens if a folder has disappeared
+; --------------------------------------------------------------------------- #
+; The application SAYS SO OUT LOUD and does not start the run. Four reasons:
+;   not_found  the path does not exist (the folder was renamed, the drive is not mapped, the share
+;                does not answer);
+;   denied     the path exists, but there are no permissions;
+;   not_a_dir  `dir` names a file (or `file` names a folder);
+;   no_match   the folder is readable, but NOT A SINGLE file matched the masks.
+; The last reason is the most common and the most insidious: `include = *.xlsx` over
+; a folder of `.csv` files looks like a healthy config. So an empty result is
+; NEVER treated as success: a run over nothing would quietly recompute the
+; report on nothing, and there would be nobody left to find out.
+;
+; A typo in the file itself (a missing `]`, a line that does not look like `key =
+; value`) does not crash the program: it opens and shows that no folders are
+; configured. Crashing at startup is not an option: a crashed program cannot complain.

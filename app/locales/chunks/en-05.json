@@ -1,0 +1,470 @@
+{
+  "_meta": {
+    "chunk": "05",
+    "count": 150,
+    "lang": "en",
+    "source_files": [
+      "static/js/explore-chat.js",
+      "static/js/explore-recipes.js",
+      "static/js/explore.js"
+    ]
+  },
+  "strings": {
+    "\nrespond strictly in JSON per the schema: {p1}": {
+      "ref": "static/js/explore.js:2825"
+    },
+    "       ELSE 'no change' END AS {p1}": {
+      "ref": "static/js/explore-recipes.js:45"
+    },
+    "       WHEN b.{p1} IS NULL THEN 'removed'": {
+      "ref": "static/js/explore-recipes.js:43"
+    },
+    "       WHEN {p1} THEN 'changed'": {
+      "ref": "static/js/explore-recipes.js:44"
+    },
+    "  CASE WHEN a.{p1} IS NULL THEN 'added'": {
+      "ref": "static/js/explore-recipes.js:42"
+    },
+    " (no period specified — nothing to compare)": {
+      "ref": "static/js/explore.js:3418"
+    },
+    " (no {p1} partitions)": {
+      "ref": "static/js/explore.js:2284"
+    },
+    " (previous period {p1}; Δ {p2})": {
+      "ref": "static/js/explore.js:3416"
+    },
+    " (run {p1})": {
+      "ref": "static/js/explore.js:771"
+    },
+    " (truncated by limit)": {
+      "ref": "static/js/explore.js:2284"
+    },
+    " by {p1}": {
+      "ref": "static/js/explore.js:3285"
+    },
+    " · cache: {p1}": {
+      "ref": "static/js/explore.js:779"
+    },
+    " · calculated by server": {
+      "ref": "static/js/explore.js:771"
+    },
+    " · data as of {p1} {ctx:2}": {
+      "ref": "static/js/explore.js:767"
+    },
+    " · from cache: {p1}": {
+      "ref": "static/js/explore.js:773"
+    },
+    " · incomplete{p1}": {
+      "ref": "static/js/explore.js:2284"
+    },
+    " · index from server{p1}{p2}": {
+      "ref": "static/js/explore.js:771"
+    },
+    " · may be cleared by the browser": {
+      "ref": "static/js/explore.js:1278"
+    },
+    " · metrics: {p1}": {
+      "ref": "static/js/explore.js:807"
+    },
+    " · no columns: {p1}{p2}": {
+      "ref": "static/js/explore.js:830"
+    },
+    "Nothing to copy — the conversation doesn't have any answers yet.": {
+      "ref": "static/js/explore-chat.js:2231"
+    },
+    "Pin": {
+      "ref": "static/js/explore-chat.js:2049"
+    },
+    "Pinned.": {
+      "ref": "static/js/explore-chat.js:2861"
+    },
+    "Q: {p1}": {
+      "ref": "static/js/explore-chat.js:851"
+    },
+    "Qty": {
+      "ref": "static/js/explore-recipes.js:90"
+    },
+    "Query from semantics": {
+      "ref": "static/js/explore-chat.js:1463"
+    },
+    "Question about the report…": {
+      "ref": "static/js/explore-chat.js:1366"
+    },
+    "Question from chat": {
+      "ref": "static/js/explore-chat.js:2858"
+    },
+    "Recorded: the answer is correct.": {
+      "ref": "static/js/explore-chat.js:1698"
+    },
+    "Recorded: the answer is incorrect. This will go to the report's author in the next update.": {
+      "ref": "static/js/explore-chat.js:1697"
+    },
+    "Refine": {
+      "ref": "static/js/explore-chat.js:1784"
+    },
+    "Refine the question": {
+      "ref": "static/js/explore-chat.js:1782"
+    },
+    "Refine the question…": {
+      "ref": "static/js/explore-chat.js:1781"
+    },
+    "Refresh index": {
+      "ref": "static/js/explore-chat.js:2303"
+    },
+    "Regenerate": {
+      "ref": "static/js/explore-chat.js:1966"
+    },
+    "SQL from semantics": {
+      "ref": "static/js/explore-chat.js:475"
+    },
+    "Show in report": {
+      "ref": "static/js/explore-chat.js:1948"
+    },
+    "Thanks, the form suggestion has been recorded.": {
+      "ref": "static/js/explore-chat.js:1715"
+    },
+    "The follow-up could not be computed.": {
+      "ref": "static/js/explore-chat.js:2703"
+    },
+    "The index didn't build — {p1}.": {
+      "ref": "static/js/explore-chat.js:2650"
+    },
+    "The index is building — the action will run once it's ready.": {
+      "ref": "static/js/explore-chat.js:2814"
+    },
+    "The index is building — the question will be sent automatically once it's ready.": {
+      "ref": "static/js/explore-chat.js:2645"
+    },
+    "The index is still building — wait a moment.": {
+      "ref": "static/js/explore-chat.js:2665"
+    },
+    "The metric can't be sliced by \"{p1}\". Available: {p2}": {
+      "ref": "static/js/explore-chat.js:1616"
+    },
+    "The metric has no cut for period \"{p1}\" — calculated without it.": {
+      "ref": "static/js/explore-chat.js:1611"
+    },
+    "The question didn't match the metric exactly — a different one may have been meant:": {
+      "ref": "static/js/explore-chat.js:1925"
+    },
+    "The question didn't match the metric exactly — check \"Understood as\".": {
+      "ref": "static/js/explore-chat.js:1589"
+    },
+    "The question matched two metrics almost equally — a different one may have been meant.": {
+      "ref": "static/js/explore-chat.js:1588"
+    },
+    "The question's period isn't in the index — remove the period filter?": {
+      "ref": "static/js/explore-chat.js:1597"
+    },
+    "The report doesn't suggest any other metrics for this question.": {
+      "ref": "static/js/explore-chat.js:1816"
+    },
+    "There isn't a single row in the index for this question.": {
+      "ref": "static/js/explore-chat.js:1579"
+    },
+    "This answer has no SQL — there's nothing to pin.": {
+      "ref": "static/js/explore-chat.js:2853"
+    },
+    "This answer has no metric — \"Why?\" has nothing to apply to.": {
+      "ref": "static/js/explore-chat.js:2825"
+    },
+    "This answer has no metric — there's nothing to compare.": {
+      "ref": "static/js/explore-chat.js:2838"
+    },
+    "This is already a new conversation — it doesn't have any questions yet.": {
+      "ref": "static/js/explore-chat.js:2153"
+    },
+    "Trend: {p1}": {
+      "ref": "static/js/explore-chat.js:1476"
+    },
+    "Understood as:": {
+      "ref": "static/js/explore-chat.js:1882"
+    },
+    "What should be calculated instead?": {
+      "ref": "static/js/explore-chat.js:1583"
+    },
+    "Why: {p1}": {
+      "ref": "static/js/explore-chat.js:1475"
+    },
+    "Why?": {
+      "ref": "static/js/explore-chat.js:2038"
+    },
+    "Working it out…": {
+      "ref": "static/js/explore-chat.js:2831"
+    },
+    "Your browser calculates this from the report's index. The model is used only if the question didn't match any metric.": {
+      "ref": "static/js/explore-chat.js:2112"
+    },
+    "a different metric": {
+      "ref": "static/js/explore-chat.js:590"
+    },
+    "a different metric: {p1}": {
+      "ref": "static/js/explore-chat.js:1662"
+    },
+    "ask": {
+      "ref": "static/js/explore-chat.js:2117"
+    },
+    "ask again without this metric": {
+      "ref": "static/js/explore-chat.js:1812"
+    },
+    "back to the input": {
+      "ref": "static/js/explore-chat.js:592"
+    },
+    "building the query": {
+      "ref": "static/js/explore-chat.js:2471"
+    },
+    "by the report's definition": {
+      "ref": "static/js/explore-chat.js:483"
+    },
+    "by {p1}": {
+      "ref": "static/js/explore-chat.js:545"
+    },
+    "by {p1} partitions": {
+      "ref": "static/js/explore-chat.js:2008"
+    },
+    "calculating from the index": {
+      "ref": "static/js/explore-chat.js:2472"
+    },
+    "clarification of the previous answer ({p1})": {
+      "ref": "static/js/explore-chat.js:2698"
+    },
+    "cut: {p1}": {
+      "ref": "static/js/explore-chat.js:1670"
+    },
+    "data as of {p1}": {
+      "ref": "static/js/explore-chat.js:2009"
+    },
+    "dimension": {
+      "ref": "static/js/explore-chat.js:540"
+    },
+    "exact form": {
+      "ref": "static/js/explore-chat.js:479"
+    },
+    "file": {
+      "ref": "static/js/explore-chat.js:2341"
+    },
+    "files": {
+      "ref": "static/js/explore-chat.js:2341"
+    },
+    "files {ctx:2}": {
+      "ref": "static/js/explore-chat.js:2341"
+    },
+    "folder \"{p1}\" — {p2}": {
+      "ref": "static/js/explore-chat.js:2346"
+    },
+    "folder \"{p1}\"{p2}": {
+      "ref": "static/js/explore-chat.js:2341"
+    },
+    "folder awaiting permission": {
+      "ref": "static/js/explore-chat.js:2322"
+    },
+    "for the whole period": {
+      "ref": "static/js/explore-chat.js:1631"
+    },
+    "in the index: {p1}": {
+      "ref": "static/js/explore-chat.js:1333"
+    },
+    "index from server · {p1} {p2}": {
+      "ref": "static/js/explore-chat.js:2306"
+    },
+    "index on server · {p1} {p2}": {
+      "ref": "static/js/explore-chat.js:2331"
+    },
+    "index reset": {
+      "ref": "static/js/explore-chat.js:2345"
+    },
+    "index reset{p1}": {
+      "ref": "static/js/explore-chat.js:2320"
+    },
+    "indexing \"{p1}\"…": {
+      "ref": "static/js/explore-chat.js:2313"
+    },
+    "loading the report index…": {
+      "ref": "static/js/explore-chat.js:2313"
+    },
+    "match {p1}": {
+      "ref": "static/js/explore-chat.js:493"
+    },
+    "match {p1}%": {
+      "ref": "static/js/explore-chat.js:1768"
+    },
+    "match {p1}, next {p2}": {
+      "ref": "static/js/explore-chat.js:492"
+    },
+    "metric": {
+      "ref": "static/js/explore-chat.js:536"
+    },
+    "model selection": {
+      "ref": "static/js/explore-chat.js:495"
+    },
+    "no answer": {
+      "ref": "static/js/explore-chat.js:473"
+    },
+    "no answer {ctx:2}": {
+      "ref": "static/js/explore-chat.js:839"
+    },
+    "no dimensions": {
+      "ref": "static/js/explore-chat.js:1210"
+    },
+    "no period specified — nothing to compare with": {
+      "ref": "static/js/explore-chat.js:1207"
+    },
+    "not found in the report": {
+      "ref": "static/js/explore-chat.js:1562"
+    },
+    "not indexed": {
+      "ref": "static/js/explore-chat.js:2345"
+    },
+    "partition": {
+      "ref": "static/js/explore-chat.js:2306"
+    },
+    "partitions": {
+      "ref": "static/js/explore-chat.js:2306"
+    },
+    "partitions {ctx:2}": {
+      "ref": "static/js/explore-chat.js:2306"
+    },
+    "period": {
+      "ref": "static/js/explore-chat.js:546"
+    },
+    "previous period: {p1} · Δ {p2}": {
+      "ref": "static/js/explore-chat.js:1206"
+    },
+    "question": {
+      "ref": "static/js/explore-chat.js:2798"
+    },
+    "questions": {
+      "ref": "static/js/explore-chat.js:2798"
+    },
+    "questions {ctx:2}": {
+      "ref": "static/js/explore-chat.js:2798"
+    },
+    "recalculated for current folder": {
+      "ref": "static/js/explore-chat.js:2945"
+    },
+    "remove the period filter": {
+      "ref": "static/js/explore-chat.js:582"
+    },
+    "remove the {p1} filter": {
+      "ref": "static/js/explore-chat.js:1827"
+    },
+    "remove this filter": {
+      "ref": "static/js/explore-chat.js:585"
+    },
+    "report recalculated — the data on screen is unchanged": {
+      "ref": "static/js/explore-chat.js:2302"
+    },
+    "same dimension, previous period": {
+      "ref": "static/js/explore-chat.js:2848"
+    },
+    "searching the report…": {
+      "ref": "static/js/explore-chat.js:1553"
+    },
+    "show the total for last week": {
+      "ref": "static/js/explore-chat.js:2103"
+    },
+    "show without it": {
+      "ref": "static/js/explore-chat.js:2407"
+    },
+    "table, {n} row|table, {n} rows": {
+      "plural": true,
+      "ref": "static/js/explore-chat.js:844"
+    },
+    "the form matched loosely": {
+      "ref": "static/js/explore-chat.js:480"
+    },
+    "the index is still loading…": {
+      "ref": "static/js/explore-chat.js:1334"
+    },
+    "the metric's total": {
+      "ref": "static/js/explore-chat.js:541"
+    },
+    "the report did not answer — try again": {
+      "ref": "static/js/explore-chat.js:1561"
+    },
+    "the report index hasn't been published yet — recalculate the report (Run)": {
+      "ref": "static/js/explore-chat.js:2336"
+    },
+    "the same question again": {
+      "ref": "static/js/explore-chat.js:2569"
+    },
+    "there is no index yet — build it with the button above": {
+      "ref": "static/js/explore-chat.js:1334"
+    },
+    "this answer was regenerated — the new version is below": {
+      "ref": "static/js/explore-chat.js:1845"
+    },
+    "this cut is available": {
+      "ref": "static/js/explore-chat.js:1622"
+    },
+    "understanding the question": {
+      "ref": "static/js/explore-chat.js:2470"
+    },
+    "understood by meaning": {
+      "ref": "static/js/explore-chat.js:482"
+    },
+    "was {p1} → now {p2} · Δ {p3}{p4}": {
+      "ref": "static/js/explore-chat.js:1283"
+    },
+    "what metrics are in the report?": {
+      "ref": "static/js/explore-chat.js:2102"
+    },
+    "what was {p1} for the latest period?": {
+      "ref": "static/js/explore-chat.js:2100"
+    },
+    "where did the metric drop the most?": {
+      "ref": "static/js/explore-chat.js:2104"
+    },
+    "where it's concentrated: {p1} rows": {
+      "ref": "static/js/explore-chat.js:1209"
+    },
+    "without a filter by {p1}": {
+      "ref": "static/js/explore-chat.js:1632"
+    },
+    "without a period filter": {
+      "ref": "static/js/explore-chat.js:1656"
+    },
+    "{n} partition|{n} partitions": {
+      "plural": true,
+      "ref": "static/js/explore-chat.js:625"
+    },
+    "{n} question today|{n} questions today": {
+      "plural": true,
+      "ref": "static/js/explore-chat.js:2273"
+    },
+    "{n} question with its answer copied.|{n} questions with their answers copied.": {
+      "plural": true,
+      "ref": "static/js/explore-chat.js:2241"
+    },
+    "{n} question|{n} questions": {
+      "plural": true,
+      "ref": "static/js/explore-chat.js:2199"
+    },
+    "{n} row|{n} rows": {
+      "plural": true,
+      "ref": "static/js/explore-chat.js:626"
+    },
+    "{p1} by {p2}": {
+      "ref": "static/js/explore-chat.js:1473"
+    },
+    "{p1} by {p2} for {p3}": {
+      "ref": "static/js/explore-chat.js:1472"
+    },
+    "{p1} for {p2}": {
+      "ref": "static/js/explore-chat.js:1474"
+    },
+    "{p1} s": {
+      "ref": "static/js/explore-chat.js:2506"
+    },
+    "{p1} — previous period": {
+      "ref": "static/js/explore-chat.js:2843"
+    },
+    "… {p1} more": {
+      "ref": "static/js/explore-chat.js:1227"
+    },
+    "← Back to conversation": {
+      "ref": "static/js/explore-chat.js:2184"
+    }
+  }
+}

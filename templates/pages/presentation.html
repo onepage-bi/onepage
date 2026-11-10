@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+{% block title %}{{ presentation.title }} — OnePage{% endblock %}
+
+{% block head %}
+<style>
+  /* Page CSS lives here, not in main.css: nothing below is reused by another
+     page, and the presentation builder is the only owner of these names. */
+  .pres-head { display: flex; align-items: flex-start; gap: 14px; flex-wrap: wrap; }
+  .pres-head .titles { min-width: 320px; flex: 1; }
+  #pres-title-input {
+    width: 100%; max-width: 640px; background: none; border: 1px solid transparent;
+    border-radius: 8px; padding: 4px 8px; margin-left: -8px;
+    font: inherit; font-size: 26px; font-weight: 650; color: var(--ink);
+    letter-spacing: -.01em;
+  }
+  #pres-title-input:hover { border-color: var(--border); }
+  #pres-title-input:focus { outline: none; border-color: var(--accent); background: var(--surface-1); }
+  .pres-head-actions { display: flex; align-items: center; gap: 8px; padding-top: 6px; }
+
+  .pres-chips { display: flex; align-items: center; gap: 8px; margin: 6px 0 0 0; flex-wrap: wrap; }
+  .pres-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim);
+    white-space: nowrap;
+  }
+  .pres-chip.warn { border-color: var(--warning, #c98a2e); color: var(--warning, #c98a2e); }
+
+  .pres-cols { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 18px; align-items: start; }
+  @media (max-width: 1000px) { .pres-cols { grid-template-columns: minmax(0, 1fr); } }
+
+  .pres-panel {
+    border: 1px solid var(--border); border-radius: 12px;
+    background: var(--surface-1); padding: 12px;
+  }
+  .pres-panel-head {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-dim);
+  }
+
+  #pres-list { display: flex; flex-direction: column; gap: 8px; }
+  .pres-slide {
+    display: flex; align-items: flex-start; gap: 10px;
+    border: 1px solid var(--border); border-radius: 10px;
+    background: var(--surface-2); padding: 8px 10px;
+  }
+  .pres-slide.dragging { opacity: .45; }
+  .pres-handle { cursor: grab; color: var(--ink-dim); font-size: 15px; line-height: 1.4; user-select: none; flex: none; }
+  .pres-thumb {
+    flex: none; width: 96px; height: 60px; border-radius: 6px; overflow: hidden; position: relative;
+    background: var(--surface-inset); box-shadow: 0 0 0 1px var(--border-soft) inset;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: var(--ink-dim);
+  }
+  .pres-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pres-thumb-frame { position: absolute; top: 0; left: 0; width: 1280px; height: 800px; transform: scale(0.075); transform-origin: top left; border: 0; pointer-events: none; background: var(--surface-1); }
+  .pres-thumb.is-glyph { border: 1px dashed var(--border); box-shadow: none; }
+  .pres-body { flex: 1; min-width: 0; }
+  .pres-kind { font-size: 11px; color: var(--ink-dim); letter-spacing: .04em; }
+  .pres-name { font-size: 14px; font-weight: 600; margin: 1px 0 3px; overflow-wrap: anywhere; }
+  .pres-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 11.5px; color: var(--ink-dim); }
+  .pres-note-view {
+    margin-top: 6px; padding: 6px 8px; border-left: 2px solid var(--border);
+    font-size: 12px; color: var(--ink-muted); white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .pres-note-edit { margin-top: 6px; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+  .pres-note-edit[hidden] { display: none; }
+  .pres-note-edit textarea { width: 100%; resize: vertical; }
+  .pres-acts { display: flex; align-items: center; gap: 4px; flex: none; }
+
+  .pres-empty { padding: 22px 12px; text-align: center; color: var(--ink-dim); font-size: 13px; }
+  .pres-empty[hidden] { display: none; }
+
+  /* "Add slide": three equal choices, each saying what it takes. */
+  .pres-add { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-soft); }
+  .pres-add-head { font-family: var(--font-mono); font-size: var(--fs-10); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-dim); }
+  .pres-add-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .btn.pres-add-btn {
+    height: auto; padding: 10px 12px; justify-content: flex-start; text-align: left;
+    display: grid; grid-template-columns: 16px 1fr; grid-template-rows: auto auto; column-gap: 8px; row-gap: 1px; align-items: center;
+    border-radius: var(--r-6); background: var(--surface-1); box-shadow: 0 0 0 1px var(--border) inset; white-space: normal;
+  }
+  .btn.pres-add-btn:hover { box-shadow: 0 0 0 1px var(--accent) inset; background: var(--accent-soft); }
+  .btn.pres-add-btn .ico { grid-row: 1 / span 2; color: var(--accent); }
+  .btn.pres-add-btn span { font-weight: 600; font-size: var(--fs-13); line-height: 1.2; }
+  .btn.pres-add-btn small { font-size: var(--fs-11); font-weight: 400; color: var(--ink-dim); line-height: 1.3; }
+  .pres-split-label { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-12); color: var(--ink-muted); cursor: pointer; }
+  .pres-split-label input { margin: 0; }
+  @media (max-width: 720px) { .pres-add-row { grid-template-columns: 1fr; } }
+
+  #pres-check-out { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+  #pres-check-out[hidden] { display: none; }
+  .pres-check-row {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    font-size: 12px; padding: 4px 0; border-bottom: 1px solid var(--border);
+  }
+  .pres-check-name { font-weight: 600; overflow-wrap: anywhere; }
+  .pres-check-sum { margin-top: 6px; font-size: 12px; color: var(--ink-dim); }
+  .pres-check-sum.warn { color: var(--warning, #c98a2e); }
+
+  /* Report picker */
+  #pres-picker {
+    position: fixed; inset: 0; z-index: 500; display: flex;
+    align-items: flex-start; justify-content: center; padding-top: 10vh;
+    background: rgba(0,0,0,.4);
+  }
+  #pres-picker[hidden] { display: none; }
+  .pres-picker-box {
+    width: min(560px, 92vw); max-height: 70vh; display: flex; flex-direction: column;
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 12px; box-shadow: 0 24px 60px -20px rgba(0,0,0,.55); overflow: hidden;
+  }
+  .pres-picker-head { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  #pres-picker-list { overflow: auto; padding: 6px; display: flex; flex-direction: column; gap: 2px; }
+  .pres-pick {
+    display: flex; align-items: center; gap: 8px; width: 100%;
+    padding: 8px 10px; border: none; background: none; border-radius: 7px;
+    color: var(--ink); font: inherit; font-size: 13px; text-align: left; cursor: pointer;
+  }
+  .pres-pick:hover { background: var(--surface-2); }
+  .pres-pick-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pres-star { color: var(--accent); flex: none; }
+  .pres-pick-empty { padding: 14px; text-align: center; color: var(--ink-dim); font-size: 12px; }
+
+  .dim { color: var(--ink-dim); }
+  .is-off { opacity: .4; pointer-events: none; }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'dashboards' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('My reports'), '/', false], [_('Presentations'), '/presentations', false], [presentation.title, None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content fluid">
+
+      <div class="page-head pres-head">
+        <div class="titles">
+          <div class="page-eyebrow">{{ _('presentation · display order') }}</div>
+          <!-- Editable in place; blur/Enter PATCHes the title. -->
+          <input id="pres-title-input" value="{{ presentation.title }}"
+                 maxlength="200" aria-label="{{ _('Presentation name') }}" />
+          <div class="pres-chips">
+            <span class="pres-chip">{{ _('visible only to you') }}</span>
+            <span class="pres-chip"><span id="pres-count">0</span> {{ _('slides') }}</span>
+          </div>
+        </div>
+        <div class="pres-head-actions">
+          <span id="pres-saved" class="mono" style="font-size:11px;color:var(--ink-dim)" aria-live="polite"></span>
+          <button id="pres-save-btn" class="btn sm" type="button" title="{{ _('Name, order and notes save instantly; this button fixes everything again') }}">
+            <svg class="ico ico-12"><use href="#ic-check"/></svg>
+            {{ _('Save') }}
+          </button>
+          <button id="pres-delete-btn" class="btn sm ghost" type="button" title="{{ _('Delete presentation with slides') }}">
+            <svg class="ico ico-12"><use href="#ic-x"/></svg>
+            {{ _('Delete') }}
+          </button>
+          <button id="pres-check-btn" class="btn sm" type="button">
+            <svg class="ico ico-12"><use href="#ic-check"/></svg>
+            {{ _('Verify before show') }}
+          </button>
+          <a id="pres-show" class="btn sm primary is-off" href="#">
+            <svg class="ico ico-12"><use href="#ic-play"/></svg>
+            {{ _('Show') }}
+          </a>
+        </div>
+      </div>
+
+      <div class="pres-cols">
+        <section class="pres-panel">
+          <div class="pres-panel-head">{{ _('Slides') }}</div>
+          <div id="pres-list"></div>
+          <div id="pres-empty" class="pres-empty">
+            {{ _('Empty for now. Add a report, image or PDF — order is set by dragging.') }}
+          </div>
+
+          <div class="pres-add">
+            <div class="pres-add-head">{{ _('Add slide') }}</div>
+            <div class="pres-add-row">
+              <button id="pres-add-dash" class="btn sm pres-add-btn" type="button">
+                <svg class="ico ico-12"><use href="#ic-dash"/></svg><span>{{ _('Report') }}</span><small>{{ _('as-is, at its own address') }}</small>
+              </button>
+              <button id="pres-add-image" class="btn sm pres-add-btn" type="button">
+                <svg class="ico ico-12"><use href="#ic-image"/></svg><span>{{ _('Image') }}</span><small>{{ _('PNG or JPG, up to 5 MB') }}</small>
+              </button>
+              <button id="pres-add-pdf" class="btn sm pres-add-btn" type="button">
+                <svg class="ico ico-12"><use href="#ic-file"/></svg><span>PDF</span><small>{{ _('up to 20 MB, one page per slide') }}</small>
+              </button>
+              <button id="pres-add-html" class="btn sm pres-add-btn" type="button">
+                <svg class="ico ico-12"><use href="#ic-file"/></svg><span>HTML</span><small>{{ _('ready slide file, up to 10 MB') }}</small>
+              </button>
+            </div>
+            <label class="pres-split-label">
+              <input type="checkbox" id="pres-pdf-split" checked>
+              {{ _('Split PDF into slides by page') }}
+            </label>
+          </div>
+          <input id="pres-file" type="file" hidden />
+        </section>
+
+        <aside class="pres-panel">
+          <div class="pres-panel-head">{{ _('Verification') }}</div>
+          <div class="dim" style="font-size:12px">
+            {{ _('Shows on each slide the report publication date and data date, and marks those that are outdated or no longer open.') }}
+          </div>
+          <div id="pres-check-out" hidden></div>
+        </aside>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div id="pres-picker" hidden>
+  <div class="pres-picker-box">
+    <div class="pres-picker-head">
+      <div class="input-wrap" style="flex:1">
+        <svg class="ico ico-12 leading"><use href="#ic-search"/></svg>
+        <input id="pres-picker-search" class="input sm" placeholder="{{ _('Find report…') }}" />
+      </div>
+      <button id="pres-picker-close" class="btn icon sm ghost" type="button" title="{{ _('Close') }}">
+        <svg class="ico ico-12"><use href="#ic-x"/></svg>
+      </button>
+    </div>
+    <div id="pres-picker-list"></div>
+  </div>
+</div>
+
+<!-- Page data as JSON; every user string inside is written to the DOM with
+     textContent by presentations.js, never innerHTML. -->
+<script id="pres-data" type="application/json">{{ pres_payload | tojson }}</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/presentations.js?v={{ asset_v }}" defer></script>
+{% endblock %}

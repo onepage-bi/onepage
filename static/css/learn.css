@@ -1,0 +1,966 @@
+/* "OnePage School" (/learn) — the course: cover, lesson path, lesson, quiz.
+   Everything is on platform tokens: the page teaches how to work in this
+   interface, so it must look like part of it. Illustrations are transparent
+   PNG→WebP, so they sit on any theme without a backdrop of their own. */
+
+#lr-root { max-width: 1040px; margin: 0 auto; padding-bottom: 72px; }
+
+/* ── Cover ────────────────────────────────────────────────────────────── */
+.lr-hero {
+  display: flex;
+  gap: var(--space-8);
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  border: 1px solid var(--line);
+  border-radius: var(--r-8);
+  background: var(--surface-1);
+  padding: 26px 28px;
+  margin-bottom: var(--space-8);
+}
+.lr-hero-text { flex: 1 1 420px; }
+.lr-eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--fs-11);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.lr-title {
+  margin: 8px 0 0;
+  font-size: var(--fs-28);
+  font-weight: var(--fw-semi);
+  letter-spacing: -0.02em;
+}
+.lr-sub {
+  margin: 8px 0 0;
+  max-width: 54ch;
+  font-size: var(--fs-13);
+  line-height: var(--lh-prose);
+  color: var(--ink-muted);
+}
+.lr-langnote {
+  margin: 8px 0 0;
+  max-width: 54ch;
+  font-size: var(--fs-12);
+  line-height: var(--lh-prose);
+  color: var(--ink-dim);
+  border-left: 2px solid var(--line);
+  padding-left: 10px;
+}
+.lr-cta { display: flex; align-items: center; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
+.lr-cta-next { font-size: var(--fs-12); color: var(--ink-dim); }
+
+/* Progress ring — the whole course, not the current level: "how much is
+   left" matters more to a person than "how far to the next badge". */
+.lr-ring-wrap { position: relative; width: 168px; text-align: center; }
+.lr-ring { width: 168px; height: 168px; transform: rotate(-90deg); }
+.lr-ring circle { fill: none; stroke-width: 8; }
+.lr-ring-bg { stroke: var(--surface-2); }
+.lr-ring-fg {
+  stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-dasharray: 327;
+  stroke-dashoffset: 327;
+  transition: stroke-dashoffset 600ms var(--ease);
+}
+.lr-ring-text {
+  position: absolute;
+  top: 84px; left: 0; right: 0;
+  transform: translateY(-50%);
+  display: grid;
+  justify-items: center;
+  line-height: 1.1;
+  pointer-events: none;
+}
+.lr-ring-text b {
+  font-size: var(--fs-28);
+  font-weight: var(--fw-semi);
+  font-variant-numeric: tabular-nums;
+}
+.lr-ring-text span {
+  font-family: var(--font-mono);
+  font-size: var(--fs-10);
+  letter-spacing: var(--tracking-wide);
+  color: var(--ink-dim);
+}
+.lr-ring-text i {
+  margin-top: 6px;
+  font-style: normal;
+  font-size: var(--fs-12);
+  color: var(--accent);
+}
+.lr-ring-note { margin-top: 2px; font-size: var(--fs-11); color: var(--ink-dim); }
+
+/* ── Path: a unit card with its own badge ─────────────────────────────── */
+.lr-unit {
+  border: 1px solid var(--line);
+  border-radius: var(--r-8);
+  background: var(--surface-1);
+  padding: 18px 20px 22px;
+  margin-bottom: var(--space-5);
+}
+.lr-unit-head { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
+.lr-unit-art {
+  width: 62px; height: 62px;
+  flex: 0 0 62px;
+  object-fit: contain;
+  filter: saturate(.25) opacity(.5);
+  transition: filter var(--dur-slow) var(--ease);
+}
+.lr-unit.is-open .lr-unit-art { filter: none; }
+.lr-unit-titles { min-width: 0; }
+.lr-unit-n {
+  font-family: var(--font-mono);
+  font-size: var(--fs-10);
+  letter-spacing: var(--tracking-wide);
+  color: var(--ink-faint);
+}
+.lr-unit-title {
+  font-size: var(--fs-15);
+  font-weight: var(--fw-semi);
+  letter-spacing: var(--tracking-tight);
+}
+.lr-unit-sub { font-size: var(--fs-12); color: var(--ink-dim); margin-top: 2px; }
+.lr-unit-progress {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-11);
+  color: var(--ink-dim);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.lr-unit-bar { width: 64px; height: 4px; border-radius: 100px; background: var(--surface-2); }
+.lr-unit-bar i { display: block; height: 100%; border-radius: 100px; background: var(--accent); }
+.lr-unit.is-done .lr-unit-progress { color: var(--success); }
+.lr-unit.is-done .lr-unit-bar i { background: var(--success); }
+
+.lr-track {
+  display: grid;
+  grid-auto-flow: column;
+  /* minmax(0, 1fr), not 1fr: otherwise a column with a long word in its label
+     is wider than its neighbours, the spacing between circles drifts, and the
+     line — measured from its own node's width — falls short of the neighbour. */
+  grid-auto-columns: minmax(0, 1fr);
+  /* Nodes share one height: "+XP" then sits on one line across the row,
+     even when one label takes three lines. */
+  align-items: stretch;
+}
+.lr-node {
+  --lr-dot: 50px;
+  --lr-pad: 4px;
+  /* Gap between the circle and the line. No smaller than the .is-current ring
+     (5px): otherwise the highlight eats the end of the line and it "floats". */
+  --lr-gap: 8px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: var(--lr-pad) 6px 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: center;
+}
+.lr-node[disabled] { cursor: default; }
+.lr-node::before {
+  content: "";
+  position: absolute;
+  z-index: 0;                 /* the line is the backdrop, the circle is always above it */
+  /* The geometry is derived entirely from the circle size, not hard-coded:
+     in the soft skin the circle is bigger (56px), and a fixed 27px pushed the
+     line above the centre. Vertically — the circle's centre; horizontally —
+     from the edge of the previous circle to the edge of the current one: the
+     line points straight at the centre and stops at the edge instead of sliding under the highlight. */
+  top: calc(var(--lr-pad) + var(--lr-dot) / 2 - 1px);
+  left: calc(-50% + var(--lr-dot) / 2 + var(--lr-gap));
+  width: max(0px, calc(100% - var(--lr-dot) - 2 * var(--lr-gap)));
+  height: 2px;
+  background: color-mix(in oklab, var(--ink-faint) 40%, transparent);
+}
+.lr-node:first-child::before { display: none; }
+.lr-node.is-done::before, .lr-node.is-current::before { background: var(--accent); }
+.lr-dot {
+  position: relative;
+  z-index: 1;                 /* see .lr-node::before: without this the
+                                 next node's line strikes through the circle */
+  width: var(--lr-dot); height: var(--lr-dot);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--surface-2);
+  border: 2px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: var(--fs-13);
+  color: var(--ink-dim);
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.lr-node:hover:not([disabled]) .lr-dot { transform: translateY(-3px); }
+.lr-node.is-done .lr-dot { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.lr-dot svg { display: block; }
+.lr-node.is-current .lr-dot {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 0 5px var(--accent-soft);
+}
+.lr-node-label {
+  font-size: var(--fs-12);
+  line-height: 1.35;
+  color: var(--ink-muted);
+  max-width: 16ch;
+  /* Always two lines: otherwise "+XP" under a short title jumps up and the
+     row stops reading as one track. A third line (a long title in the
+     "School") does not break the row: the label stretches, "+XP" is pinned to
+     the bottom of the node, and nodes in a row share one height — see .lr-track. */
+  min-height: calc(2 * 1.35em);
+  flex: 1 0 auto;
+  /* A word longer than the column wraps instead of stretching it. */
+  overflow-wrap: anywhere;
+}
+.lr-node.is-current .lr-node-label { color: var(--ink); font-weight: var(--fw-medium); }
+.lr-node[disabled] .lr-node-label { color: var(--ink-faint); }
+.lr-node-xp {
+  font-family: var(--font-mono);
+  font-size: var(--fs-10);
+  color: var(--ink-faint);
+  margin-top: auto;
+}
+
+/* ── Lesson ───────────────────────────────────────────────────────────── */
+.lr-lesson {
+  border: 1px solid var(--line);
+  border-radius: var(--r-8);
+  background: var(--surface-1);
+  overflow: hidden;
+}
+.lr-lesson-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-2);
+}
+.lr-lesson-title { font-size: var(--fs-13); font-weight: var(--fw-semi); }
+.lr-lesson-meta {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--fs-11);
+  color: var(--ink-dim);
+}
+.lr-progress { height: 3px; background: var(--surface-2); }
+.lr-progress i {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  transition: width var(--dur-slow) var(--ease);
+}
+.lr-steps { padding: 32px 32px 10px; min-height: 300px; }
+.lr-steps > * { animation: lr-in 220ms var(--ease) both; }
+@keyframes lr-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.lr-card-heading {
+  margin: 0 0 12px;
+  font-size: var(--fs-18);
+  font-weight: var(--fw-semi);
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+.lr-steps > .lr-card-heading ~ .lr-card-heading { margin-top: 22px; }
+.lr-card-list, .lr-takeaways, .lr-sources {
+  margin: 0 0 16px;
+  padding-left: 20px;
+  max-width: 72ch;
+}
+.lr-card-list li, .lr-takeaways li, .lr-sources li {
+  margin-bottom: 8px;
+  font-size: var(--fs-15);
+  line-height: 1.55;
+  color: var(--ink-muted);
+}
+.lr-takeaways li { color: var(--ink); }
+.lr-sources a { color: var(--accent); text-decoration: none; }
+.lr-sources a:hover { text-decoration: underline; }
+.lr-card-tablebox { max-width: 680px; overflow-x: auto; margin: 0 0 18px; }
+.lr-card-table { width: 100%; border-collapse: collapse; font-size: var(--fs-13); }
+.lr-card-table th {
+  text-align: left;
+  font-weight: var(--fw-medium);
+  color: var(--ink-dim);
+  font-size: var(--fs-11);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  padding: 0 14px 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+.lr-card-table td {
+  padding: 9px 14px 9px 0;
+  border-bottom: 1px solid var(--line);
+  line-height: var(--lh-prose);
+  vertical-align: top;
+  color: var(--ink-muted);
+}
+.lr-card-table td:first-child { color: var(--ink); }
+.lr-card-note {
+  max-width: 62ch;
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border-left: 2px solid var(--accent);
+  background: var(--surface-2);
+  border-radius: 0 var(--r-4) var(--r-4) 0;
+  font-size: var(--fs-13);
+  line-height: var(--lh-prose);
+  color: var(--ink-muted);
+}
+.lr-recap { max-width: 68ch; }
+.lr-lesson-titles { display: flex; flex-direction: column; min-width: 0; }
+.lr-lesson-summary {
+  font-size: var(--fs-11);
+  color: var(--ink-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 62ch;
+}
+.lr-lesson-foot #lr-prev-step { margin-left: auto; }
+.lr-lesson-foot #lr-prev-step + .btn { margin-left: 0; }
+
+.lr-card-text {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--ink);
+  max-width: 62ch;
+  margin: 0 0 18px;
+  letter-spacing: -0.006em;
+}
+.lr-card-art {
+  display: block;
+  width: 100%;
+  max-width: 680px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-6);
+}
+.lr-card-code {
+  /* The bottom margin is mandatory: without it the code block ran into the
+     callout below and read as one wall (owner, 13.09: "the prompt stuck to the explanation"). */
+  margin: 0 0 18px;
+  padding: 16px 18px;
+  max-width: 680px;
+  background: var(--surface-inset);
+  border: 1px solid var(--line);
+  border-radius: var(--r-6);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+/* Quiz */
+.lr-q { max-width: 70ch; }
+.lr-q-kicker {
+  font-family: var(--font-mono);
+  font-size: var(--fs-11);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.lr-q-text {
+  font-size: 17px;
+  font-weight: var(--fw-medium);
+  line-height: 1.5;
+  margin: 0 0 18px;
+  letter-spacing: -0.006em;
+}
+.lr-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-6);
+  /* A filled chip, not white on white: an unselected option must read as
+     clickable — on the report card the --line border is barely visible. */
+  background: var(--surface-2);
+  font: inherit;
+  font-size: var(--fs-15);
+  line-height: 1.45;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease),
+              transform var(--dur) var(--ease);
+}
+.lr-opt:hover:not([disabled]) {
+  background: var(--surface-3);
+  border-color: var(--ink-faint);
+  transform: translateX(2px);
+}
+.lr-opt-key {
+  flex: 0 0 22px;
+  height: 22px;
+  border-radius: var(--r-4);
+  display: grid;
+  place-items: center;
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: var(--fs-11);
+  color: var(--ink-dim);
+}
+.lr-opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.lr-opt[aria-pressed="true"] .lr-opt-key { border-color: var(--accent); color: var(--accent); }
+.lr-opt.is-right { border-color: var(--success); background: color-mix(in oklab, var(--success) 12%, transparent); }
+.lr-opt.is-right .lr-opt-key { border-color: var(--success); color: var(--success); }
+.lr-opt.is-wrong { border-color: var(--danger); background: color-mix(in oklab, var(--danger) 10%, transparent); }
+.lr-opt.is-wrong .lr-opt-key { border-color: var(--danger); color: var(--danger); }
+.lr-why {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-left: 2px solid var(--danger);
+  background: var(--surface-2);
+  border-radius: 0 var(--r-4) var(--r-4) 0;
+  font-size: var(--fs-13);
+  line-height: var(--lh-prose);
+  color: var(--ink-muted);
+}
+.lr-why.is-right { border-left-color: var(--success); }
+.lr-why b { color: var(--ink); font-weight: var(--fw-medium); }
+
+/* Task on the platform */
+.lr-task { max-width: 70ch; }
+.lr-task-kicker {
+  font-family: var(--font-mono);
+  font-size: var(--fs-11);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.lr-task-text { font-size: 17px; line-height: 1.55; margin: 10px 0 18px; }
+.lr-task-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.lr-task-state { font-size: var(--fs-12); color: var(--ink-dim); }
+.lr-task-state.is-done { color: var(--success); }
+
+/* Summary */
+.lr-fin { text-align: center; padding: 18px 0 6px; }
+.lr-fin-art {
+  width: 120px; height: 120px;
+  object-fit: contain;
+  margin: 0 auto 14px;
+  display: block;
+  animation: lr-pop 420ms var(--ease) both;
+}
+@keyframes lr-pop { from { transform: scale(.86); opacity: 0; } to { transform: none; opacity: 1; } }
+.lr-fin h3 { margin: 0 0 6px; font-size: var(--fs-22); font-weight: var(--fw-semi); letter-spacing: -0.02em; }
+.lr-fin p { margin: 0 auto; max-width: 48ch; font-size: var(--fs-13); color: var(--ink-muted); }
+.lr-fin-xp {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 5px 12px;
+  border-radius: 100px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: var(--font-mono);
+  font-size: var(--fs-13);
+}
+
+.lr-lesson-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 32px 22px;
+}
+.lr-hint { font-size: var(--fs-11); color: var(--ink-faint); font-family: var(--font-mono); }
+.lr-lesson-foot .btn { margin-left: auto; }
+
+@media (max-width: 860px) {
+  .lr-hero { padding: 20px; gap: var(--space-5); }
+  .lr-ring-wrap { margin: 0 auto; }
+  .lr-track { grid-auto-flow: row; grid-auto-columns: auto; gap: 14px; }
+  .lr-node { flex-direction: row; gap: 12px; text-align: left; }
+  .lr-node::before { display: none; }
+  /* A row, not a column: there is no longer any reason to keep two lines and
+     pin "+XP" to the bottom — the label takes exactly its own height, "+XP"
+     moves to the right edge, and all the "+XP" line up in one column. */
+  .lr-node-label { max-width: none; min-height: 0; flex: 1 1 auto; }
+  .lr-node-xp { margin-top: 0; margin-left: auto; }
+  .lr-steps { padding: 22px 18px 6px; }
+  .lr-lesson-foot { padding: 14px 18px 20px; }
+  .lr-card-text, .lr-q-text, .lr-task-text { font-size: var(--fs-15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lr-ring-fg, .lr-progress i, .lr-dot, .lr-opt { transition: none; }
+  .lr-steps > *, .lr-fin-art { animation: none; }
+}
+
+/* ── Block test ───────────────────────────────────────────────────────── */
+.lr-node-exam .lr-dot { border-style: dashed; }
+.lr-node-exam.is-done .lr-dot, .lr-node-exam.is-current .lr-dot { border-style: solid; }
+.lr-review { max-width: 68ch; margin: 22px auto 0; text-align: left; }
+.lr-review-row {
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  border-left: 2px solid var(--line);
+  background: var(--surface-2);
+  border-radius: 0 var(--r-4) var(--r-4) 0;
+}
+.lr-review-row.is-right { border-left-color: var(--success); }
+.lr-review-row.is-wrong { border-left-color: var(--danger); }
+.lr-review-q { font-size: var(--fs-13); font-weight: var(--fw-medium); margin-bottom: 4px; }
+.lr-review-why { font-size: var(--fs-12); line-height: var(--lh-prose); color: var(--ink-muted); }
+
+/* ══ Course showcase ══════════════════════════════════════════════════ */
+.lr-index { max-width: 900px; margin: 0 auto; padding-bottom: 64px; }
+.lr-index-head { margin-bottom: var(--space-8); }
+.lr-index-head .lr-title { margin-top: 6px; }
+.lr-index-head .lr-sub { margin-top: 8px; }
+.lr-courses { display: grid; gap: 16px; }
+.lr-course {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface-1);
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--dur-slow) var(--ease), box-shadow var(--dur-slow) var(--ease),
+              border-color var(--dur) var(--ease);
+  animation: lr-card-in 420ms var(--ease) both;
+}
+.lr-course:nth-child(2) { animation-delay: 90ms; }
+.lr-course:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 12px 28px color-mix(in oklab, var(--accent) 12%, transparent);
+}
+.lr-course-art { flex: 0 0 96px; }
+.lr-course-art img { width: 96px; height: 96px; object-fit: contain; display: block; }
+.lr-course:hover .lr-course-art img { animation: lr-float 2.6s ease-in-out infinite; }
+.lr-course-body { min-width: 0; flex: 1; }
+.lr-course-kicker {
+  font-family: var(--font-mono);
+  font-size: var(--fs-11);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.lr-course-title {
+  margin-top: 4px;
+  font-size: var(--fs-18);
+  font-weight: var(--fw-semi);
+  letter-spacing: -0.015em;
+}
+.lr-course-sub {
+  margin-top: 4px;
+  font-size: var(--fs-13);
+  line-height: var(--lh-prose);
+  color: var(--ink-muted);
+  max-width: 54ch;
+}
+.lr-course-bar {
+  margin-top: 14px;
+  height: 5px;
+  border-radius: 100px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.lr-course-bar i { display: block; height: 100%; border-radius: 100px; background: var(--accent); }
+.lr-course-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 8px;
+  font-size: var(--fs-12);
+  color: var(--ink-dim);
+}
+.lr-course-go { color: var(--accent); font-weight: var(--fw-medium); }
+.lr-index-foot { margin-top: 22px; font-size: var(--fs-12); color: var(--ink-dim); }
+.lr-index-foot a { color: var(--accent); text-decoration: none; }
+
+@keyframes lr-card-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes lr-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+/* ══ Soft skin of the preparatory course ══════════════════════════════ */
+/* Same engine, different character: more air, a bigger picture, less text
+   per screen and a little motion — the course should open with pleasure,
+   not with a sense of duty. */
+#lr-root[data-style="soft"] .lr-hero,
+#lr-root[data-style="soft"] .lr-unit,
+#lr-root[data-style="soft"] .lr-lesson { border-radius: 16px; }
+#lr-root[data-style="soft"] .lr-hero {
+  background:
+    radial-gradient(120% 160% at 88% -30%, color-mix(in oklab, var(--accent) 10%, transparent) 0%, transparent 60%),
+    var(--surface-1);
+}
+#lr-root[data-style="soft"] .lr-unit-art { width: 76px; height: 76px; flex-basis: 76px; }
+#lr-root[data-style="soft"] .lr-unit.is-open .lr-unit-art { animation: lr-float 3.4s ease-in-out infinite; }
+#lr-root[data-style="soft"] .lr-card-art {
+  /* In the case course the cards carry platform SCREENSHOTS, not soft
+     illustrations: they need a frame and the full measure, otherwise a button
+     in the shot is smaller than the button in the interface and unrecognisable. */
+  /* Wider than the text measure: a shot of the interface must read the same
+     as the interface itself. Height is capped so a narrow vertical frame
+     (the side menu) does not grow to the full screen — but 360 px turned out
+     to be a ceiling that shrank the WHOLE shot: a 750 px wide panel dropped
+     to 520 and the button labels became unreadable (owner, 13.09).
+     The cap is raised to half a screen height: a screenshot stays a
+     screenshot instead of turning into a postage stamp. */
+  max-width: min(680px, 100%);
+  max-height: min(620px, 60vh);
+  width: auto;
+  margin: 10px auto 18px;
+}
+#lr-root[data-style="soft"] .lr-card-text {
+  font-size: 19px;
+  line-height: 1.55;
+  max-width: 52ch;
+}
+#lr-root[data-style="soft"] .lr-card-heading { font-size: var(--fs-22); }
+/* A step of the short course is one idea and one picture: there is little
+   content by design. So it does not sit in the top third with emptiness
+   below; it is centred in the card — a one-column grid with align-content:
+   center. Height is derived from the screen so the card fills it, not a third. */
+#lr-root[data-style="soft"] .lr-steps {
+  --lr-measure: 520px;          /* one measure for every block: text, callout
+                                   and list share one left edge */
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  min-height: clamp(320px, 44vh, 520px);
+  text-align: center;
+}
+#lr-root[data-style="soft"] .lr-card-text,
+#lr-root[data-style="soft"] .lr-card-note,
+#lr-root[data-style="soft"] .lr-card-list,
+#lr-root[data-style="soft"] .lr-card-tablebox,
+#lr-root[data-style="soft"] .lr-card-code { width: 100%; max-width: var(--lr-measure); text-align: left; }
+/* Inside a block with buttons the block sets the width itself: the prose
+   measure broke prompt lines mid-phrase. */
+#lr-root[data-style="soft"] .lr-code .lr-card-code { max-width: none; }
+#lr-root[data-style="soft"] .lr-card-heading { width: 100%; max-width: var(--lr-measure); }
+#lr-root[data-style="soft"] .lr-q,
+#lr-root[data-style="soft"] .lr-task,
+#lr-root[data-style="soft"] .lr-recap,
+#lr-root[data-style="soft"] .lr-fin { width: 100%; max-width: var(--lr-measure); text-align: left; }
+#lr-root[data-style="soft"] .lr-fin { text-align: center; }
+#lr-root[data-style="soft"] .lr-opt { border-radius: 12px; }
+#lr-root[data-style="soft"] .lr-node { --lr-dot: 56px; }
+#lr-root[data-style="soft"] .lr-node { animation: lr-node-in 420ms var(--ease) both; }
+#lr-root[data-style="soft"] .lr-node:nth-child(2) { animation-delay: 60ms; }
+#lr-root[data-style="soft"] .lr-node:nth-child(3) { animation-delay: 120ms; }
+#lr-root[data-style="soft"] .lr-node:nth-child(4) { animation-delay: 180ms; }
+#lr-root[data-style="soft"] .lr-node:nth-child(5) { animation-delay: 240ms; }
+#lr-root[data-style="soft"] .lr-node.is-current .lr-dot { animation: lr-beat 2.4s ease-in-out infinite; }
+
+@keyframes lr-node-in { from { opacity: 0; transform: translateY(10px) scale(.92); } to { opacity: 1; transform: none; } }
+@keyframes lr-beat {
+  0%, 100% { box-shadow: 0 0 0 5px var(--accent-soft); }
+  50% { box-shadow: 0 0 0 11px color-mix(in oklab, var(--accent) 8%, transparent); }
+}
+
+/* A small celebration for a finished lesson: a few dots, 900 ms, no
+   libraries and no canvas. */
+.lr-confetti { position: fixed; inset: 0; pointer-events: none; z-index: 9000; overflow: hidden; }
+.lr-confetti i {
+  position: absolute;
+  width: 9px; height: 9px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: lr-confetti 950ms var(--ease) forwards;
+}
+@keyframes lr-confetti {
+  0% { opacity: 1; transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  100% { opacity: 0; transform: translate3d(var(--dx), var(--dy), 0) rotate(var(--rot)) scale(.6); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lr-course, .lr-course-art img, #lr-root[data-style="soft"] .lr-unit-art,
+  #lr-root[data-style="soft"] .lr-node, #lr-root[data-style="soft"] .lr-node.is-current .lr-dot,
+  #lr-root[data-style="soft"] .lr-card-art, .lr-confetti i { animation: none !important; }
+  .lr-course:hover { transform: none; }
+}
+
+/* ══ Course cast: Latti, Zyorn and Molly ══════════════════════════════ */
+/* ── Case roles ─────────────────────────────────────────────────────────
+   A role's line in a card: a circle with an initial, the job-title label and
+   a speech bubble. There are no portraits yet, so the figure is deliberately
+   neutral — a business case survives an honest circle better than a badly
+   drawn person. The circle colour distinguishes roles and comes from platform
+   tokens: the course has no palette of its own. */
+
+.lr-cast {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 18px;
+  text-align: left;
+}
+.lr-cast-fig { flex: 0 0 auto; }
+.lr-cast-mono {
+  display: grid;
+  place-items: center;
+  width: var(--cast-size, 38px);
+  height: var(--cast-size, 38px);
+  border-radius: 50%;
+  background: var(--cast-bg, var(--surface-2));
+  color: var(--cast-fg, var(--ink-muted));
+  border: 1px solid var(--line, var(--border));
+  font-size: var(--fs-14);
+  font-weight: 600;
+  line-height: 1;
+}
+.lr-cast[data-who="head"]    { --cast-bg: color-mix(in oklch, var(--accent) 14%, var(--surface)); --cast-fg: var(--accent); }
+.lr-cast[data-who="planner"] { --cast-bg: color-mix(in oklch, var(--success, var(--accent)) 12%, var(--surface)); --cast-fg: var(--ink); }
+.lr-cast[data-who="field"]   { --cast-bg: color-mix(in oklch, var(--danger) 10%, var(--surface)); --cast-fg: var(--ink); }
+.lr-cast[data-who="analyst"] { --cast-bg: var(--surface-2); --cast-fg: var(--ink-muted); }
+
+.lr-cast-col { flex: 0 1 auto; min-width: 0; }
+.lr-cast-role {
+  margin: 2px 0 4px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-11, 11px);
+  letter-spacing: .04em;
+  text-transform: lowercase;
+  color: var(--ink-dim);
+}
+
+.lr-cast-bubble {
+  position: relative;
+  padding: 10px 14px;
+  border: 1px solid var(--line, var(--border));
+  border-radius: 4px 14px 14px 14px;
+  background: var(--surface-2);
+  animation: lr-cast-in 360ms var(--ease) both 80ms;
+}
+.lr-cast-say {
+  margin: 0;
+  font-size: var(--fs-14);
+  line-height: var(--lh-prose);
+  color: var(--ink-muted);
+}
+/* A role without a line (the quiz step) does not waste height. */
+.lr-cast.is-quiet { margin-bottom: 14px; }
+
+/* In the soft skin the step content is centred and keeps the shared measure —
+   the line fits into the same column instead of falling out of it. */
+#lr-root[data-style="soft"] .lr-cast { width: 100%; max-width: var(--lr-measure); }
+
+@keyframes lr-cast-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lr-cast-bubble { animation: none; }
+}
+
+
+@media (max-width: 480px) {
+  #lr-root[data-style="soft"] .lr-cast { --cast-size: 56px; gap: 10px; }
+  .lr-cast-bubble { padding: 9px 12px; }
+  .lr-cast-say { font-size: var(--fs-13); }
+}
+
+/* ── File from a lesson ─────────────────────────────────────────────────
+   A training export and the ready-made sample report. The link deliberately
+   looks like a button: it is an action, not a footnote. */
+.lr-file {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 14px;
+  padding: 9px 14px;
+  border: 1px solid var(--line, var(--border));
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: var(--fs-13, 13px);
+  text-decoration: none;
+}
+.lr-file:hover { border-color: var(--accent); color: var(--accent); }
+.lr-file:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.lr-file-ico { font-size: 15px; line-height: 1; }
+
+/* ── Lesson code block ──────────────────────────────────────────────────
+   A prompt for the model is something to copy, not to read: forty lines of
+   monospace in the middle of a lesson looked like a wall, and that it could
+   be scrolled was not visible at all (owner, 13.09).
+
+   So the block is collapsed to one glance, its bottom edge fades out —
+   meaning the text continues — and "Copy" comes first in the row: that is
+   the main action here. Those who mean to edit expand it. */
+.lr-code {
+  width: 100%;
+  /* Wider than the prose measure: prompt lines are written for 70 characters,
+     and at 520 px they broke mid-phrase — it reads as broken text, not as
+     something to copy whole. */
+  max-width: min(720px, 100%);
+  margin: 0 auto 18px;
+  text-align: left;
+}
+.lr-code-win { position: relative; }
+/* The input is a form element: without explicit layers the fade gradient is
+   drawn UNDER it and is not visible at all. So the text gets its own layer, and the fade sits above. */
+.lr-code .lr-card-code { margin: 0; position: relative; z-index: 1; }
+
+/* Collapsed state: exactly enough to tell what this text is. */
+.lr-code[data-collapsed="1"] .lr-code-win { max-height: 210px; overflow: hidden; }
+.lr-code[data-collapsed="1"] .lr-code-win::after {
+  content: "";
+  position: absolute;
+  left: 1px; right: 1px; bottom: 1px;
+  height: 96px;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: 0 0 var(--r-6) var(--r-6);
+  background: linear-gradient(to bottom,
+              transparent, var(--surface-inset) 82%);
+}
+.lr-code[data-collapsed="0"] .lr-code-edit { height: auto; }
+
+.lr-code-edit {
+  display: block;
+  width: 100%;
+  resize: vertical;
+  color: var(--ink);
+  tab-size: 2;
+}
+.lr-code-edit:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* Block header: on the left it says in words what to do with this text, on
+   the right — the buttons. The row used to sit UNDER the window and read as a
+   caption to what was read; people missed that the button copies it and dragged with the mouse. */
+.lr-code-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 8px 10px 8px 12px;
+  border-radius: var(--r-6) var(--r-6) 0 0;
+  /* Same background as the text: the header and the window must read as one
+     object, otherwise the button looks detached and is not tied to the text. */
+  background: var(--surface-inset);
+  border-bottom: 1px solid var(--line);
+}
+.lr-code-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--fs-12);
+  font-weight: 600;
+  color: var(--ink-dim);
+  letter-spacing: .01em;
+}
+.lr-code .lr-code-win { border-radius: 0 0 var(--r-6) var(--r-6); }
+/* A collapsed block clips text at the bottom edge — the window itself must be
+   rounded, otherwise the corner of the text sticks out from under the border. */
+.lr-code[data-collapsed="1"] .lr-code-win { border-radius: 0 0 var(--r-6) var(--r-6); }
+.lr-code-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.lr-code-foot { margin-top: 8px; }
+.lr-code-hint {
+  display: block;
+  font-size: var(--fs-12);
+  color: var(--ink-dim);
+}
+.lr-code-bar .btn { flex: 0 0 auto; }
+/* .btn has a display set, so the hidden attribute alone hides nothing:
+   "Restore original" stayed in the row when there was nothing to restore. */
+.lr-code-bar .btn[hidden] { display: none; }
+
+
+/* ══ Final course screen ══════════════════════════════════════════════════
+   A presentation, not another "lesson complete". The card slides up from
+   below and turns slightly — once, on appearance; no repeat animation, so
+   the screen does not become a fairground ride. */
+.lr-done { max-width: 560px; margin: 0 auto; }
+.lr-done h3 { font-size: 26px; }
+
+.lr-done-card {
+  margin: 18px auto 0;
+  width: min(260px, 70%);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: 0 18px 40px rgba(20, 24, 31, .18);
+  animation: lr-card-in 620ms cubic-bezier(.2, .7, .3, 1) both;
+}
+.lr-done-card img { display: block; width: 100%; }
+.lr-done-card-cap { padding: 10px 12px 12px; text-align: left; }
+.lr-done-card-name { font-weight: 600; }
+.lr-done-card-desc { margin-top: 3px; font-size: var(--fs-12); color: var(--ink-dim); }
+
+.lr-done-note {
+  margin: 10px auto 0;
+  max-width: 420px;
+  font-size: var(--fs-12);
+  color: var(--ink-dim);
+}
+.lr-done-meta {
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  color: var(--ink-dim);
+}
+.lr-done-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+@keyframes lr-card-in {
+  from { opacity: 0; transform: translateY(26px) rotate(-4deg) scale(.94); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── The gift waits in Quests ──────────────────────────────────────────────
+   The opening scene used to live right here and stretched the screen into
+   half a page of emptiness around the capsule (owner, 13.09). Opening now
+   happens where everything else is opened; here is a short strip: the capsule, two lines and a button. */
+.lr-gift {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 18px auto 0;
+  padding: 14px 16px;
+  max-width: 480px;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+.lr-gift-cap {
+  width: 64px;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 6px 12px rgba(20, 24, 31, .18));
+  animation: lr-gift-bob 2.6s ease-in-out infinite;
+}
+.lr-gift-title { font-weight: 600; }
+.lr-gift-sub { margin-top: 3px; font-size: var(--fs-12); color: var(--ink-dim); }
+
+@keyframes lr-gift-bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-5px) rotate(2deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lr-done-card, .lr-gift-cap { animation: none; }
+}

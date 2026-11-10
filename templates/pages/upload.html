@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}OnePage — {{ _('Upload') }}{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'upload' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '/', false], [_('Dashboards'), '/', false], [_('Upload'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content">
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow">{{ _('workspace') }} · {{ _('new dashboard') }}</div>
+          <h1 class="page-title">{{ _('Upload dashboard') }}</h1>
+          <div class="page-subtitle">
+            {{ _('Drop a self-contained HTML dashboard. Type and data slots are detected automatically.') }}
+          </div>
+        </div>
+      </div>
+
+      <form id="upload-form" enctype="multipart/form-data" method="post" action="/api/dashboards">
+
+        <div id="upload-steps" class="steps" style="margin-bottom:20px">
+          <div class="step active"><span class="num">1</span> {{ _('HTML file') }}</div>
+          <div class="step"><span class="num">2</span> {{ _('Detect type') }}</div>
+          <div class="step"><span class="num">3</span> {{ _('Configure slots') }}</div>
+          <div class="step"><span class="num">4</span> {{ _('Metadata') }}</div>
+          <div class="step"><span class="num">5</span> {{ _('Publish') }}</div>
+        </div>
+
+        <!-- Drop zone — full width -->
+        <label for="html-file-input" id="drop-zone" class="drop-zone" style="display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:20px">
+          <svg class="ico-big"><use href="#ic-upload"/></svg>
+          <div class="title">{{ _('Drop your HTML file here, or click to browse') }}</div>
+          <div class="sub">.html · .htm  ·  {{ _('must be a self-contained file') }}</div>
+          <input id="html-file-input" type="file" name="html_file" accept=".html,.htm" required hidden />
+        </label>
+
+        <!-- Two-column section: metadata left, readout right -->
+        <div class="upload-grid">
+          <div>
+            <div class="card">
+              <div class="card-head"><span class="card-title">{{ _('Metadata') }}</span></div>
+              <div class="card-body" style="display:flex;flex-direction:column;gap:12px">
+                <div class="field">
+                  <label class="field-label">{{ _('Title *') }}</label>
+                  <input class="input sm" name="title" required placeholder="{{ _('e.g. Risk Exposure Heatmap') }}" />
+                </div>
+                <div class="field">
+                  <label class="field-label">{{ _('Description') }}</label>
+                  <input class="input sm" name="description"
+                         placeholder="{{ _('One sentence — what does this dashboard show?') }}" />
+                </div>
+                <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-muted);cursor:pointer">
+                  <input type="checkbox" name="is_published" value="true" checked style="margin:0">
+                  {{ _('Publish immediately') }}
+                </label>
+                <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+                  <a class="btn sm" href="/">{{ _('Cancel') }}</a>
+                  <button type="submit" class="btn sm primary">{{ _('Publish dashboard') }}</button>
+                </div>
+              </div>
+            </div>
+
+            {# Slot inputs — appear after type detection via JS #}
+            <div id="slot-inputs" class="card" style="margin-top:16px;display:none">
+              <div class="card-head"><span class="card-title">{{ _('Data slots') }}</span></div>
+              <div class="card-body" id="slot-inputs-body" style="display:flex;flex-direction:column;gap:12px"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="dock-section-title" style="padding:0 0 8px">{{ _('Detection readout') }}</div>
+            <div id="upload-readout" class="readout">
+              <div class="ro-head">
+                <svg class="ico ico-12"><use href="#ic-scan"/></svg>
+                {{ _('Waiting for file…') }}
+              </div>
+              <div class="ro-line"><span class="k">{{ _('status') }}</span><span class="v">{{ _('idle') }}</span></div>
+              <div class="ro-line"><span class="k">{{ _('parser') }}</span><span class="v">app/services/detector.py</span></div>
+              <div class="ro-line"><span class="k">{{ _('accepts') }}</span><span class="v">text/html, .html, .htm</span></div>
+            </div>
+
+            <div class="dock-section-title" style="padding:16px 0 8px">{{ _('Type reference') }}</div>
+            <div class="readout">
+              <div class="ro-line">
+                <span class="k"><span class="badge type-interactive">interactive</span></span>
+                <span class="v">{{ _('has') }} <span style="color:var(--accent)">&lt;input type="file"&gt;</span> — {{ _('users drop data files') }}</span>
+              </div>
+              <div class="ro-line">
+                <span class="k"><span class="badge type-snapshot">snapshot</span></span>
+                <span class="v">{{ _('has') }} <span style="color:var(--accent)">#bootstrap-snapshot</span> — {{ _('server injects JSON') }}</span>
+              </div>
+              <div class="ro-line">
+                <span class="k"><span class="badge type-static">static</span></span>
+                <span class="v">{{ _('no data hooks — served as-is') }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </main>
+</div>
+
+{% include "components/palette.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/palette.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/hotkeys.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/upload.js?v={{ asset_v }}" defer></script>
+{% endblock %}

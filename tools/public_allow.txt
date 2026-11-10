@@ -1,0 +1,45 @@
+# Matches that are NOT leaks. Read by tools/public_sanitize.py.
+#
+# Format:  <path glob> : <regex matched against the source line>   # why
+# Both halves must match for the line to be exempt. Same shape as
+# tools/i18n_allow.txt on purpose — one escape-hatch format in the project.
+#
+# Keep this file SHORT. Every entry is a promise that the match is harmless,
+# and the gate is only worth having while that promise is true. An entry that
+# exempts a whole file is almost always the wrong answer: exclude the file in
+# deploy/public-exclude.txt instead, so it never reaches the slice at all.
+#
+# This file ships with the public tree, so nothing in it may name an internal
+# value. Exemptions that must (a migration naming the column it renames) live
+# in tools/public_allow.internal.txt, which the slice excludes.
+
+# ── This file ─────────────────────────────────────────────────────────────
+tools/public_allow.txt : .*
+
+# ── Documentation and loopback addresses ──────────────────────────────────
+# RFC 5737 (192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24) and 127.0.0.1 are
+# reserved for exactly this use. They are the replacement targets, so without
+# this the scrubber's own output would fail the gate.
+* : \b(?:192\.0\.2|198\.51\.100|203\.0\.113)\.\d{1,3}\b
+* : \b127\.0\.0\.1\b
+
+# ── Docker's own defaults ─────────────────────────────────────────────────
+# 172.18.0.0/16 is the default docker bridge, a published fact about docker
+# rather than about this company — and FORWARDED_ALLOW_IPS has to name it to
+# be correct.
+docker-compose*.yml      : 172\.18\.0\.0/16
+deploy/bundle/*          : 172\.18\.0\.0/16
+docs/DEPLOY.md           : 172\.18\.0\.0/16
+
+# ── AWS's own example credentials ─────────────────────────────────────────
+# The SigV4 test vectors are published by AWS precisely so implementations can
+# be checked against them; agent/s3sync.py is verified against botocore with
+# these. A real key never looks like this.
+agent/tests/smoke_s3sync.py : AKIAIOSFODNN7EXAMPLE
+
+# ── Copyright holder ──────────────────────────────────────────────────────
+# A surname in the copyright line is the licensor's name, not a third party's
+# personal data, and LICENSE/NOTICE must carry it. Narrow: these two files,
+# this one line.
+LICENSE : ^\s*Copyright \d{4} .+$
+NOTICE  : ^\s*Copyright \d{4} .+$

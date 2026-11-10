@@ -1,0 +1,464 @@
+{
+  "_meta": {
+    "chunk": "14",
+    "count": 150,
+    "lang": "en",
+    "source_files": [
+      "templates/pages/docs.html",
+      "templates/pages/errors.html",
+      "templates/pages/explore.html"
+    ]
+  },
+  "strings": {
+    "+ filter": {
+      "ref": "templates/pages/explore.html:178"
+    },
+    "1 · report": {
+      "ref": "templates/pages/explore.html:48"
+    },
+    "2 · question": {
+      "ref": "templates/pages/explore.html:74"
+    },
+    "3 · answer": {
+      "ref": "templates/pages/explore.html:107"
+    },
+    "4xx/5xx from perf log, grouped by dashboard (401 excluded)": {
+      "ref": "templates/pages/errors.html:41"
+    },
+    "4xx/5xx on /render, /d and /api/dashboards appear here with dashboard owner.": {
+      "ref": "templates/pages/errors.html:80"
+    },
+    "As of date": {
+      "ref": "templates/pages/explore.html:214"
+    },
+    "Ask": {
+      "ref": "templates/pages/explore.html:81"
+    },
+    "Ask (Enter)": {
+      "ref": "templates/pages/explore.html:317"
+    },
+    "Ask about report figures — answer calculated here, from folder, without model.": {
+      "ref": "templates/pages/explore.html:310"
+    },
+    "Ask about report figures…": {
+      "ref": "templates/pages/explore.html:316"
+    },
+    "Ask in Russian": {
+      "ref": "templates/pages/explore.html:76"
+    },
+    "Cancel {ctx:3}": {
+      "ref": "templates/pages/explore.html:151"
+    },
+    "Chat ·": {
+      "ref": "templates/pages/explore.html:29"
+    },
+    "Check folder": {
+      "ref": "templates/pages/explore.html:63"
+    },
+    "Clear chat": {
+      "ref": "templates/pages/explore.html:291"
+    },
+    "Clear chat — delete all questions and answers for this report from this browser": {
+      "ref": "templates/pages/explore.html:305"
+    },
+    "Close (Esc)": {
+      "ref": "templates/pages/explore.html:302"
+    },
+    "Conversation history": {
+      "ref": "templates/pages/explore.html:282"
+    },
+    "Copy conversation": {
+      "ref": "templates/pages/explore.html:286"
+    },
+    "Count": {
+      "ref": "templates/pages/errors.html:93"
+    },
+    "Dashboard errors": {
+      "ref": "templates/pages/errors.html:2"
+    },
+    "DeepSeek key (stored only in this browser)": {
+      "ref": "templates/pages/explore.html:89"
+    },
+    "Duplicates/missing key": {
+      "ref": "templates/pages/explore.html:216"
+    },
+    "Enter — ask · Shift+Enter — new line": {
+      "ref": "templates/pages/explore.html:323"
+    },
+    "Execute": {
+      "ref": "templates/pages/explore.html:150"
+    },
+    "Failing paths (top 3)": {
+      "ref": "templates/pages/errors.html:53"
+    },
+    "Filters": {
+      "ref": "templates/pages/explore.html:176"
+    },
+    "Folder with files…": {
+      "ref": "templates/pages/explore.html:60"
+    },
+    "For example: what's the SL by networks in July?": {
+      "ref": "templates/pages/explore.html:80"
+    },
+    "Grouping": {
+      "ref": "templates/pages/explore.html:181"
+    },
+    "How it's calculated": {
+      "ref": "templates/pages/explore.html:134"
+    },
+    "Last seen (UTC)": {
+      "ref": "templates/pages/errors.html:54"
+    },
+    "Limit": {
+      "ref": "templates/pages/explore.html:205"
+    },
+    "Load report index": {
+      "ref": "templates/pages/explore.html:54"
+    },
+    "Metric": {
+      "ref": "templates/pages/explore.html:185"
+    },
+    "More": {
+      "ref": "templates/pages/explore.html:273"
+    },
+    "New conversation": {
+      "ref": "templates/pages/explore.html:278"
+    },
+    "Nothing found. Change query and execute again.": {
+      "ref": "templates/pages/explore.html:130"
+    },
+    "Nothing saved yet": {
+      "ref": "templates/pages/explore.html:223"
+    },
+    "OnePage — Explore": {
+      "ref": "templates/pages/explore.html:2"
+    },
+    "Partition dynamics": {
+      "ref": "templates/pages/explore.html:217"
+    },
+    "Path": {
+      "ref": "templates/pages/errors.html:92"
+    },
+    "Pin as tile": {
+      "ref": "templates/pages/explore.html:157"
+    },
+    "Pinning as tile coming in next phase": {
+      "ref": "templates/pages/explore.html:157"
+    },
+    "Query builder": {
+      "ref": "templates/pages/explore.html:164"
+    },
+    "Question name": {
+      "ref": "templates/pages/explore.html:153"
+    },
+    "Recipes": {
+      "ref": "templates/pages/explore.html:211"
+    },
+    "Statuses": {
+      "ref": "templates/pages/errors.html:52"
+    },
+    "The full reference for fields, quality checks, slot tables and semantics is the repository file {c}docs/GENERATOR_AUTHORING_RU.md{c_}; this page gives you the road, that one gives you the letter of the contract.": {
+      "ref": "templates/pages/docs.html:289"
+    },
+    "The list of generators": {
+      "ref": "templates/pages/docs.html:303"
+    },
+    "The manifest declares checks on the content of columns — {c}not_null{c_}, {c}unique{c_}, {c}range{c_}, {c}regex{c_}, {c}enum{c_}, {c}known_values{c_} — and the platform evaluates them on every run: the freshness of a source, a change in the number of rows, a column that went away, new values against a lookup table. A finding carries its own id, so «the same problem» is recognised across runs and a decision already made («we know, it is meant to be like that») does not have to be made again.": {
+      "ref": "templates/pages/docs.html:330"
+    },
+    "The move that ends the problem: do not bake colours into the chart — read them from CSS variables and redraw the chart on the event the platform sends when the theme changes.": {
+      "ref": "templates/pages/docs.html:462"
+    },
+    "The owner of a report can re-colour it right in the browser — the {b}Colors{b_} tab on the report page. Everything that lives in CSS and in SVG attributes is re-coloured. Charts on {c}&lt;canvas&gt;{c_} are painted pixels and CSS does not reach them: the platform changes plain colour strings through the library's API, but gradients, colour functions and scales stay as they were.": {
+      "ref": "templates/pages/docs.html:461"
+    },
+    "The path of the data: files → build → report → questions → control": {
+      "ref": "templates/pages/docs.html:33"
+    },
+    "The platform finds the {c}&lt;script id=\"bootstrap-snapshot\" type=\"application/json\"&gt;{c_} tag and replaces its content with fresh JSON on every render. Leave a placeholder in the file.": {
+      "ref": "templates/pages/docs.html:424"
+    },
+    "The platform shows its honest limits itself: a file taken from the cache was never opened by the generator — so nobody knows anything about its columns.": {
+      "ref": "templates/pages/docs.html:320"
+    },
+    "The platform's libraries sit on the same server as the report and need no login — this is neither an external request nor a CDN. One caveat: a file downloaded to the desktop and opened with a double click will not find that address, so keep the file-picker zone from point 4 either way.": {
+      "ref": "templates/pages/docs.html:409"
+    },
+    "The platform's lookup tables": {
+      "ref": "templates/pages/docs.html:351"
+    },
+    "The report is in place — and a workbench appears around it": {
+      "ref": "templates/pages/docs.html:184"
+    },
+    "The report list in the workspace": {
+      "ref": "templates/pages/docs.html:97"
+    },
+    "The report lives in an isolated window with no access to the platform, so files arrive as messages. The platform embeds its half of the protocol itself — your job is to listen and answer.": {
+      "ref": "templates/pages/docs.html:401"
+    },
+    "The report must rebuild itself": {
+      "ref": "templates/pages/docs.html:119"
+    },
+    "The same conversation is available inside the report itself — as a pane on the right, without covering the numbers.": {
+      "ref": "templates/pages/docs.html:369"
+    },
+    "The same report every week on new files. You write a generator in Python, the platform runs it in the analyst's browser and publishes the result.": {
+      "ref": "templates/pages/docs.html:120"
+    },
+    "The server hands a report over in a fraction of a millisecond — all the time the reader sees goes into transferring and parsing the HTML in their browser. So the only effective optimisation is to {b}reduce what the browser parses{b_}. A report heavier than 1.5 MB no longer shows a live preview in the list; heavier than 2 MB and the upload page warns you.": {
+      "ref": "templates/pages/docs.html:445"
+    },
+    "The typical «giant» is a small amount of visualisation code plus megabytes of JSON inside the markup. The cure is separation: an empty snapshot in the HTML and the data as a separate slot file, which the platform delivers to the report itself while the browser caches and decompresses it on the fly.": {
+      "ref": "templates/pages/docs.html:446"
+    },
+    "The upload page": {
+      "ref": "templates/pages/docs.html:174"
+    },
+    "The workspace is the list of reports you have access to, with folders, favourites and live previews. Everything else in the left menu is a tool around that list: upload, generators, sources, quality, lookup tables, questions.": {
+      "ref": "templates/pages/docs.html:91"
+    },
+    "Three kinds of report and how they differ": {
+      "ref": "templates/pages/docs.html:388"
+    },
+    "Total size": {
+      "ref": "templates/pages/docs.html:491"
+    },
+    "Two roads": {
+      "ref": "templates/pages/docs.html:106"
+    },
+    "Upload it — the platform works out what kind of report this is": {
+      "ref": "templates/pages/docs.html:168"
+    },
+    "Upload the fresh HTML on the Settings tab: the address and the permissions stay as they were, and nothing breaks for the readers.": {
+      "ref": "templates/pages/docs.html:196"
+    },
+    "Weight and speed: putting a heavy report on a diet": {
+      "ref": "templates/pages/docs.html:442"
+    },
+    "What a generator is": {
+      "ref": "templates/pages/docs.html:232"
+    },
+    "What are you doing right now?": {
+      "ref": "templates/pages/docs.html:112"
+    },
+    "What that buys: the question «what was service level by chain in July» turns into SQL written by {b}the engine, from your own formula{b_}, and that SQL is shown before any number appears. The model here picks the cut, it does not do the counting: cell values never enter a request to a model.": {
+      "ref": "templates/pages/docs.html:363"
+    },
+    "What travels into the request is the structure and a few example rows, never the whole extract. Commercial and personal data are not sent to a model — that is a platform rule, not a recommendation.": {
+      "ref": "templates/pages/docs.html:146"
+    },
+    "When a check looked at part of the rows, the platform says so — «sampled», not a silent «all clear».": {
+      "ref": "templates/pages/docs.html:336"
+    },
+    "When a run is taken by another analyst, the platform says by whom and for how long instead of silently losing the calculation.": {
+      "ref": "templates/pages/docs.html:304"
+    },
+    "Where this lives": {
+      "ref": "templates/pages/docs.html:87"
+    },
+    "Your files on your machine — a folder, not a server": {
+      "ref": "templates/pages/docs.html:38"
+    },
+    "a cold start of the engine on a corporate laptop (7.0 s warm)": {
+      "ref": "templates/pages/docs.html:80"
+    },
+    "a line for the prompt": {
+      "ref": "templates/pages/docs.html:465"
+    },
+    "a wall at ~2.75 GB; a warning from 2.4 GiB": {
+      "ref": "templates/pages/docs.html:493"
+    },
+    "allow-scripts allow-forms, but NOT allow-same-origin — the report sees neither the session nor the platform's storage": {
+      "ref": "templates/pages/docs.html:406"
+    },
+    "an optional block: the column that splits the file's rows between territories. The server filters on delivery — the report never does it for itself.": {
+      "ref": "templates/pages/docs.html:285"
+    },
+    "checked before a run starts": {
+      "ref": "templates/pages/docs.html:486"
+    },
+    "dashboard errors": {
+      "ref": "templates/pages/errors.html:17"
+    },
+    "data files next to the HTML; write_back: true also writes the file back into the analyst's folder.": {
+      "ref": "templates/pages/docs.html:281"
+    },
+    "days {ctx:3}": {
+      "ref": "templates/pages/docs.html:119"
+    },
+    "exact version pins; the server checks each one for WebAssembly at registration and freezes the verdict into the version.": {
+      "ref": "templates/pages/docs.html:284"
+    },
+    "external requests from a finished report — the file is self-contained": {
+      "ref": "templates/pages/docs.html:68"
+    },
+    "files and up to 500 MB in a folder — the browser engine's recommendation": {
+      "ref": "templates/pages/docs.html:76"
+    },
+    "from the task to a link you can send": {
+      "ref": "templates/pages/docs.html:129"
+    },
+    "generator: Python in the analyst's browser, the data stays with them": {
+      "ref": "templates/pages/docs.html:226"
+    },
+    "hour": {
+      "ref": "templates/pages/docs.html:115"
+    },
+    "manifest.json — the contract the platform checks for you": {
+      "ref": "templates/pages/docs.html:269"
+    },
+    "no dashboard errors in selected range": {
+      "ref": "templates/pages/errors.html:79"
+    },
+    "one page, where everyone starts": {
+      "ref": "templates/pages/docs.html:88"
+    },
+    "opens when you need it": {
+      "ref": "templates/pages/docs.html:384"
+    },
+    "other errors (not tied to a dashboard)": {
+      "ref": "templates/pages/errors.html:86"
+    },
+    "pick yours — the page will show only its steps": {
+      "ref": "templates/pages/docs.html:107"
+    },
+    "platform → report: { slot, name, data: ArrayBuffer }": {
+      "ref": "templates/pages/docs.html:404"
+    },
+    "prompt · put my report on a diet": {
+      "ref": "templates/pages/docs.html:449"
+    },
+    "prompt · the base": {
+      "ref": "templates/pages/docs.html:139"
+    },
+    "prompt · the exact protocol": {
+      "ref": "templates/pages/docs.html:412"
+    },
+    "read .xlsx right inside the report — no need to convert to CSV": {
+      "ref": "templates/pages/docs.html:407"
+    },
+    "report → platform, on load: { slots: [0, 1, …] }": {
+      "ref": "templates/pages/docs.html:403"
+    },
+    "report → platform, when the reader changed the file": {
+      "ref": "templates/pages/docs.html:405"
+    },
+    "s": {
+      "ref": "templates/pages/docs.html:79"
+    },
+    "semantics.json — and the report can be asked questions in plain language": {
+      "ref": "templates/pages/docs.html:361"
+    },
+    "the engine contract": {
+      "ref": "templates/pages/docs.html:252"
+    },
+    "the file is ≤ 2 MB (data over a few hundred KB has no business living inside the HTML);": {
+      "ref": "templates/pages/docs.html:158"
+    },
+    "the kind is decided by the markup": {
+      "ref": "templates/pages/docs.html:389"
+    },
+    "the markup, the snapshot and the slot files of this version — older versions are never overwritten": {
+      "ref": "templates/pages/docs.html:514"
+    },
+    "the most common reason for «it is slow»": {
+      "ref": "templates/pages/docs.html:443"
+    },
+    "the numbers look the way they do in the source — a model can round silently;": {
+      "ref": "templates/pages/docs.html:159"
+    },
+    "the page reads on a laptop width, not only on a large monitor.": {
+      "ref": "templates/pages/docs.html:160"
+    },
+    "the report's markup — this is the address of the inner window": {
+      "ref": "templates/pages/docs.html:508"
+    },
+    "the slot's data file": {
+      "ref": "templates/pages/docs.html:509"
+    },
+    "the source carries no {c}src=\"https://…\"{c_} — otherwise the report stays blank on an isolated page;": {
+      "ref": "templates/pages/docs.html:157"
+    },
+    "three reasons out of four": {
+      "ref": "templates/pages/docs.html:475"
+    },
+    "title, publication, availability to everyone": {
+      "ref": "templates/pages/docs.html:513"
+    },
+    "up to 3 files the analyst brings along (assigned reasons, say) — the platform gives them a second run button.": {
+      "ref": "templates/pages/docs.html:283"
+    },
+    "up to 32 entries: a glob over file names plus the sheets and columns you read. When the block is not empty, the engine skips everything else in the folder.": {
+      "ref": "templates/pages/docs.html:280"
+    },
+    "up to 8 strict names of supporting workbooks. A missing one stops the run with a diagnosis card instead of degrading quietly inside the calculation.": {
+      "ref": "templates/pages/docs.html:282"
+    },
+    "update the data file": {
+      "ref": "templates/pages/docs.html:510"
+    },
+    "update the data snapshot": {
+      "ref": "templates/pages/docs.html:511"
+    },
+    "upload a new version of the markup": {
+      "ref": "templates/pages/docs.html:512"
+    },
+    "what is in the bundle": {
+      "ref": "templates/pages/docs.html:237"
+    },
+    "{b}A picture or a script next to the file is missing.{b_} Upload the missing file as a slot — relative links inside the report resolve to it, and the markup needs no rework.": {
+      "ref": "templates/pages/docs.html:480"
+    },
+    "{b}A white screen.{b_} A library is linked to an external site. The report runs in an isolated window and cannot reach out — ask the model to embed the library's code in the file.": {
+      "ref": "templates/pages/docs.html:477"
+    },
+    "{b}Determinism.{b_} The same inputs give byte-identical outputs: sort anything that comes out of the OS's sets and dictionaries, fix the column order, never bake the generation time into the data. The equivalence gate and an honest cache both stand on this.": {
+      "ref": "templates/pages/docs.html:258"
+    },
+    "{b}No input or output{b_} outside out_dir, cache_dir and the paths you are handed. No network, no threads, no subprocesses — WebAssembly has none of them, and the same code must keep working in plain CPython, because that is where it is tested.": {
+      "ref": "templates/pages/docs.html:259"
+    },
+    "{b}The file upload works locally but not on the platform.{b_} The report reads the file input directly instead of listening to the protocol. Take the exact-protocol prompt above.": {
+      "ref": "templates/pages/docs.html:478"
+    },
+    "{b}The generator never sees folders.{b_} An analyst may connect up to eight of them; the engine hands over a flat union, so classify files strictly by name.": {
+      "ref": "templates/pages/docs.html:261"
+    },
+    "{b}The report shows yesterday's data.{b_} Nearly always an old version in the browser cache: reload the page bypassing the cache, and in future publish the data as a slot — its address changes together with its content.": {
+      "ref": "templates/pages/docs.html:479"
+    },
+    "{b}interactive{b_} — the markup carries {c}&lt;input type=\"file\"&gt;{c_}. The reader brings the data: they load their own extract and the report draws it. Right when everyone has their own folder.": {
+      "ref": "templates/pages/docs.html:391"
+    },
+    "{b}progress(stage, done, total, msg){b_} crosses the worker boundary. Call it once per file and once per major phase, never inside a loop over rows.": {
+      "ref": "templates/pages/docs.html:260"
+    },
+    "{b}snapshot{b_} — the markup carries {c}&lt;script id=\"bootstrap-snapshot\"&gt;{c_}. The data is shared and updated centrally: the platform injects fresh JSON on every open. This is also the kind generators publish.": {
+      "ref": "templates/pages/docs.html:392"
+    },
+    "{b}static{b_} — no special tags, the data is baked in at creation time. For a snapshot on a date and for presentations that must not change after the fact.": {
+      "ref": "templates/pages/docs.html:393"
+    },
+    "«Upload» in the left menu, then drop the file. The result of the analysis appears on the right: the kind of report and the number of data slots. The kind is decided by the markup — {c}&lt;input type=\"file\"&gt;{c_} makes the report interactive, the {c}bootstrap-snapshot{c_} tag makes it a snapshot, and without either it is static. The difference is in the reference at the bottom of this page.": {
+      "ref": "templates/pages/docs.html:169"
+    },
+    "≤ 20 MB": {
+      "ref": "templates/pages/docs.html:495"
+    },
+    "≤ 50 MB each": {
+      "ref": "templates/pages/docs.html:496"
+    },
+    "≥ 2 GB of RAM, ≥ 2 cores": {
+      "ref": "templates/pages/docs.html:494"
+    },
+    "≲ 35 MB — the measured parsing ceiling": {
+      "ref": "templates/pages/docs.html:492"
+    },
+    "≲ 500 MB — the measured engine ceiling": {
+      "ref": "templates/pages/docs.html:491"
+    },
+    "≲ 500 — a recommendation; more than that no longer blocks a run, the engine warns with the actual numbers": {
+      "ref": "templates/pages/docs.html:490"
+    }
+  }
+}

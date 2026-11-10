@@ -1,0 +1,16 @@
+def begin(out_dir: str, cache_dir: str, schema_version: str, progress) -> "Session":
+    """Открыть сессию расчёта. Вызывается один раз на запуск."""
+
+class Session:
+    def add_file(self, name: str, mtime_ms: int, size: int, path: str) -> str:
+        """Файл пользователя уже лежит по `path`. Вернуть ровно одно из:
+        "parsed"  — разобран сейчас, агрегаты обновлены;
+        "cached"  — узнан по кэшу, разбор пропущен;
+        "service" — служебная книга (справочник): движок сохранит её
+                    до конца finish(); остальные файлы удаляются сразу."""
+
+    def finish(self) -> dict:
+        """Дописать выходы в out_dir и вернуть их имена:
+        {"html": "dashboard.html" | None,
+         "slots": {"0": "sl_bc_data.bin.gz"},
+         "write_back": {"1": "sl_unassigned_reasons.xlsx"} | {}}"""

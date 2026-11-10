@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}{{ _('My account — OnePage') }}{% endblock %}
+
+{% block head %}
+<style>
+  /* Page styles are local: main.css is edited elsewhere. */
+  .acc-section { max-width: 760px; }
+  .acc-lead { font-size: 12px; color: var(--ink-dim); margin: 0 2px 16px; line-height: 1.5; }
+  .acc-card {
+    border: 1px solid var(--border); border-radius: 12px;
+    background: var(--surface-1); padding: 14px; margin-bottom: 12px;
+  }
+  .acc-row { display: flex; gap: 10px; align-items: center; justify-content: space-between; }
+  .acc-key-name { font-size: 14px; font-weight: 650; overflow-wrap: anywhere; }
+  .acc-key-meta { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin-top: 3px; }
+  .acc-empty { font-size: 13px; color: var(--ink-dim); }
+  .acc-new { display: flex; gap: 8px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+  .acc-new input { flex: 1 1 200px; min-width: 0; }
+  /* The issued key. Shown once, so the frame is deliberately prominent:
+     the person must understand that this string has to be taken NOW. */
+  .acc-issued {
+    border: 1px solid var(--accent); border-radius: 10px; padding: 12px;
+    background: color-mix(in srgb, var(--accent) 7%, var(--surface-1));
+    margin-top: 12px;
+  }
+  .acc-issued code {
+    display: block; font-family: var(--font-mono); font-size: 12px;
+    overflow-wrap: anywhere; margin: 8px 0; user-select: all;
+  }
+  .acc-note { font-size: 12px; color: var(--ink-dim); line-height: 1.5; }
+  .acc-status { font-size: 12px; min-height: 16px; }
+  .acc-status.err { color: var(--danger, #d33); }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('My reports'), '/', false], [_('My account'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content fluid">
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow">{{ user.person_id }} · {{ user.role }}</div>
+          <h1 class="page-title">{{ _('My account') }}</h1>
+        </div>
+      </div>
+
+      <div class="acc-section">
+        <h2 style="font-size:15px;margin:0 2px 6px">{{ _('Desktop app keys') }}</h2>
+        <p class="acc-lead">
+          {{ _('The desktop app keeps copies of your reports on your computer so you can open them while the platform is unavailable. It needs a key to sign in without a browser.') }}
+          <br>
+          {{ _('A key only reads your reports — it cannot change or publish anything. Revoke it at any time and the app stops updating.') }}
+        </p>
+
+        <div id="acc-keys"><div class="acc-empty">{{ _('Loading…') }}</div></div>
+
+        <div class="acc-new">
+          <input id="acc-label" class="input" type="text" maxlength="64"
+                 placeholder="{{ _('Which machine is this — for example, work laptop') }}">
+          <button id="acc-issue" class="btn sm primary" type="button">{{ _('Issue a key') }}</button>
+        </div>
+        <div id="acc-status" class="acc-status"></div>
+        <div id="acc-issued" hidden></div>
+      </div>
+
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/account.js?v={{ asset_v }}" defer></script>
+{% endblock %}

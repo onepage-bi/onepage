@@ -1,0 +1,5 @@
+Define every colour, chart colours included, as a CSS variable in :root.
+Build the charts from those variables and redraw them on
+window.addEventListener('op:theme', redraw). Do not use gradients or hex
+values hard-coded inside the charting library — the report has to be
+re-colourable on the platform.

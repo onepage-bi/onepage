@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}{{ _('OnePage — password-protected report') }}{% endblock %}
+
+{# The only window into the locked room. The page carries NOTHING from the report
+   except its title: no preview, no description, no row count — each of those already
+   tells someone without the password about the contents. #}
+{% block body %}
+<div class="shell">
+  {% set active = 'dashboards' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '/', false], [_('Dashboards'), '/', false], [dashboard.title, None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content">
+      <div class="conf-gate" id="conf-gate" data-dash="{{ dashboard.id }}">
+        <div class="conf-card">
+          <div class="conf-lock" aria-hidden="true">
+            <svg class="ico ico-20"><use href="#ic-shield"/></svg>
+          </div>
+          <h1 class="conf-title">{{ _('Report under a password') }}</h1>
+          <p class="conf-sub">{{ dashboard.title }}</p>
+          <p class="conf-note">
+            {{ _('You do have access to this report. It is marked highly confidential, so it also asks for a password — ask the report\'s owner for it.') }}
+          </p>
+
+          <form class="conf-form" id="conf-form" autocomplete="off">
+            <label class="conf-label" for="conf-pw">{{ _('Report password') }}</label>
+            <input class="input" type="password" id="conf-pw" name="password"
+                   autocomplete="off" autofocus
+                   aria-describedby="conf-msg" />
+            <button type="submit" class="btn primary" id="conf-go">{{ _('Open') }}</button>
+          </form>
+
+          <div class="conf-msg" id="conf-msg" role="status" aria-live="polite"></div>
+
+          <p class="conf-fine">
+            {{ _('The password opens the report for this session and in this browser only. Outbound links, single-file export, the desktop copy and this report\'s chat stay switched off while the mode is on.') }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script defer src="/static/js/confidential.js?v={{ asset_v }}"></script>
+{% endblock %}

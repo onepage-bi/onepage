@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+{% block title %}{{ _('OnePage — Lineage ·') }} {{ dashboard.title }}{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'dashboards' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '/', false], [dashboard.title, '/d/' + dashboard.id, false], [_('Lineage'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content fluid">
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow">
+            {{ _('version') }} {{ data.version.number }}{% if data.version.is_current %} {{ _('· current') }}{% endif %}
+          </div>
+          <h1 class="page-title">{{ _('Report lineage') }}</h1>
+          <div class="page-subtitle">
+            {{ data.version.created_at.strftime('%Y-%m-%d %H:%M') if data.version.created_at else '—' }}
+            {% if data.version.created_by %} · {{ data.version.created_by }}{% endif %}
+            {% if data.version.note %} · {{ data.version.note }}{% endif %}
+          </div>
+        </div>
+        <div class="page-actions">
+          <a class="btn sm ghost" href="/d/{{ dashboard.id }}">{{ _('To report') }}</a>
+        </div>
+      </div>
+
+      <!-- ── Run ───────────────────────────────────────────────────────── -->
+      <div class="ref-sect">
+        <h2 class="ref-sect-h">{{ _('Run {ctx:2}') }}</h2>
+        {% if data.run %}
+        <div class="ref-table-wrap">
+          <table class="tbl ref-table">
+            <tbody>
+              <tr><td>ID</td><td class="mono">{{ data.run.id }}</td></tr>
+              <tr><td>{{ _('Started') }}</td><td class="mono">{{ data.run.started_at.strftime('%Y-%m-%d %H:%M:%S') if data.run.started_at else '—' }}</td></tr>
+              <tr><td>{{ _('Completed {ctx:3}') }}</td><td class="mono">{{ data.run.finished_at.strftime('%Y-%m-%d %H:%M:%S') if data.run.finished_at else '—' }}</td></tr>
+              <tr><td>{{ _('Engine') }}</td><td class="mono">{{ data.run.engine }}</td></tr>
+              <tr><td>{{ _('Status') }}</td><td><span class="badge {% if data.run.status == 'success' %}success{% elif data.run.status in ('error','lost') %}danger{% else %}warning{% endif %}">{{ data.run.status }}</span></td></tr>
+              <tr><td>{{ _('Launched by') }}</td><td class="mono">{{ data.run.started_by or '—' }}</td></tr>
+            </tbody>
+          </table>
+        </div>
+        {% elif data.run_restricted %}
+        <div class="ref-note">{{ _('Run exists, but details visible only to those who can update this report\'s data.') }}</div>
+        {% else %}
+        <div class="ref-note">{{ _('This version is not associated with a generator run (loaded directly).') }}</div>
+        {% endif %}
+      </div>
+
+      <!-- ── Generator version / dependencies / semantics ────────────── -->
+      {% if data.generator_version %}
+      <div class="ref-sect">
+        <h2 class="ref-sect-h">{{ _('Generator version') }}</h2>
+        <div class="ref-table-wrap">
+          <table class="tbl ref-table">
+            <tbody>
+              <tr><td>{{ _('Generator') }}</td><td class="mono">{{ data.generator_version.name or '—' }}</td></tr>
+              <tr><td>{{ _('Version') }}</td><td class="mono">v{{ data.generator_version.version_number }}</td></tr>
+              <tr><td>{{ _('Bundle SHA') }}</td><td class="mono">{{ data.generator_version.checksum_sha256 }}</td></tr>
+              <tr><td>{{ _('Registered') }}</td><td class="mono">{{ data.generator_version.created_at.strftime('%Y-%m-%d %H:%M') if data.generator_version.created_at else '—' }}</td></tr>
+              <tr><td>{{ _('Who') }}</td><td class="mono">{{ data.generator_version.created_by or '—' }}</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── Frozen dependencies ────────────────────────────────────── -->
+      <div class="ref-sect">
+        <h2 class="ref-sect-h">{{ _('Frozen dependencies') }}</h2>
+        {% if data.deps %}
+        <div class="ref-table-wrap">
+          <table class="tbl ref-table">
+            <thead><tr><th>{{ _('Package') }}</th><th>{{ _('Version') }}</th></tr></thead>
+            <tbody>
+              {% for d in data.deps %}
+              <tr><td class="mono">{{ d.name }}</td><td class="mono">{{ d.version or '—' }}</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="ref-note">{{ _('This generator version does not declare dependencies.') }}</div>
+        {% endif %}
+      </div>
+
+      <!-- ── Semantics ──────────────────────────────────────────────── -->
+      <div class="ref-sect">
+        <h2 class="ref-sect-h">{{ _('Semantics') }}</h2>
+        {% if data.semantics %}
+        <div class="ref-table-wrap">
+          <table class="tbl ref-table">
+            <tbody>
+              <tr><td>SHA-256</td><td class="mono">{{ data.semantics.sha256 }}</td></tr>
+              <tr><td>KPI</td><td class="mono">{{ data.semantics.kpi_count }}</td></tr>
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="ref-note">{{ _('This generator version did not freeze semantics.json.') }}</div>
+        {% endif %}
+      </div>
+      {% elif data.run_restricted %}
+      <div class="ref-sect">
+        <h2 class="ref-sect-h">{{ _('Generator version') }}</h2>
+        <div class="ref-note">{{ _('Visible only to those who can update this report\'s data.') }}</div>
+      </div>
+      {% endif %}
+
+      <!-- ── Reference tables used ──────────────────────────────────── -->
+      <div class="ref-sect">
+        <h2 class="ref-sect-h">{{ _('Reference tables') }}</h2>
+        {% if data.reference_uses %}
+        <div class="ref-table-wrap">
+          <table class="tbl ref-table">
+            <thead><tr><th>{{ _('Reference table') }}</th><th>{{ _('Version') }}</th><th>{{ _('Applied') }}</th></tr></thead>
+            <tbody>
+              {% for r in data.reference_uses %}
+              <tr>
+                <td class="mono"><a href="/reference/{{ r.slug }}">{{ r.slug }}</a></td>
+                <td class="mono">{{ ('v' ~ r.version_number) if r.version_number else '—' }}</td>
+                <td>{% if r.applied %}<span class="badge success">{{ _('yes') }}</span>{% else %}<span class="badge warning">{{ _('without reference table') }}</span>{% endif %}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="ref-note">{{ _('This run did not resolve any reference table.') }}</div>
+        {% endif %}
+      </div>
+
+      <!-- ── RLS ────────────────────────────────────────────────────── -->
+      <div class="ref-sect">
+        <h2 class="ref-sect-h">{{ _('RLS policy') }}</h2>
+        <div class="ref-table-wrap">
+          <table class="tbl ref-table">
+            <tbody>
+              <tr><td>{{ _('Enabled') }}</td><td>{% if data.rls.enabled %}<span class="badge success">{{ _('yes') }}</span>{% else %}<span class="badge">{{ _('no') }}</span>{% endif %}</td></tr>
+              {% if data.rls.enabled and not data.rls_restricted %}
+              <tr><td>{{ _('Filter slots') }}</td><td class="mono">{{ data.rls.slot_count }}</td></tr>
+              <tr><td>{{ _('Policy hash') }}</td><td class="mono">{{ data.rls.policy_hash }}</td></tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+        {% if data.rls_restricted %}
+        <div class="ref-note">{{ _('Policy details visible only to those who can update this report\'s data.') }}</div>
+        {% endif %}
+      </div>
+
+      <!-- ── Lake manifest ──────────────────────────────────────────── -->
+      {% if data.lake_manifest %}
+      <div class="ref-sect">
+        <h2 class="ref-sect-h">{{ _('Lake manifest') }}</h2>
+        <div class="ref-table-wrap">
+          <table class="tbl ref-table">
+            <tbody>
+              <tr><td>{{ _('Run ID') }}</td><td class="mono">{{ data.lake_manifest.run_id if data.lake_manifest.run_id is not none else '—' }}</td></tr>
+              <tr><td>{{ _('Created') }}</td><td class="mono">{{ data.lake_manifest.created_at or '—' }}</td></tr>
+              <tr><td>{{ _('Partitions {ctx:2}') }}</td><td class="mono">{{ data.lake_manifest.partitions }}</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- ── Input sources ──────────────────────────────────────────── -->
+      <div class="ref-sect">
+        <h2 class="ref-sect-h">{{ _('Run input sources') }}</h2>
+        {% if data.source_observations %}
+        <div class="ref-table-wrap">
+          <table class="tbl ref-table">
+            <thead><tr><th>{{ _('Source') }}</th><th>{{ _('Files') }}</th><th>{{ _('Fingerprint') }}</th><th>{{ _('Path reported by the app') }}</th></tr></thead>
+            <tbody>
+              {% for o in data.source_observations %}
+              <tr>
+                <td class="mono">{{ o.source }}</td>
+                <td class="mono">{{ o.file_count }}</td>
+                <td class="mono">{{ o.fingerprint or '—' }}</td>
+                <td class="mono prov-paths">
+                  {% if o.root_path %}
+                  <div><span class="prov-path">{{ o.root_path }}</span> <button type="button" class="btn xs ghost" data-copy-path="{{ o.root_path }}">{{ _('Copy path') }}</button></div>
+                  {% if o.root_id %}<div class="ref-note">{{ _('Path fingerprint:') }} {{ o.root_id }}</div>{% endif %}
+                  {% else %}—{% endif %}
+                  {% if o.file_paths %}
+                  <details>
+                    <summary>{{ _n(o.file_paths | length, '{n} file|{n} files') }}</summary>
+                    {% for fp in o.file_paths %}<div><span class="prov-path">{{ fp }}</span> <button type="button" class="btn xs ghost" data-copy-path="{{ fp }}">{{ _('Copy path') }}</button></div>{% endfor %}
+                  </details>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% elif data.run_restricted %}
+        <div class="ref-note">{{ _('Visible only to those who can update this report\'s data.') }}</div>
+        {% else %}
+        <div class="ref-note">{{ _('No source observations for this run.') }}</div>
+        {% endif %}
+      </div>
+
+    </div>
+  </main>
+</div>
+<style>
+  /* The path is selected with one click: without the clipboard this is the only way to copy it */
+  .prov-path { user-select: all; word-break: break-all; }
+  .prov-paths details { margin-top: 4px; }
+</style>
+<script src="/static/js/source-paths.js?v={{ asset_v }}" defer></script>
+{% endblock %}

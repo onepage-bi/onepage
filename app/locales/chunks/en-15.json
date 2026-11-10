@@ -1,0 +1,470 @@
+{
+  "_meta": {
+    "chunk": "15",
+    "count": 150,
+    "lang": "en",
+    "source_files": [
+      "templates/pages/explore.html",
+      "templates/pages/generators.html",
+      "templates/pages/index.html",
+      "templates/pages/learn.html",
+      "templates/pages/learn_index.html",
+      "templates/pages/login.html",
+      "templates/pages/navigators.html",
+      "templates/pages/perf.html",
+      "templates/pages/presentation.html"
+    ]
+  },
+  "strings": {
+    "\" title=\"Adaptive sampler: writes share": {
+      "ref": "templates/pages/perf.html:92"
+    },
+    "(all queries)": {
+      "ref": "templates/pages/perf.html:93"
+    },
+    "(fixed)": {
+      "ref": "templates/pages/perf.html:97"
+    },
+    "A navigator is a page you write yourself as one html file: links to OnePage reports, to Power BI, to network folders. Access works exactly as it does for a report. The platform opens the links, so signing in to an external system works as usual.": {
+      "ref": "templates/pages/navigators.html:28"
+    },
+    "Adaptive sampler disabled (OP_PERF_ADAPTIVE=false) — fixed probability": {
+      "ref": "templates/pages/perf.html:96"
+    },
+    "Add slide": {
+      "ref": "templates/pages/presentation.html:183"
+    },
+    "Add to favourites": {
+      "ref": "templates/pages/index.html:135"
+    },
+    "Authenticate with your corporate identity to access the operational console.": {
+      "ref": "templates/pages/login.html:13"
+    },
+    "Back": {
+      "ref": "templates/pages/learn.html:67"
+    },
+    "Back to the path": {
+      "ref": "templates/pages/learn.html:56"
+    },
+    "Browse the app for a bit — server and client timings land in {path}.": {
+      "ref": "templates/pages/perf.html:212"
+    },
+    "Browser load \"/\" · p95": {
+      "ref": "templates/pages/perf.html:57"
+    },
+    "Browser timings (per page)": {
+      "ref": "templates/pages/perf.html:146"
+    },
+    "Clear logs": {
+      "ref": "templates/pages/perf.html:27"
+    },
+    "Click a report to open its": {
+      "ref": "templates/pages/generators.html:41"
+    },
+    "Completed {ctx:4}": {
+      "ref": "templates/pages/learn_index.html:43"
+    },
+    "Continue": {
+      "ref": "templates/pages/learn_index.html:43"
+    },
+    "Continue as person_id": {
+      "ref": "templates/pages/login.html:51"
+    },
+    "Continue with Company SSO": {
+      "ref": "templates/pages/login.html:22"
+    },
+    "Continue with SSO": {
+      "ref": "templates/pages/login.html:30"
+    },
+    "Copy link": {
+      "ref": "templates/pages/index.html:169"
+    },
+    "Create": {
+      "ref": "templates/pages/generators.html:121"
+    },
+    "Create a shared folder": {
+      "ref": "templates/pages/index.html:68"
+    },
+    "Currently at ceiling — all requests logged, counters precise.": {
+      "ref": "templates/pages/perf.html:92"
+    },
+    "Dashboards page": {
+      "ref": "templates/pages/perf.html:47"
+    },
+    "Delete all accumulated perf logs": {
+      "ref": "templates/pages/perf.html:25"
+    },
+    "Delete all accumulated perf logs? Export what you need before clearing.": {
+      "ref": "templates/pages/perf.html:235"
+    },
+    "Delete folder (dashboards move to Unsorted)": {
+      "ref": "templates/pages/index.html:118"
+    },
+    "Delete presentation with slides": {
+      "ref": "templates/pages/presentation.html:159"
+    },
+    "Deleted files: {p1}, freed {p2} MB": {
+      "ref": "templates/pages/perf.html:239"
+    },
+    "Description {ctx:2}": {
+      "ref": "templates/pages/navigators.html:58"
+    },
+    "Empty for now. Add a report, image or PDF — order is set by dragging.": {
+      "ref": "templates/pages/presentation.html:179"
+    },
+    "Fast lane": {
+      "ref": "templates/pages/perf.html:62"
+    },
+    "Find report…": {
+      "ref": "templates/pages/presentation.html:224"
+    },
+    "Generator *": {
+      "ref": "templates/pages/generators.html:113"
+    },
+    "Grid": {
+      "ref": "templates/pages/index.html:79"
+    },
+    "HTML file": {
+      "ref": "templates/pages/navigators.html:62"
+    },
+    "Loads": {
+      "ref": "templates/pages/perf.html:152"
+    },
+    "Method": {
+      "ref": "templates/pages/perf.html:107"
+    },
+    "Move to folder": {
+      "ref": "templates/pages/index.html:162"
+    },
+    "Navigators — OnePage": {
+      "ref": "templates/pages/navigators.html:2"
+    },
+    "Need a short reference rather than a course — that is the {a}Dev Guide{a_}.": {
+      "ref": "templates/pages/learn_index.html:52"
+    },
+    "New folder": {
+      "ref": "templates/pages/index.html:70"
+    },
+    "New generated report": {
+      "ref": "templates/pages/generators.html:34"
+    },
+    "Next": {
+      "ref": "templates/pages/learn.html:68"
+    },
+    "No dashboards have been shared with you yet.": {
+      "ref": "templates/pages/index.html:198"
+    },
+    "No generator-backed report is assigned to you yet.": {
+      "ref": "templates/pages/generators.html:85"
+    },
+    "No navigators yet.": {
+      "ref": "templates/pages/navigators.html:45"
+    },
+    "Off": {
+      "ref": "templates/pages/perf.html:23"
+    },
+    "On": {
+      "ref": "templates/pages/perf.html:23"
+    },
+    "Page": {
+      "ref": "templates/pages/perf.html:151"
+    },
+    "Password": {
+      "ref": "templates/pages/login.html:38"
+    },
+    "Pause/resume telemetry collection (survives restarts)": {
+      "ref": "templates/pages/perf.html:22"
+    },
+    "Reconciliation": {
+      "ref": "templates/pages/explore.html:215"
+    },
+    "Reconnect": {
+      "ref": "templates/pages/explore.html:61"
+    },
+    "Refresh index from folder": {
+      "ref": "templates/pages/explore.html:62"
+    },
+    "Rename folder": {
+      "ref": "templates/pages/index.html:114"
+    },
+    "Render": {
+      "ref": "templates/pages/perf.html:52"
+    },
+    "Report conversation": {
+      "ref": "templates/pages/explore.html:262"
+    },
+    "Report index builds when report is calculated across all folders and stored on server.": {
+      "ref": "templates/pages/explore.html:55"
+    },
+    "Report index not loaded": {
+      "ref": "templates/pages/explore.html:28"
+    },
+    "Report name": {
+      "ref": "templates/pages/generators.html:110"
+    },
+    "Report question": {
+      "ref": "templates/pages/explore.html:315"
+    },
+    "Requests": {
+      "ref": "templates/pages/perf.html:42"
+    },
+    "Route": {
+      "ref": "templates/pages/perf.html:108"
+    },
+    "SQL of this answer": {
+      "ref": "templates/pages/explore.html:145"
+    },
+    "Save question": {
+      "ref": "templates/pages/explore.html:154"
+    },
+    "Saved questions": {
+      "ref": "templates/pages/explore.html:221"
+    },
+    "Search title, owner, person_id…": {
+      "ref": "templates/pages/index.html:37"
+    },
+    "Search title…": {
+      "ref": "templates/pages/generators.html:25"
+    },
+    "Select report — its metrics and folders become context for questions": {
+      "ref": "templates/pages/explore.html:48"
+    },
+    "Set up sources": {
+      "ref": "templates/pages/explore.html:53"
+    },
+    "Sign in": {
+      "ref": "templates/pages/login.html:2"
+    },
+    "Sign in with password": {
+      "ref": "templates/pages/login.html:39"
+    },
+    "Slowest requests": {
+      "ref": "templates/pages/perf.html:175"
+    },
+    "Sorting": {
+      "ref": "templates/pages/explore.html:197"
+    },
+    "Stages": {
+      "ref": "templates/pages/perf.html:187"
+    },
+    "Start": {
+      "ref": "templates/pages/learn.html:31"
+    },
+    "Stop engine; index will need rebuild": {
+      "ref": "templates/pages/explore.html:151"
+    },
+    "Table counters are estimates weighted by 1/sample.": {
+      "ref": "templates/pages/perf.html:92"
+    },
+    "Telemetry:": {
+      "ref": "templates/pages/perf.html:23"
+    },
+    "Time (UTC)": {
+      "ref": "templates/pages/perf.html:180"
+    },
+    "Title": {
+      "ref": "templates/pages/index.html:91"
+    },
+    "Title *": {
+      "ref": "templates/pages/generators.html:109"
+    },
+    "To Excel": {
+      "ref": "templates/pages/explore.html:155"
+    },
+    "Two courses: the short one to make a report today, the long one to understand how it all works.": {
+      "ref": "templates/pages/learn_index.html:22"
+    },
+    "Type": {
+      "ref": "templates/pages/index.html:92"
+    },
+    "Unsorted": {
+      "ref": "templates/pages/index.html:109"
+    },
+    "Updated": {
+      "ref": "templates/pages/index.html:96"
+    },
+    "Upload a page": {
+      "ref": "templates/pages/navigators.html:22"
+    },
+    "Upload a self-contained HTML dashboard to get started.": {
+      "ref": "templates/pages/index.html:192"
+    },
+    "Upload an html file and it will appear here.": {
+      "ref": "templates/pages/navigators.html:46"
+    },
+    "Upload dashboard": {
+      "ref": "templates/pages/index.html:27"
+    },
+    "Upload your first dashboard": {
+      "ref": "templates/pages/index.html:195"
+    },
+    "Username": {
+      "ref": "templates/pages/login.html:37"
+    },
+    "Ver": {
+      "ref": "templates/pages/index.html:95"
+    },
+    "What changed": {
+      "ref": "templates/pages/explore.html:213"
+    },
+    "What is in this report's index": {
+      "ref": "templates/pages/explore.html:264"
+    },
+    "Where do we start?": {
+      "ref": "templates/pages/learn_index.html:21"
+    },
+    "Wider / narrower": {
+      "ref": "templates/pages/explore.html:297"
+    },
+    "Working on the platform": {
+      "ref": "templates/pages/learn.html:26"
+    },
+    "ascending": {
+      "ref": "templates/pages/explore.html:200"
+    },
+    "base": {
+      "ref": "templates/pages/learn_index.html:34"
+    },
+    "build · dev": {
+      "ref": "templates/pages/login.html:62"
+    },
+    "conversations for this report — date and first question": {
+      "ref": "templates/pages/explore.html:283"
+    },
+    "course": {
+      "ref": "templates/pages/learn.html:25"
+    },
+    "delete everything from this browser": {
+      "ref": "templates/pages/explore.html:292"
+    },
+    "descending": {
+      "ref": "templates/pages/explore.html:201"
+    },
+    "draft": {
+      "ref": "templates/pages/generators.html:55"
+    },
+    "estimate from {n} records (adaptive sampling)": {
+      "ref": "templates/pages/perf.html:127"
+    },
+    "folder not connected": {
+      "ref": "templates/pages/explore.html:267"
+    },
+    "generated reports": {
+      "ref": "templates/pages/generators.html:17"
+    },
+    "h": {
+      "ref": "templates/pages/learn_index.html:35"
+    },
+    "hide": {
+      "ref": "templates/pages/explore.html:235"
+    },
+    "in Russian, calculated here — from folder, without data server": {
+      "ref": "templates/pages/explore.html:74"
+    },
+    "min": {
+      "ref": "templates/pages/learn_index.html:35"
+    },
+    "never run": {
+      "ref": "templates/pages/generators.html:69"
+    },
+    "next question without the context of the previous answer": {
+      "ref": "templates/pages/explore.html:279"
+    },
+    "no dashboards yet": {
+      "ref": "templates/pages/index.html:190"
+    },
+    "no generated reports": {
+      "ref": "templates/pages/generators.html:84"
+    },
+    "no perf records in selected range": {
+      "ref": "templates/pages/perf.html:211"
+    },
+    "ok": {
+      "ref": "templates/pages/generators.html:73"
+    },
+    "owned by me": {
+      "ref": "templates/pages/index.html:59"
+    },
+    "panel and run the generator.": {
+      "ref": "templates/pages/generators.html:41"
+    },
+    "perf logging disabled": {
+      "ref": "templates/pages/perf.html:86"
+    },
+    "performance telemetry": {
+      "ref": "templates/pages/perf.html:17"
+    },
+    "practicum": {
+      "ref": "templates/pages/learn_index.html:20"
+    },
+    "preparatory": {
+      "ref": "templates/pages/learn_index.html:34"
+    },
+    "published": {
+      "ref": "templates/pages/index.html:49"
+    },
+    "questions and figures — as text": {
+      "ref": "templates/pages/explore.html:287"
+    },
+    "records/s.": {
+      "ref": "templates/pages/perf.html:92"
+    },
+    "report metrics": {
+      "ref": "templates/pages/explore.html:100"
+    },
+    "requests, target": {
+      "ref": "templates/pages/perf.html:92"
+    },
+    "running…": {
+      "ref": "templates/pages/generators.html:71"
+    },
+    "sample": {
+      "ref": "templates/pages/perf.html:93"
+    },
+    "tail — what users perceive as 'slow'": {
+      "ref": "templates/pages/perf.html:112"
+    },
+    "telemetry paused — records not collected": {
+      "ref": "templates/pages/perf.html:88"
+    },
+    "time to headers — server without network": {
+      "ref": "templates/pages/perf.html:110"
+    },
+    "warm render": {
+      "ref": "templates/pages/perf.html:62"
+    },
+    "workspace · Russian questions to reports — data never leaves your computer": {
+      "ref": "templates/pages/explore.html:24"
+    },
+    "workspace · pages people start from": {
+      "ref": "templates/pages/navigators.html:17"
+    },
+    "your browser calculates this · the model is used only if the question didn't match a metric": {
+      "ref": "templates/pages/explore.html:324"
+    },
+    "{n} dashboards": {
+      "ref": "templates/pages/index.html:19"
+    },
+    "{n} reports you can run": {
+      "ref": "templates/pages/generators.html:29"
+    },
+    "{n} routes": {
+      "ref": "templates/pages/perf.html:44"
+    },
+    "{n} total": {
+      "ref": "templates/pages/index.html:64"
+    },
+    "— select —": {
+      "ref": "templates/pages/explore.html:169"
+    },
+    "← Back to chat": {
+      "ref": "templates/pages/explore.html:114"
+    },
+    "→ estimates": {
+      "ref": "templates/pages/perf.html:93"
+    },
+    "↓ dev bypass": {
+      "ref": "templates/pages/login.html:45"
+    }
+  }
+}

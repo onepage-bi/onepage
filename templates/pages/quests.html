@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% block title %}{{ _('OnePage — Quests') }}{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/quests-fonts.css?v={{ asset_v }}" />
+<link rel="stylesheet" href="/static/css/quests.css?v={{ asset_v }}" />
+{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'quests' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '#', false], [_('Quests'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content flush">
+
+      <div id="q-root" data-state="{{ state_json }}">
+
+        {# ── Hero: capsule reveal ─────────────────────────────────────── #}
+        <section class="q-hero" id="q-hero">
+          <div class="q-hero-bg" style="background-image:url('/static/img/quests/hero.jpg?v={{ asset_v }}')"></div>
+          <div class="q-pills">
+            <button type="button" class="q-pill" id="q-pill-pts">
+              <span>{{ _('Points') }}</span><b id="q-pill-pts-val">0</b>
+            </button>
+            <button type="button" class="q-pill" id="q-pill-coll">
+              <span>{{ _('Collection') }}</span><b id="q-pill-coll-val">0/8</b>
+            </button>
+          </div>
+          <div class="q-hero-in">
+            <div class="q-hero-top">
+              <div class="q-hero-date" id="q-date"></div>
+              <h1 class="q-hero-title">{{ _('Daily reward') }}<small id="q-hero-sub"></small></h1>
+            </div>
+            <div class="q-stage">
+              <div class="q-glow" id="q-glow"></div>
+              <button type="button" class="q-cap" id="q-cap" aria-label="{{ _('Open surprise') }}">
+                <img id="q-cap-img" src="/static/img/quests/capsule.png?v={{ asset_v }}" alt="" />
+              </button>
+            </div>
+            <div class="q-hero-cta">
+              <button type="button" class="q-cta" id="q-open">{{ _('Open surprise') }}</button>
+              <span class="q-nextpill" id="q-nextpill" hidden></span>
+              <div class="q-ctahint" id="q-ctahint"></div>
+            </div>
+          </div>
+        </section>
+
+        {# ── Reward path ──────────────────────────────────────────────── #}
+        <section class="q-streakbar" id="q-path">
+          <div class="q-sbh">
+            <div class="q-sbt">{{ _('Gift every business day') }}
+              <span class="q-qm" id="q-freeze-note" title="">?</span>
+            </div>
+            <div class="q-sbs">{{ _('Streak:') }} <b id="q-streak-val">0</b> <span id="q-streak-label">{{ _('days {ctx:2}') }}</span><span class="q-next" id="q-streak-next"></span></div>
+          </div>
+          <div class="q-days" id="q-days"></div>
+        </section>
+
+        <div class="q-main">
+          <div class="q-grid2">
+
+            {# ── Quests panel ───────────────────────────────────────── #}
+            <section class="q-card q-panel" id="q-quests">
+              <div class="q-ph">
+                <div>
+                  <div class="q-eyebrow">{{ _('Tasks') }}</div>
+                  <h2 class="q-ph-title">{{ _('First week in OnePage') }}</h2>
+                  <p class="q-ph-sub">{{ _('\'Show how\' highlights where to click. \'Go\' opens the section. Reward accrues automatically.') }}</p>
+                </div>
+                <div class="q-pprog">
+                  <b id="q-quests-done">{{ _('0 of 5') }}</b>
+                  <div class="q-bbar"><i id="q-quests-bar"></i></div>
+                </div>
+              </div>
+              <div class="q-qlist" id="q-qlist"></div>
+            </section>
+
+            <div class="q-side-stack">
+              {# ── Quiz banner ─────────────────────────────────────── #}
+              <section class="q-qb" id="q-quiz-banner">
+                <div class="q-qbt">
+                  <div class="q-eyebrow">{{ _('Daily quiz') }}</div>
+                  <h2 class="q-ph-title">{{ _('Level up your AI skills') }}</h2>
+                  <p class="q-ph-sub">{{ _('Three work situations a day: what to hand to an AI assistant, how to frame the task, what to trust. Three weeks make a whole picture.') }}</p>
+                  <div class="q-qbp">
+                    <div class="q-qbl"><span id="q-quiz-level">{{ _('Novice') }}</span><b id="q-quiz-day">{{ _('Day 1 of 15') }}</b></div>
+                    <div class="q-bbar"><i id="q-quiz-bar"></i></div>
+                  </div>
+                  <div class="q-qbrow" id="q-quiz-row"></div>
+                </div>
+                <div class="q-qbi"><img src="/static/img/quests/brain.jpg?v={{ asset_v }}" alt="" /></div>
+              </section>
+
+              {# ── Rating ───────────────────────────────────────────── #}
+              <section class="q-card q-panel" id="q-rating">
+                <div class="q-ph"><div><div class="q-eyebrow">{{ _('Ranking') }}</div><h2 class="q-ph-title">{{ _('Your rank') }}</h2></div></div>
+                <div class="q-pct"><b id="q-pct">—</b><span id="q-pct-note"></span></div>
+                <div class="q-optin-row">
+                  <label class="q-switch">
+                    <input type="checkbox" id="q-optin" />
+                    {{ _('show me in team ranking') }}
+                  </label>
+                </div>
+                <div id="q-board"></div>
+              </section>
+            </div>
+          </div>
+
+          {# ── Collection ─────────────────────────────────────────── #}
+          <section class="q-card" id="q-collection">
+            <div class="q-sethead">
+              <div class="q-ring" id="q-ring" style="--pct:0%"><i id="q-ring-t">0/0</i></div>
+              <div>
+                <div class="q-set-title" id="q-set-title">{{ _('Set \'Fox analyst\'') }}</div>
+                <div class="q-set-sub" id="q-set-sub">{{ _('Autumn 2026. Collect all eight and get a profile frame.') }}</div>
+              </div>
+            </div>
+            <div class="q-coll" id="q-coll"></div>
+            {# The companion is the reward for the FIRST season and is permanent. It lives
+               on its own row, not in the current season's header: in the header it
+               read as a toad setting (owner, 05.10: "what do foxes
+               have to do with toads"). #}
+            <div class="q-den-host" id="q-den-host"></div>
+          </section>
+        </div>
+      </div>
+
+      {# ── Reveal / quiz stage overlay ────────────────────────────────── #}
+      <div class="overlay q-stage-overlay" id="q-overlay" hidden>
+        <div class="q-rays" id="q-rays"></div>
+        <div class="q-flash" id="q-flash"></div>
+        <button type="button" class="q-ov-close" id="q-ov-close" aria-label="{{ _('Close') }}">✕</button>
+        <div id="q-ov-content"></div>
+      </div>
+      <canvas id="q-confetti"></canvas>
+
+      {# ── "Show me how" layers — reserved for phase 7 (quests-how.js) ── #}
+      <div class="q-dim" id="q-dimT" hidden></div>
+      <div class="q-dim" id="q-dimB" hidden></div>
+      <div class="q-dim" id="q-dimL" hidden></div>
+      <div class="q-dim" id="q-dimR" hidden></div>
+      <div class="q-spot" id="q-spot" hidden></div>
+      <div class="q-ghost" id="q-ghost" hidden>
+        <svg viewBox="0 0 24 24"><path d="M5 3l14 8-6 2-3 6z" fill="#fff" stroke="#1b2a4a" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="q-callout" id="q-callout" hidden></div>
+      <div class="q-keys" id="q-keys" hidden></div>
+      <div class="q-mini" id="q-mini" hidden></div>
+      <div class="q-howbar" id="q-howbar" hidden>
+        <span>{{ _('Show: nothing clicks for you') }}</span>
+        <button type="button" class="btn sm" id="q-how-again">{{ _('Again') }}</button>
+        <button type="button" class="q-cta" id="q-how-ok">{{ _('Got it') }}</button>
+      </div>
+      <button type="button" class="q-how-x" id="q-how-x" hidden title="{{ _('Close show (Esc)') }}">✕</button>
+
+    </div>
+  </main>
+</div>
+
+{% include "components/palette.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/palette.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/hotkeys.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/quests-page.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/quests-how.js?v={{ asset_v }}" defer></script>
+{% endblock %}

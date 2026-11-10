@@ -1,0 +1,21 @@
+{# Command palette — included at end of body for shell screens. #}
+<div id="palette-overlay" class="overlay">
+  <div class="palette">
+    <div class="palette-search">
+      <svg class="ico" style="color:var(--ink-dim)"><use href="#ic-search"/></svg>
+      <input id="palette-input" placeholder="{{ _('Search dashboards, users, actions…') }}" autocomplete="off"/>
+      <span class="kbd">ESC</span>
+    </div>
+    <div id="palette-list" class="palette-list"></div>
+    <div class="palette-foot">
+      <span class="kbd-group"><span class="kbd">↑</span><span class="kbd">↓</span> {{ _('navigate') }}</span>
+      <span class="kbd-group"><span class="kbd">↵</span> {{ _('open') }}</span>
+      <span class="kbd-group"><span class="kbd">⌘↵</span> {{ _('open in new tab') }}</span>
+      <span style="margin-left:auto" class="mono">onepage · ⌘K</span>
+    </div>
+  </div>
+</div>
+<script>
+  // Inline data for palette — populated by server with real dashboards
+  window.OP_PALETTE_DATA = {{ palette_items | default([]) | tojson }};
+</script>

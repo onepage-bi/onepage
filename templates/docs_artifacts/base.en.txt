@@ -1,0 +1,26 @@
+Write a self-contained HTML file — an analytical report.
+
+HARD REQUIREMENTS
+1. No external requests: all CSS, JS and fonts inside the file.
+   If a library is needed, embed its code in a <script>; CDN links are banned.
+   (A report that reads its file ON THE PLATFORM is a different case: there
+   SheetJS is served from our own server — see the "exact protocol" prompt.)
+2. The file must work offline when opened with a double click.
+3. The report file itself must be ≤ 1.5 MB — above that the platform shows a
+   placeholder instead of a live preview in the list. This is the weight of the
+   report, not of the data: more data than that and we move it to its own file
+   the report will read.
+4. Define every colour as a CSS variable in :root and redraw the charts on
+   window.addEventListener('op:theme', redraw).
+
+THE TASK
+[what the report must show and what decisions people make from it]
+
+THE DATA
+[paste the HEADER row — the column names — and 2-3 rows of made-up
+ numbers. Real data never goes to an external model: it needs the
+ shape, not the contents]
+
+THE DESIGN
+Compact and businesslike: KPI cards on top, charts and a table below,
+a monospace face for numbers, a responsive grid.

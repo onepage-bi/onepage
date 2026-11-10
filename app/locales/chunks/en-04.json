@@ -1,0 +1,469 @@
+{
+  "_meta": {
+    "chunk": "04",
+    "count": 150,
+    "lang": "en",
+    "source_files": [
+      "static/js/catalog.js",
+      "static/js/confidential.js",
+      "static/js/dashboards.js",
+      "static/js/data-quality.js",
+      "static/js/data-sources-edit.js",
+      "static/js/diploma.js",
+      "static/js/explore-chat.js"
+    ]
+  },
+  "strings": {
+    " for {p1}": {
+      "ref": "static/js/explore-chat.js:1204"
+    },
+    " · data as of {p1}": {
+      "ref": "static/js/dashboards.js:169"
+    },
+    "1d ago": {
+      "ref": "static/js/data-quality.js:83"
+    },
+    "<div class=\"act-row\"><span class=\"btn xs\">Open report</span></div>": {
+      "ref": "static/js/dashboards.js:373"
+    },
+    "<span class=\"btn xs primary\" data-pres-show=\"/presentations/{p1}/show?i=0\"><svg class=\"ico ico-12\"><use href=\"#ic-play\"/></svg> Show</span>": {
+      "ref": "static/js/dashboards.js:423"
+    },
+    "<span class=\"sep\">·</span><span class=\"mono dash-dates{p1}\">published {p2}": {
+      "ref": "static/js/dashboards.js:168"
+    },
+    "A: {p1}": {
+      "ref": "static/js/explore-chat.js:852"
+    },
+    "Accept selected": {
+      "ref": "static/js/data-quality.js:426"
+    },
+    "Accepted.": {
+      "ref": "static/js/data-quality.js:450"
+    },
+    "Acked": {
+      "ref": "static/js/data-quality.js:611"
+    },
+    "Acknowledge": {
+      "ref": "static/js/data-quality.js:609"
+    },
+    "Acknowledged.": {
+      "ref": "static/js/data-quality.js:654"
+    },
+    "Alias saved.": {
+      "ref": "static/js/data-quality.js:571"
+    },
+    "Allow access": {
+      "ref": "static/js/explore-chat.js:2322"
+    },
+    "Also read by": {
+      "ref": "static/js/data-quality.js:579"
+    },
+    "Answer": {
+      "ref": "static/js/explore-chat.js:1463"
+    },
+    "Answer is correct": {
+      "ref": "static/js/explore-chat.js:1955"
+    },
+    "Answer is incorrect": {
+      "ref": "static/js/explore-chat.js:1958"
+    },
+    "Ask about the figures in this report": {
+      "ref": "static/js/explore-chat.js:2111"
+    },
+    "Ask again": {
+      "ref": "static/js/explore-chat.js:2568"
+    },
+    "Ask differently": {
+      "ref": "static/js/explore-chat.js:1634"
+    },
+    "Build a presentation": {
+      "ref": "static/js/dashboards.js:443"
+    },
+    "Building the PDF…": {
+      "ref": "static/js/diploma.js:179"
+    },
+    "Calculating the previous period…": {
+      "ref": "static/js/explore-chat.js:2846"
+    },
+    "Cancel {ctx:2}": {
+      "ref": "static/js/explore-chat.js:2497"
+    },
+    "Cancelled — the answer was not fully calculated.": {
+      "ref": "static/js/explore-chat.js:2566"
+    },
+    "Cancelled.": {
+      "ref": "static/js/explore-chat.js:2573"
+    },
+    "Chart": {
+      "ref": "static/js/explore-chat.js:1860"
+    },
+    "Chat cleared.": {
+      "ref": "static/js/explore-chat.js:2804"
+    },
+    "Chat is empty.": {
+      "ref": "static/js/explore-chat.js:2797"
+    },
+    "Checker:": {
+      "ref": "static/js/explore-chat.js:2423"
+    },
+    "Clarify: \"{p1}\" is…": {
+      "ref": "static/js/explore-chat.js:2398"
+    },
+    "Clear filter": {
+      "ref": "static/js/data-quality.js:231"
+    },
+    "Compare": {
+      "ref": "static/js/explore-chat.js:2043"
+    },
+    "Conversations for this report": {
+      "ref": "static/js/explore-chat.js:2182"
+    },
+    "Could not answer the question: {p1}": {
+      "ref": "static/js/explore-chat.js:2750"
+    },
+    "Could not build the PDF — try “Print”": {
+      "ref": "static/js/diploma.js:202"
+    },
+    "Could not copy the conversation — copy the text manually.": {
+      "ref": "static/js/explore-chat.js:2242"
+    },
+    "Could not open it: error {p1}.": {
+      "ref": "static/js/confidential.js:50"
+    },
+    "Couldn't answer the question.": {
+      "ref": "static/js/explore-chat.js:2589"
+    },
+    "Couldn't clear the chat.": {
+      "ref": "static/js/explore-chat.js:2799"
+    },
+    "Couldn't pin ({p1}).": {
+      "ref": "static/js/explore-chat.js:2861"
+    },
+    "Couldn't pin.": {
+      "ref": "static/js/explore-chat.js:2863"
+    },
+    "Delete folder \"{name}\"? Its dashboards move to Unsorted.": {
+      "ref": "static/js/dashboards.js:686"
+    },
+    "Delete {p1} {p2} from the chat \"{p3}\"? This can't be undone.": {
+      "ref": "static/js/explore-chat.js:2798"
+    },
+    "Download new values template": {
+      "ref": "static/js/data-quality.js:503"
+    },
+    "Download template (first {p1})": {
+      "ref": "static/js/data-quality.js:502"
+    },
+    "Drop %": {
+      "ref": "static/js/data-quality.js:268"
+    },
+    "Examples": {
+      "ref": "static/js/data-quality.js:400"
+    },
+    "Expand →": {
+      "ref": "static/js/explore-chat.js:2022"
+    },
+    "Failed ({status}).": {
+      "ref": "static/js/data-quality.js:623"
+    },
+    "Failed to create folder": {
+      "ref": "static/js/dashboards.js:664"
+    },
+    "Favorites": {
+      "ref": "static/js/dashboards.js:204"
+    },
+    "File count": {
+      "ref": "static/js/data-quality.js:596"
+    },
+    "Files read on the last run": {
+      "ref": "static/js/data-sources-edit.js:261"
+    },
+    "First: \"{p1}\" — the button at the top of the chat.": {
+      "ref": "static/js/explore-chat.js:2818"
+    },
+    "First: \"{p1}\" — the button at the top of the chat{p2}.": {
+      "ref": "static/js/explore-chat.js:2664"
+    },
+    "Folder name:": {
+      "ref": "static/js/dashboards.js:656"
+    },
+    "Folder path": {
+      "ref": "static/js/data-sources-edit.js:254"
+    },
+    "Generator has no observed overrides row.": {
+      "ref": "static/js/data-quality.js:552"
+    },
+    "History": {
+      "ref": "static/js/data-quality.js:595"
+    },
+    "How it was calculated": {
+      "ref": "static/js/explore-chat.js:1941"
+    },
+    "In the index: {p1}. What should be calculated instead?": {
+      "ref": "static/js/explore-chat.js:1582"
+    },
+    "In the index: {p1}; the question's period isn't in it — remove the period filter?": {
+      "ref": "static/js/explore-chat.js:1596"
+    },
+    "It might be about a different metric:": {
+      "ref": "static/js/explore-chat.js:1800"
+    },
+    "Last run: {p1} · current version: v{p2}": {
+      "ref": "static/js/data-quality.js:515"
+    },
+    "Load index": {
+      "ref": "static/js/explore-chat.js:2331"
+    },
+    "Load index again": {
+      "ref": "static/js/explore-chat.js:2320"
+    },
+    "Loading current overrides…": {
+      "ref": "static/js/data-quality.js:542"
+    },
+    "Min files": {
+      "ref": "static/js/data-quality.js:267"
+    },
+    "Move failed": {
+      "ref": "static/js/dashboards.js:634"
+    },
+    "Move to": {
+      "ref": "static/js/dashboards.js:606"
+    },
+    "New conversation. The previous one is saved — it's in \"Conversation history\".": {
+      "ref": "static/js/explore-chat.js:2163"
+    },
+    "No answer.": {
+      "ref": "static/js/explore-chat.js:1214"
+    },
+    "No baseline generator on record — cannot accept from here.": {
+      "ref": "static/js/data-quality.js:423"
+    },
+    "No conversations yet.": {
+      "ref": "static/js/explore-chat.js:2188"
+    },
+    "No data for this slice: the report has no rows matching these filters. Remove the period filter or ask differently.": {
+      "ref": "static/js/explore-chat.js:1242"
+    },
+    "No findings for generator \"{name}\". ": {
+      "ref": "static/js/data-quality.js:230"
+    },
+    "No pending values to accept.": {
+      "ref": "static/js/data-quality.js:411"
+    },
+    "No period specified — nothing to compare.": {
+      "ref": "static/js/explore-chat.js:2842"
+    },
+    "No questions yet. Ask one below.": {
+      "ref": "static/js/explore-chat.js:2070"
+    },
+    "No rows were found for this slice — there was nothing to calculate.": {
+      "ref": "static/js/explore-chat.js:1578"
+    },
+    "Not in reference table": {
+      "ref": "static/js/data-quality.js:475"
+    },
+    "Note (optional)": {
+      "ref": "static/js/data-quality.js:630"
+    },
+    "Open reference table": {
+      "ref": "static/js/data-quality.js:493"
+    },
+    "Open report": {
+      "ref": "static/js/data-quality.js:525"
+    },
+    "Owner not assigned.": {
+      "ref": "static/js/data-quality.js:488"
+    },
+    "Owner: {p1} {ctx:2}": {
+      "ref": "static/js/data-quality.js:485"
+    },
+    "Path fingerprint (root id): {id}": {
+      "ref": "static/js/data-sources-edit.js:257"
+    },
+    "Reference table «{p1}» not yet created.": {
+      "ref": "static/js/data-quality.js:465"
+    },
+    "Remove from favourites": {
+      "ref": "static/js/dashboards.js:176"
+    },
+    "Rename failed": {
+      "ref": "static/js/dashboards.js:680"
+    },
+    "Rename folder:": {
+      "ref": "static/js/dashboards.js:672"
+    },
+    "Reported by the desktop app": {
+      "ref": "static/js/data-sources-edit.js:252"
+    },
+    "Rows: {rk}": {
+      "ref": "static/js/data-quality.js:602"
+    },
+    "Save failed ({status}).": {
+      "ref": "static/js/data-quality.js:291"
+    },
+    "Save thresholds": {
+      "ref": "static/js/data-quality.js:264"
+    },
+    "Stale after (days)": {
+      "ref": "static/js/data-quality.js:266"
+    },
+    "The list is capped; the source holds more files.": {
+      "ref": "static/js/data-sources-edit.js:264"
+    },
+    "The server did not answer. Try again.": {
+      "ref": "static/js/confidential.js:55"
+    },
+    "This is what the app says about its own machine; the platform does not verify it.": {
+      "ref": "static/js/data-sources-edit.js:269"
+    },
+    "Too many attempts. Wait a little and try again.": {
+      "ref": "static/js/confidential.js:46"
+    },
+    "Too many mismatches – list below is incomplete.": {
+      "ref": "static/js/data-quality.js:471"
+    },
+    "Treat «{col}» as alias of «{suggest}»": {
+      "ref": "static/js/data-quality.js:538"
+    },
+    "Unacknowledge": {
+      "ref": "static/js/data-quality.js:612"
+    },
+    "Unacknowledged.": {
+      "ref": "static/js/data-quality.js:625"
+    },
+    "Validated on sample: {p1} rows – not on entire file.": {
+      "ref": "static/js/data-quality.js:394"
+    },
+    "Why? ({p1})": {
+      "ref": "static/js/catalog.js:446"
+    },
+    "Will NOT match ({p1}):": {
+      "ref": "static/js/catalog.js:439"
+    },
+    "Will match ({p1}):": {
+      "ref": "static/js/catalog.js:437"
+    },
+    "Wrong password.": {
+      "ref": "static/js/confidential.js:48"
+    },
+    "changed elsewhere — reload": {
+      "ref": "static/js/data-quality.js:290"
+    },
+    "check fail": {
+      "ref": "static/js/data-quality.js:49"
+    },
+    "confirmed": {
+      "ref": "static/js/catalog.js:45"
+    },
+    "count": {
+      "ref": "static/js/data-quality.js:386"
+    },
+    "dead declaration": {
+      "ref": "static/js/data-quality.js:50"
+    },
+    "extra column": {
+      "ref": "static/js/data-quality.js:45"
+    },
+    "file count drop": {
+      "ref": "static/js/data-quality.js:48"
+    },
+    "forever": {
+      "ref": "static/js/data-quality.js:676"
+    },
+    "header not found": {
+      "ref": "static/js/data-quality.js:46"
+    },
+    "header shift": {
+      "ref": "static/js/data-quality.js:50"
+    },
+    "large report · {size}": {
+      "ref": "static/js/dashboards.js:361"
+    },
+    "missing column": {
+      "ref": "static/js/data-quality.js:45"
+    },
+    "missing pattern": {
+      "ref": "static/js/data-quality.js:44"
+    },
+    "missing sheet": {
+      "ref": "static/js/data-quality.js:44"
+    },
+    "new values": {
+      "ref": "static/js/data-quality.js:50"
+    },
+    "no history": {
+      "ref": "static/js/data-quality.js:344"
+    },
+    "outdated": {
+      "ref": "static/js/catalog.js:159"
+    },
+    "password-protected": {
+      "ref": "static/js/dashboards.js:359"
+    },
+    "rejected": {
+      "ref": "static/js/catalog.js:45"
+    },
+    "reports, images and PDFs in one show": {
+      "ref": "static/js/dashboards.js:444"
+    },
+    "required file gone": {
+      "ref": "static/js/data-quality.js:48"
+    },
+    "rerun needed": {
+      "ref": "static/js/data-quality.js:52"
+    },
+    "rows drop": {
+      "ref": "static/js/data-quality.js:49"
+    },
+    "rows zero": {
+      "ref": "static/js/data-quality.js:49"
+    },
+    "skipped": {
+      "ref": "static/js/data-quality.js:388"
+    },
+    "stale": {
+      "ref": "static/js/data-quality.js:47"
+    },
+    "unconfirmed": {
+      "ref": "static/js/catalog.js:45"
+    },
+    "unexpected file": {
+      "ref": "static/js/data-quality.js:46"
+    },
+    "unmapped values": {
+      "ref": "static/js/data-quality.js:52"
+    },
+    "until next run": {
+      "ref": "static/js/data-quality.js:668"
+    },
+    "{n} days": {
+      "ref": "static/js/data-quality.js:672"
+    },
+    "{n} shown": {
+      "ref": "static/js/dashboards.js:160"
+    },
+    "{n} slide|{n} slides": {
+      "plural": true,
+      "ref": "static/js/dashboards.js:421"
+    },
+    "{p1} days ago": {
+      "ref": "static/js/catalog.js:54"
+    },
+    "{p1} pages": {
+      "ref": "static/js/catalog.js:369"
+    },
+    "{p1}<div class=\"meta-row\"><span class=\"badge tile-chip\">presentation · {p2}</span></div><div class=\"name-row\">{p3}</div><div class=\"foot-row\"><span class=\"mono\">{p4}</span></div><div class=\"act-row\">{p5}<span class=\"btn xs\">Create</span></div>": {
+      "ref": "static/js/dashboards.js:423"
+    },
+    "— No folder —": {
+      "ref": "static/js/dashboards.js:603"
+    },
+    "… and {p1} more": {
+      "ref": "static/js/data-quality.js:480"
+    },
+    "★ Favorites": {
+      "ref": "static/js/dashboards.js:221"
+    }
+  }
+}

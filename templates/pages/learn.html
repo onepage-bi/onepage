@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}OnePage — {{ _('Practicum') }}{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/learn.css?v={{ asset_v }}" />
+{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'learn' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '/', false], [_('Practicum'), '/learn', false], [course_title, None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content">
+      {# State travels as an attribute (the #q-root canon): the payload goes
+         through attribute escaping, not through <script> concatenation. #}
+      <div id="lr-root" data-course="{{ course }}" data-state="{{ state_json }}">
+
+        {# ── Course cover: where am I and what's next ───────────────── #}
+        <header class="lr-hero">
+          <div class="lr-hero-text">
+            <div class="lr-eyebrow">{{ _('course') }}</div>
+            <h1 class="lr-title" id="lr-title">{{ _('Working on the platform') }}</h1>
+            <p class="lr-sub" id="lr-sub"></p>
+            <p class="lr-langnote" id="lr-lang" hidden></p>
+            <div class="lr-cta">
+              <button type="button" class="btn primary" id="lr-continue">
+                <span id="lr-continue-label">{{ _('Start') }}</span>
+              </button>
+              <span class="lr-cta-next" id="lr-continue-next"></span>
+            </div>
+          </div>
+          <div class="lr-ring-wrap">
+            <svg class="lr-ring" viewBox="0 0 120 120" aria-hidden="true">
+              <circle class="lr-ring-bg" cx="60" cy="60" r="52"/>
+              <circle class="lr-ring-fg" cx="60" cy="60" r="52" id="lr-ring-fg"/>
+            </svg>
+            <div class="lr-ring-text">
+              <b id="lr-xp">0</b>
+              <span>XP</span>
+              <i id="lr-level">—</i>
+            </div>
+            <div class="lr-ring-note" id="lr-next"></div>
+          </div>
+        </header>
+
+        {# ── Path ── #}
+        <div id="lr-path"></div>
+
+        {# ── Lesson ── #}
+        <section id="lr-lesson" class="lr-lesson" hidden>
+          <div class="lr-lesson-head">
+            <button type="button" class="btn xs ghost" id="lr-back">{{ _('Back to the path') }}</button>
+            <span class="lr-lesson-titles">
+              <span class="lr-lesson-title" id="lr-lesson-title"></span>
+              <span class="lr-lesson-summary" id="lr-lesson-summary"></span>
+            </span>
+            <span class="lr-lesson-meta" id="lr-lesson-meta"></span>
+          </div>
+          <div class="lr-progress"><i id="lr-progress-fill"></i></div>
+          <div class="lr-steps" id="lr-steps"></div>
+          <div class="lr-lesson-foot">
+            <span class="lr-hint" id="lr-hint"></span>
+            <button type="button" class="btn ghost" id="lr-prev-step" hidden>{{ _('Back') }}</button>
+            <button type="button" class="btn primary" id="lr-next-step">{{ _('Next') }}</button>
+          </div>
+        </section>
+
+
+        {# Case roles (manager, planner, territory manager, analyst) speak
+           in lines from the course content. There are no drawn
+           portraits yet — the card shows a circle with an initial, see
+           castNode in learn.js. When portraits appear, the symbols go
+           here, and only one function has to change. #}
+
+      </div>
+    </div>
+  </main>
+</div>
+{% include "components/palette.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/palette.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/hotkeys.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/learn.js?v={{ asset_v }}" defer></script>
+{% endblock %}

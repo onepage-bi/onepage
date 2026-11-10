@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lost sales by store</title>
+<!-- The only external reference in the whole file, and it goes nowhere:
+     SheetJS lives on the same server as the report itself, needs no
+     sign-in, and the work network has no internet and needs none. Thanks
+     to it the export does not have to be re-saved as CSV. A file opened
+     with a double click from the desktop will not find this address; then
+     the report honestly asks for CSV instead of staying silent. -->
+<script src="/static/js/vendor/xlsx.full.min.js"></script>
+<style>
+  :root { color-scheme: light dark;
+    --ink:#14181f; --dim:#5b6472; --line:#e3e6eb; --bg:#fff; --soft:#f5f7fa;
+    --accent:#2f6bff; --warn:#b4530f; }
+  @media (prefers-color-scheme: dark) { :root {
+    --ink:#e8ecf2; --dim:#97a1b0; --line:#2a3038; --bg:#12151a; --soft:#1a1f26; } }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:28px 20px 40px; background:var(--bg); color:var(--ink);
+    font:15px/1.55 -apple-system,"Segoe UI",Roboto,Arial,sans-serif; }
+  .wrap { max-width:900px; margin:0 auto; }
+  h1 { font-size:19px; margin:0 0 2px; }
+  .sub { color:var(--dim); font-size:13px; margin:0 0 22px; }
+  .kpi { display:flex; flex-wrap:wrap; gap:26px; align-items:flex-end;
+    padding:20px 22px; border:1px solid var(--line); border-radius:12px;
+    background:var(--soft); margin-bottom:10px; }
+  .big { font-size:44px; font-weight:700; line-height:1; letter-spacing:-.02em; }
+  .unit { font-size:13px; color:var(--dim); margin-top:6px; }
+  .cmp { font-size:15px; } .cmp b { font-size:22px; }
+  .lead { margin:14px 0 22px; max-width:62ch; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th,td { padding:8px 10px; border-bottom:1px solid var(--line); text-align:left; }
+  th { font-size:12px; text-transform:uppercase; letter-spacing:.04em;
+    color:var(--dim); font-weight:600; }
+  .num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .pt { font-weight:600; }
+  .bar { width:30%; }
+  .bar span { display:block; height:9px; border-radius:5px; background:var(--accent); }
+  .note { margin-top:22px; padding:12px 14px; border-left:3px solid var(--warn);
+    background:var(--soft); font-size:14px; }
+  footer { margin-top:26px; padding-top:12px; border-top:1px solid var(--line);
+    color:var(--dim); font-size:12px;
+    font-family:ui-monospace,Menlo,Consolas,monospace; }
+  #drop { display:none; margin:40px auto; max-width:560px; padding:42px 24px;
+    border:2px dashed var(--line); border-radius:14px; text-align:center;
+    color:var(--dim); }
+  #drop.on { border-color:var(--accent); color:var(--ink); }
+  #drop b { display:block; color:var(--ink); font-size:16px; margin-bottom:6px; }
+  #report[hidden] { display:none; }
+</style></head><body><div class="wrap">
+
+<div id="drop">
+  <b>Drop the export here</b>
+  delta-sales.xlsx or delta-sales.csv, or <label
+  style="text-decoration:underline;cursor:pointer">choose a file
+  <input id="pick" type="file" accept=".xlsx,.xls,.csv,.txt" hidden></label>
+</div>
+
+<div id="report" hidden>
+  <h1>Lost sales by store</h1>
+  <p class="sub" id="sub"></p>
+
+  <div class="kpi">
+    <div><div class="big" id="k-lost">—</div>
+         <div class="unit">bottles of sales lost over the period</div></div>
+    <div class="cmp"><b id="k-share">—</b><br>
+         <span class="unit" id="k-sold"></span></div>
+    <div class="cmp"><b id="k-points">—</b><br>
+         <span class="unit">stores that ran out before the delivery</span></div>
+  </div>
+
+  <p class="lead">A lower-bound estimate: out-of-stock days multiplied by the store's
+  usual daily sales velocity. The promo week is excluded from the velocity, the doubled
+  week is removed before any calculation. The data does not know how many people left
+  empty-handed, so the losses are at least the figure shown, not exactly it.</p>
+
+  <table>
+    <thead><tr><th>Store</th><th class="num">Lost</th><th class="num">Sold</th>
+    <th class="num">Sales rank</th><th>Share of the worst</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <p class="lead" id="verdict"></p>
+
+  <div class="note" id="method"></div>
+  <footer id="foot"></footer>
+</div>
+
+</div>
+<script>
+(function () {
+  'use strict';
+  var PACKS = {"Northfield": 12, "Lakeside": 12};            // city -> bottles per unit
+  var PROMO_WEEK = 7, WEEK0 = Date.parse('2026-03-03');
+  var drop = document.getElementById('drop'), rep = document.getElementById('report');
+
+  function txt(id, v) { document.getElementById(id).textContent = v; }
+  function fmt(n) { return Math.round(n).toLocaleString('en-GB').replace(/,/g, ' '); }
+
+  // ── parsing ────────────────────────────────────────────────────────────
+  // The delimiter is not hard-coded: exports arrive with ";" (European-locale
+  // Excel) and with ",". We take whichever the header has more of.
+  function sniff(head) {
+    return (head.split(';').length >= head.split(',').length) ? ';' : ',';
+  }
+
+  // "1 234,56" from a European-locale Excel is the most common reason for a zero
+  // instead of a number: a space as thousands separator (non-breaking too) and a
+  // comma as the decimal point.
+  function num(v) {
+    var s = String(v).replace(/[\s\u00a0\u202f]/g, '').replace(',', '.');
+    var n = Number(s);
+    return isFinite(n) ? n : NaN;
+  }
+
+  function parse(text) {
+    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+    var lines = text.split(/\r?\n/), SEP = sniff(lines[0]);
+    var head = lines[0].split(SEP), col = {};
+    head.forEach(function (h, i) { col[h.trim()] = i; });
+    var need = ['date', 'city', 'store', 'item', 'sales', 'stock'];
+    for (var i = 0; i < need.length; i++)
+      if (col[need[i]] === undefined) return { err: 'the file has no column "' + need[i] + '"' };
+    var rows = [], bad = 0, seen = Object.create(null), dups = 0, empty = 0;
+    for (var n = 1; n < lines.length; n++) {
+      var s = lines[n];
+      if (!s) continue;
+      var f = s.split(SEP);
+      if (f.length < head.length) { bad++; continue; }
+      // A date comes as DD.MM.YYYY or as YYYY-MM-DD: we understand both.
+      var d = f[col['date']].trim(), iso = null;
+      var m = d.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+      if (m) iso = m[3] + '-' + m[2] + '-' + m[1];
+      else if (/^\d{4}-\d{2}-\d{2}$/.test(d)) iso = d;
+      // Excel stores a date as the number of days since 30.12.1899, and that is
+      // how it arrives from a workbook: 46084 instead of 03.03.2026. Exactly the
+      // trap the lesson warns about, so the report recognises it instead of
+      // rejecting the row.
+      else if (/^\d{5}$/.test(d))
+        iso = new Date(Date.UTC(1899, 11, 30) + Number(d) * 864e5)
+                .toISOString().slice(0, 10);
+      if (!iso) { bad++; continue; }
+      var key = d + '|' + f[col['store']] + '|' + f[col['item']];
+      if (seen[key]) { dups++; continue; }
+      seen[key] = 1;
+      var sold = f[col['sales']].trim(), rest = f[col['stock']].trim();
+      if (sold === '' || rest === '') { empty++; continue; }
+      var v = num(sold), r = num(rest);
+      if (!isFinite(v) || !isFinite(r)) { bad++; continue; }
+      var k = PACKS[f[col['city']].trim()] || 1;
+      rows.push({ t: Date.parse(iso),
+                  pt: f[col['store']].trim(), pos: f[col['item']].trim(),
+                  sold: v * k, rest: r * k });
+    }
+    return { rows: rows, bad: bad, dups: dups, empty: empty, total: lines.length - 1 };
+  }
+
+  // ── calculation ────────────────────────────────────────────────────────────
+  function analyse(rows) {
+    var sold = {}, outDays = {}, speed = {};
+    rows.forEach(function (r) {
+      sold[r.pt] = (sold[r.pt] || 0) + r.sold;
+      var key = r.pt + '|' + r.pos;
+      var week = Math.floor((r.t - WEEK0) / 604800000) + 1;
+      if (r.sold === 0 && r.rest === 0) outDays[key] = (outDays[key] || 0) + 1;
+      else if (r.rest > 0 && week !== PROMO_WEEK) (speed[key] = speed[key] || []).push(r.sold);
+    });
+    var lost = {};
+    Object.keys(outDays).forEach(function (key) {
+      var v = speed[key];
+      if (!v || !v.length) return;
+      var mean = v.reduce(function (a, b) { return a + b; }, 0) / v.length;
+      var pt = key.split('|')[0];
+      lost[pt] = (lost[pt] || 0) + Math.round(mean * outDays[key]);
+    });
+    var rank = Object.keys(sold).sort(function (a, b) { return sold[b] - sold[a]; });
+    return { sold: sold, lost: lost, rank: rank };
+  }
+
+  function render(res, meta) {
+    var a = analyse(res.rows);
+    var totalSold = 0, totalLost = 0;
+    Object.keys(a.sold).forEach(function (p) { totalSold += a.sold[p]; });
+    Object.keys(a.lost).forEach(function (p) { totalLost += a.lost[p]; });
+    // ALL shortage stores, not the top twelve. The lesson asks the learner to
+    // look at where these stores rank by sales and decide what happens if
+    // volume is taken away from the worst sellers. A truncated list cannot
+    // answer that: it is precisely the bottom rows that settle it.
+    var top = Object.keys(a.lost).sort(function (x, y) { return a.lost[y] - a.lost[x]; });
+    var worst = top.length ? a.lost[top[0]] : 1;
+
+    txt('k-lost', fmt(totalLost));
+    txt('k-share', (100 * totalLost / (totalSold || 1)).toFixed(1) + ' %');
+    txt('k-sold', 'of actual sales: ' + fmt(totalSold) + ' btl');
+    txt('k-points', String(Object.keys(a.lost).length));
+    txt('sub', 'File: ' + meta.name + ' · stores: ' + Object.keys(a.sold).length);
+
+    var tb = document.getElementById('rows');
+    tb.textContent = '';
+    top.forEach(function (pt) {
+      var tr = document.createElement('tr');
+      function cell(v, cls) {
+        var td = document.createElement('td');
+        if (cls) td.className = cls;
+        td.textContent = v;
+        tr.appendChild(td);
+        return td;
+      }
+      cell(pt, 'pt'); cell(fmt(a.lost[pt]), 'num'); cell(fmt(a.sold[pt]), 'num');
+      cell(String(a.rank.indexOf(pt) + 1), 'num');
+      var bar = cell('', 'bar'), sp = document.createElement('span');
+      sp.style.width = Math.max(3, Math.round(100 * a.lost[pt] / worst)) + '%';
+      bar.appendChild(sp);
+      tb.appendChild(tr);
+    });
+
+    // The conclusion the table exists for: how many shortage stores are among
+    // the twenty worst by sales. Counting it by eye over fourteen rows is extra
+    // work, and without this number the talk about "taking volume from the
+    // laggards" stays a matter of taste.
+    var bottom = a.rank.slice(-20);
+    var inBottom = top.filter(function (pt) { return bottom.indexOf(pt) >= 0; }).length;
+    txt('verdict', 'Shortage stores: ' + top.length + ' of ' + a.rank.length +
+        '. Among the twenty worst by sales: ' + inBottom + ' of ' + top.length +
+        '. So the decision to "take volume away from the weakest sellers" would hit ' +
+        inBottom + ' stores that are already short of goods.');
+
+    var cities = Object.keys(PACKS).join(' and ');
+    txt('method', 'Units are converted to bottles: ' + cities + ' keep their books in packs ' +
+        'of ' + PACKS[Object.keys(PACKS)[0]] + ' bottles. This was established by reconciling ' +
+        'with the warehouse shipments; the export itself does not say so. Look at the ' +
+        '"sales rank" column: the stores with the largest shortage sit in the middle and at ' +
+        'the end of the list. By sales they are easy to mistake for weak ones and cut their ' +
+        'volume, and that is exactly what must not be done.');
+    txt('foot', 'rows read: ' + fmt(res.total) + ' · not parsed: ' + fmt(res.bad) +
+        ' · duplicates dropped: ' + fmt(res.dups) + ' · empty (store closed): ' +
+        fmt(res.empty));
+    drop.style.display = 'none';
+    rep.hidden = false;
+  }
+
+  // An Excel workbook is not text, and pretending it is does not work: decoding
+  // a zip as UTF-8 gives garbage and zero rows. The sheet is turned into the
+  // same ";"-separated lines, and then the common parser takes over.
+  function isBook(name) { return /\.xls[xmb]?$/i.test(name || ''); }
+  function fromBook(buf) {
+    var wb = XLSX.read(new Uint8Array(buf), { type: 'array' });
+    var sheet = wb.Sheets[wb.SheetNames[0]];
+    return XLSX.utils.sheet_to_csv(sheet, { FS: ';' });
+  }
+
+  function handle(text, name) {
+    var res = parse(text);
+    if (res.err) {
+      drop.style.display = 'block';
+      drop.firstElementChild.textContent = res.err;
+      return;
+    }
+    render(res, { name: name });
+  }
+
+  // ── the file comes from the platform ────────────────────────────────────────
+  window.addEventListener('message', function (e) {
+    var d = e.data;
+    if (!d || d.type !== 'op_file' || d.slot !== 0) return;
+    var buf = d.data instanceof ArrayBuffer ? d.data : (d.data || {}).buffer || d.data;
+    var name = d.name || 'file';
+    if (isBook(name)) {
+      if (!window.XLSX) return fail('this report reads Excel only on the platform;'
+        + ' here, save the sheet as CSV');
+      try { return handle(fromBook(buf), name); }
+      catch (err) { return fail('could not read the Excel workbook: ' + err.message); }
+    }
+    handle(new TextDecoder('utf-8').decode(new Uint8Array(buf)), name);
+  });
+  try { window.parent.postMessage({ type: 'op_ready', slots: [0] }, '*'); } catch (err) {}
+
+  // ── or the person drops it in ────────────────────────────────────────
+  // Two seconds, not half a second: the platform first fetches the slot file
+  // and only then hands it to the report; on a multi-megabyte file half a
+  // second is not enough, and the drop zone flashes for nothing.
+  setTimeout(function () { if (rep.hidden) drop.style.display = 'block'; }, 2000);
+  function fail(msg) {
+    drop.style.display = 'block';
+    drop.firstElementChild.textContent = msg;
+  }
+
+  function read(file) {
+    var fr = new FileReader();
+    if (isBook(file.name)) {
+      if (!window.XLSX) return fail('this report reads Excel only on the platform;'
+        + ' here, save the sheet as CSV');
+      fr.onload = function () {
+        try { handle(fromBook(fr.result), file.name); }
+        catch (err) { fail('could not read the Excel workbook: ' + err.message); }
+      };
+      return fr.readAsArrayBuffer(file);
+    }
+    fr.onload = function () { handle(String(fr.result), file.name); };
+    fr.readAsText(file, 'utf-8');
+  }
+  document.getElementById('pick').addEventListener('change', function (e) {
+    if (e.target.files[0]) read(e.target.files[0]);
+  });
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.className = 'on'; });
+  });
+  drop.addEventListener('dragleave', function () { drop.className = ''; });
+  drop.addEventListener('drop', function (e) {
+    e.preventDefault(); drop.className = '';
+    if (e.dataTransfer.files[0]) read(e.dataTransfer.files[0]);
+  });
+})();
+</script>
+</body></html>

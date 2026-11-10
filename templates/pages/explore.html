@@ -1,0 +1,994 @@
+{% extends "base.html" %}
+{% block title %}{{ _('OnePage — Explore') }}{% endblock %}
+
+{% block body %}
+{# `embed` (from `/explore?embed=1`) is the viewer's "Chat" pane: the SAME page
+   in a same-origin iframe beside an open report. The only difference is that
+   the app chrome — sidebar, topbar, page head — is not rendered: the frame is
+   440 px wide and the surrounding page already has all of it. Nothing below is
+   renamed or moved; every `#ex-*` contract is untouched. #}
+<div class="shell{% if embed is defined and embed %} ex-embed{% endif %}">
+  {% if not embed %}
+  {% set active = 'explore' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '#', false], [_('Explore'), None, true]] %}
+  {% include "components/topbar.html" %}
+  {% endif %}
+
+  <main class="main">
+    <div class="content fluid">
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow">{{ _('workspace · Russian questions to reports — data never leaves your computer') }}</div>
+          <h1 class="page-title">{{ _('Explore') }}</h1>
+        </div>
+        <div class="page-actions">
+          <span id="ex-status" class="ex-status mono">{{ _('Report index not loaded') }}</span>
+          <button type="button" class="btn sm" id="ex-chat-btn">{{ _('Chat ·') }} <span id="ex-chat-count">0</span></button>
+        </div>
+      </div>
+
+      <div id="ex-root"
+           data-catalog="{{ catalog_json }}"
+           data-reports="{{ reports_json }}"
+           data-asset-v="{{ asset_v }}"
+           data-pyodide-base="{{ settings.resolved_pyodide_base }}"
+           data-engine="{{ settings.explore_engine }}"
+           data-lake-exec="{{ '1' if settings.lake_exec else '0' }}"
+           data-report="{{ report_param if report_param is defined else '' }}"
+           data-mode="{{ mode_param if mode_param is defined else '' }}"
+           data-embed="{{ '1' if (embed is defined and embed) else '' }}"
+           data-static-base="/static/"></div>
+
+      {# ── Screen A, block 1: the reports this user may run + the folder ──
+         The connect/index/check controls are the right-hand "Folder" cell of
+         the same strip — same ids, same handlers, one row of context. #}
+      <div class="ex-step"><span class="ex-step-n">{{ _('1 · report') }}</span><span class="ex-step-hint">{{ _('Select report — its metrics and folders become context for questions') }}</span></div>
+      <section class="ex-reports" id="ex-reports">
+        <div class="ex-report-strip" id="ex-report-strip"></div>
+
+        <details class="ex-panel ex-connect" id="ex-sources">
+          <summary class="ex-cell-head">{{ _('Set up sources') }}</summary>
+          <button type="button" class="btn sm primary" id="ex-load-index-btn" hidden>{{ _('Load report index') }}</button>
+          <span class="mono ex-sources-hint" id="ex-sources-hint">{{ _('Report index builds when report is calculated across all folders and stored on server.') }}</span>
+          {# Folder tools are a service mode (`?folder=1`, or a catalogue with
+             no reports): the report's index covers all its folders, so an
+             operator never picks one here. Ids stay — the harness drives them. #}
+          <div id="ex-folder-tools" class="ex-folder-tools" hidden>
+            <button type="button" class="btn sm" id="ex-connect-btn">{{ _('Folder with files…') }}</button>
+            <button type="button" class="btn sm" id="ex-reconnect-btn" hidden>{{ _('Reconnect') }}</button>
+            <button type="button" class="btn sm" id="ex-index-btn" disabled>{{ _('Refresh index from folder') }}</button>
+            <button type="button" class="btn sm" id="ex-check-btn" disabled>{{ _('Check folder') }}</button>
+          </div>
+          <div class="ex-progress" id="ex-progress" hidden>
+            <div class="ex-progress-bar"><div class="ex-progress-fill" id="ex-progress-fill"></div></div>
+            <span class="mono ex-progress-msg" id="ex-progress-msg"></span>
+          </div>
+          <div class="ex-summary mono" id="ex-summary"></div>
+        </details>
+      </section>
+
+      {# ── Screen A, block 2: the question is the hero ─────────────────── #}
+      <div class="ex-step"><span class="ex-step-n">{{ _('2 · question') }}</span><span class="ex-step-hint" id="ex-ask-hint">{{ _('in Russian, calculated here — from folder, without data server') }}</span></div>
+      <section class="ex-ask" id="ex-ask">
+        <label class="ex-ask-label" for="ex-nl" hidden>{{ _('Ask in Russian') }}</label>
+        <div class="ex-ask-card ex-ask-row">
+          <svg class="ico ex-ask-ico" aria-hidden="true"><use href="#ic-search"/></svg>
+          <textarea id="ex-nl" class="ex-nl-in" rows="1"
+                    placeholder="{{ _('For example: what\'s the SL by networks in July?') }}"></textarea>
+          <button type="button" class="btn md primary ex-ask-btn" id="ex-nl-btn">{{ _('Ask') }}</button>
+        </div>
+        {# BYOK (OP_LLM_BROWSER without a server-held key): the key is
+           typed here, kept in this browser's localStorage only, and sent
+           straight to the provider — never to OnePage. explore.js
+           unhides this row only when llm-config says so. #}
+        <div class="ex-ask-row" id="ex-llm-key-row" hidden>
+          <input type="password" id="ex-llm-key" class="input ex-nl-in" autocomplete="off"
+                 placeholder="{{ _('DeepSeek key (stored only in this browser)') }}">
+        </div>
+        <div class="mono ex-nl-status" id="ex-nl-status"></div>
+        <div class="ex-clarify" id="ex-clarify" hidden></div>
+        {# Phase 4.5: "why is the number in the report 25.5?" — the chips that
+           disambiguate several matching metrics, or offer the metrics when
+           the number was not found. Filled and cleared by explore.js only. #}
+        <div class="ex-chips" id="ex-value-chips" hidden></div>
+
+        {# Metrics (ADR-13): the report's own KPIs as chips, no model involved #}
+        <div class="ex-metrics-row">
+          <h3 class="ex-metrics-head" id="ex-metrics-head" hidden>{{ _('report metrics') }}</h3>
+          <div class="ex-chips" id="ex-metric-list"></div>
+        </div>
+        <div class="ex-recipe-form" id="ex-metric-form"></div>
+      </section>
+
+      {# ── Screen A, block 3: the answer + "how it's calculated" ─────────────── #}
+      <div class="ex-step"><span class="ex-step-n">{{ _('3 · answer') }}</span></div>
+      <section class="ex-answer" id="ex-answer">
+        <div class="ex-answer-main">
+          {# Phase 3: screen A showing one stored thread record (#q=N) — the
+             way back to the thread and its neighbours. explore-chat.js
+             unhides this only while a record is on screen. #}
+          <div class="ex-chat-nav" id="ex-chat-nav" hidden>
+            <button type="button" class="btn xs ghost" id="ex-chat-back">{{ _('← Back to chat') }}</button>
+            <button type="button" class="btn xs ghost" id="ex-chat-prev">←</button>
+            <button type="button" class="btn xs ghost" id="ex-chat-next">→</button>
+            <button type="button" class="btn xs" id="ex-chat-recalc" hidden>{{ _('Recalculate') }}</button>
+          </div>
+          <div class="ex-answer-title" id="ex-answer-title"></div>
+          <div class="ex-result-head">
+            <span class="ex-badge" id="ex-result-badge" hidden></span>
+            <span class="mono ex-result-ms" id="ex-result-ms"></span>
+          </div>
+          <div class="ex-result-wrap">
+            <table class="tbl ex-result-table" id="ex-result-table">
+              <thead><tr id="ex-result-thead"></tr></thead>
+              <tbody id="ex-result-tbody"></tbody>
+            </table>
+          </div>
+          <div id="ex-result-empty" class="dock-hint" hidden>{{ _('Nothing found. Change query and execute again.') }}</div>
+        </div>
+
+        <aside class="ex-how" id="ex-how" hidden>
+          <div class="ex-cell-head">{{ _('How it\'s calculated') }}</div>
+          <div class="ex-how-def" id="ex-how-def" hidden></div>
+          <div class="mono ex-how-calc" id="ex-how-calc" hidden></div>
+          <div class="mono ex-how-sources" id="ex-how-sources" hidden></div>
+        </aside>
+      </section>
+
+      {# ── Screen A, block 4: everything secondary, collapsed ──────────── #}
+      <div class="ex-rows" id="ex-rows">
+
+        <details class="ex-row" id="ex-row-sql">
+          <summary>{{ _('SQL of this answer') }}</summary>
+          <div class="ex-sql-block">
+            <label class="ex-sql-label" for="ex-sql">SQL</label>
+            <textarea id="ex-sql" class="ex-sql-editor mono" spellcheck="false" rows="6"></textarea>
+            <div class="ex-sql-actions">
+              <button type="button" class="btn sm primary" id="ex-run-btn">{{ _('Execute') }} <span class="kbd-hint">⌘⏎</span></button>
+              <button type="button" class="btn sm ghost" id="ex-abort-btn" hidden title="{{ _('Stop engine; index will need rebuild') }}">{{ _('Cancel {ctx:3}') }}</button>
+              <input id="ex-save-title" class="input sm ex-save-title" type="text" maxlength="120"
+                     placeholder="{{ _('Question name') }}" aria-label="{{ _('Question name') }}" />
+              <button type="button" class="btn sm" id="ex-save-btn">{{ _('Save question') }}</button>
+              <button type="button" class="btn sm" id="ex-export-btn">{{ _('To Excel') }}</button>
+              <button type="button" class="btn sm ghost" id="ex-pin-btn" disabled
+                      title="{{ _('Pinning as tile coming in next phase') }}">{{ _('Pin as tile') }}</button>
+            </div>
+            <div class="ex-sql-status mono" id="ex-sql-status"></div>
+          </div>
+        </details>
+
+        <details class="ex-row" id="ex-row-builder">
+          <summary>{{ _('Query builder') }}</summary>
+          <div class="ex-row-body ex-builder-layout">
+            <div class="ex-builder" id="ex-builder">
+              <div class="ex-builder-row">
+                <label>{{ _('Table') }}</label>
+                <select id="ex-b-table" class="input sm"><option value="">{{ _('— select —') }}</option></select>
+              </div>
+              <div class="ex-builder-row">
+                <label>{{ _('Columns') }}</label>
+                <div class="ex-b-cols" id="ex-b-cols"></div>
+              </div>
+              <div class="ex-builder-row">
+                <label>{{ _('Filters') }}</label>
+                <div class="ex-b-filters" id="ex-b-filters"></div>
+                <button type="button" class="btn xs ghost" id="ex-b-filter-add">{{ _('+ filter') }}</button>
+              </div>
+              <div class="ex-builder-row">
+                <label>{{ _('Grouping') }}</label>
+                <select id="ex-b-groupby" class="input sm" multiple size="1"></select>
+              </div>
+              <div class="ex-builder-row">
+                <label>{{ _('Metric') }}</label>
+                <select id="ex-b-agg-fn" class="input sm">
+                  <option value="">—</option>
+                  <option value="COUNT">COUNT</option>
+                  <option value="SUM">SUM</option>
+                  <option value="AVG">AVG</option>
+                  <option value="MIN">MIN</option>
+                  <option value="MAX">MAX</option>
+                </select>
+                <select id="ex-b-agg-col" class="input sm"><option value="">*</option></select>
+              </div>
+              <div class="ex-builder-row">
+                <label>{{ _('Sorting') }}</label>
+                <select id="ex-b-order-col" class="input sm"><option value="">—</option></select>
+                <select id="ex-b-order-dir" class="input sm">
+                  <option value="ASC">{{ _('ascending') }}</option>
+                  <option value="DESC">{{ _('descending') }}</option>
+                </select>
+              </div>
+              <div class="ex-builder-row">
+                <label>{{ _('Limit') }}</label>
+                <input id="ex-b-limit" class="input sm" type="number" min="1" max="1000" value="1000" />
+              </div>
+            </div>
+
+            <aside class="ex-recipes">
+              <h3>{{ _('Recipes') }}</h3>
+              <div class="ex-recipe-list" id="ex-recipe-list">
+                <button type="button" class="ex-recipe-btn" data-recipe="changed">{{ _('What changed') }}</button>
+                <button type="button" class="ex-recipe-btn" data-recipe="asof">{{ _('As of date') }}</button>
+                <button type="button" class="ex-recipe-btn" data-recipe="reconcile">{{ _('Reconciliation') }}</button>
+                <button type="button" class="ex-recipe-btn" data-recipe="dupgaps">{{ _('Duplicates/missing key') }}</button>
+                <button type="button" class="ex-recipe-btn" data-recipe="trend">{{ _('Partition dynamics') }}</button>
+              </div>
+              <div class="ex-recipe-form" id="ex-recipe-form"></div>
+
+              <h3 class="ex-saved-head">{{ _('Saved questions') }}</h3>
+              <div class="ex-saved-list" id="ex-saved-list"></div>
+              <div class="ex-saved-empty mono" id="ex-saved-empty">{{ _('Nothing saved yet') }}</div>
+            </aside>
+          </div>
+        </details>
+
+        <details class="ex-row" id="ex-row-check">
+          <summary>{{ _('Check folder') }}</summary>
+          <div class="ex-row-body">
+            {# "Check folder" (H2): deterministic checks, no model #}
+            <div class="ex-check-panel mono" id="ex-check-panel" hidden>
+              <div class="ex-check-head">
+                <span id="ex-check-title"></span>
+                <button type="button" class="btn xs ghost" id="ex-check-hide">{{ _('hide') }}</button>
+              </div>
+              <ul class="ex-check-list" id="ex-check-list"></ul>
+            </div>
+          </div>
+        </details>
+
+      </div>
+
+      {# ── Screen B, "Chat": a thread per report ─────────────────────────
+         Hidden by default; #ex-chat-btn swaps it with screen A. Everything
+         inside is built by static/js/explore-chat.js out of IndexedDB —
+         the rows of an answer never leave this browser. #}
+      <section class="ex-chat" id="ex-chat" hidden>
+        <aside class="ex-chat-side">
+          <div class="ex-cell-head">{{ _('Reports') }}</div>
+          <div class="ex-chat-threads" id="ex-chat-threads"></div>
+        </aside>
+        <div class="ex-chat-main">
+          {# ── The pane's header (P3a) ────────────────────────────────
+             Report name, then ONE honest pill about what the answers stand
+             on: the coverage of the index already in this browser
+             ("week 23 · 14 294 rows"). It costs no request — the numbers
+             come from `state.indexStats`/`state.workerTables`, which the
+             last index left behind. With nothing indexed the folder pill
+             beside it says which step is missing and offers the button. #}
+          <header class="ex-chat-head">
+            <span class="ex-chat-title" id="ex-chat-title">{{ _('Report conversation') }}</span>
+            <span class="ex-chat-cov" id="ex-chat-cov" hidden
+                  title="{{ _('What is in this report\'s index') }}">
+              <i class="ex-chat-cov-dot"></i><span class="mono" id="ex-chat-cov-text"></span>
+            </span>
+            <span class="ex-chat-folder mono" id="ex-chat-folder">{{ _('folder not connected') }}</span>
+            <button type="button" class="btn xs" id="ex-chat-folder-btn">{{ _('Load report index') }}</button>
+            <span class="ex-chat-today mono" id="ex-chat-today"></span>
+            <span class="ex-chat-sp"></span>
+            <div class="ex-chat-menu-wrap">
+              <button type="button" class="ex-chat-ib" id="ex-chat-more" aria-haspopup="menu"
+                      aria-expanded="false" title="{{ _('More') }}" aria-label="{{ _('More') }}">
+                <svg class="ico ico-12"><use href="#ic-kebab"/></svg>
+              </button>
+              <div class="ex-chat-menu" id="ex-chat-menu" role="menu" hidden>
+                <button type="button" role="menuitem" data-m="new">
+                  <span>{{ _('New conversation') }}</span>
+                  <span class="k">{{ _('next question without the context of the previous answer') }}</span>
+                </button>
+                <button type="button" role="menuitem" data-m="hist">
+                  <span>{{ _('Conversation history') }}</span>
+                  <span class="k">{{ _('conversations for this report — date and first question') }}</span>
+                </button>
+                <button type="button" role="menuitem" data-m="copy">
+                  <span>{{ _('Copy conversation') }}</span>
+                  <span class="k">{{ _('questions and figures — as text') }}</span>
+                </button>
+                <div class="ex-chat-menu-sep"></div>
+                <button type="button" role="menuitem" data-m="clear" class="danger">
+                  <span>{{ _('Clear chat') }}</span>
+                  <span class="k">{{ _('delete everything from this browser') }}</span>
+                </button>
+              </div>
+            </div>
+            <button type="button" class="ex-chat-ib" id="ex-chat-wide"
+                    title="{{ _('Wider / narrower') }}" aria-label="{{ _('Wider / narrower') }}" aria-pressed="false">
+              <svg class="ico ico-12"><use href="#ic-expand"/></svg>
+            </button>
+            {# Escape already closes the pane from inside the frame; the owner
+               asked for a button that does the same, and says so. #}
+            <button type="button" class="ex-chat-x" id="ex-chat-close" title="{{ _('Close (Esc)') }}">
+              <svg class="ico ico-12"><use href="#ic-x"/></svg><span>{{ _('Close') }}</span>
+            </button>
+            <button type="button" class="btn icon xs ghost" id="ex-chat-clear" title="{{ _('Clear chat — delete all questions and answers for this report from this browser') }}">
+              <svg class="ico ico-12"><use href="#ic-trash"/></svg>
+            </button>
+          </header>
+          <div class="ex-chat-thread" id="ex-chat-thread"
+                 data-empty="{{ _('Ask about report figures — answer calculated here, from folder, without model.') }}"></div>
+          <div class="ex-chat-compose">
+            <div class="ex-chips ex-chat-chips" id="ex-chat-chips"></div>
+            <div class="ex-chat-box" id="ex-chat-box">
+              <textarea id="ex-chat-input" class="ex-chat-in" rows="1"
+                        aria-label="{{ _('Report question') }}"
+                        placeholder="{{ _('Ask about report figures…') }}"></textarea>
+              <button type="button" class="ex-chat-send" id="ex-chat-send" title="{{ _('Ask (Enter)') }}" aria-label="{{ _('Ask') }}">
+                <svg class="ico ico-12"><use href="#ic-send"/></svg>
+              </button>
+            </div>
+            <div class="mono ex-chat-status" id="ex-chat-status"></div>
+            <div class="ex-chat-foot mono">
+              <span>{{ _('Enter — ask · Shift+Enter — new line') }}</span>
+              <span>{{ _('your browser calculates this · the model is used only if the question didn\'t match a metric') }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<style>
+  [hidden] { display: none !important; }
+
+  .ex-status { font-size: var(--fs-11); color: var(--ink-dim); }
+  .ex-cell-head {
+    font-size: var(--fs-10); font-weight: 500; font-family: var(--font-mono);
+    letter-spacing: .06em; text-transform: uppercase; color: var(--ink-dim);
+    width: 100%;
+  }
+
+  /* ── 1. Reports strip + the folder cell ──────────────────────────── */
+  /* Step eyebrows: the three things the page does, in order. */
+  .ex-step { display: flex; align-items: baseline; gap: 10px; margin: 0 0 8px; }
+  .ex-step-n { font-family: var(--font-mono); font-size: var(--fs-10); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-dim); }
+  .ex-step-hint { font-size: var(--fs-12); color: var(--ink-muted); }
+  .ex-reports {
+    display: grid; grid-template-columns: minmax(0, 1fr) 340px;
+    gap: var(--space-3); align-items: start; margin-bottom: var(--space-5, 24px);
+  }
+  /* The report's face: the same scaled live render as the home grid. */
+  .ex-report-pv { display: block; position: relative; height: 112px; margin: 0 0 8px; overflow: hidden; background: var(--surface-inset, var(--surface-2)); border-bottom: 1px solid var(--border-soft); }
+  .ex-report-card > .ex-report-pv { margin-left: 0; margin-right: 0; }
+  .ex-report-frame { position: absolute; top: 0; left: 0; width: 1280px; height: 800px; transform-origin: top left; border: 0; pointer-events: none; opacity: 0; transition: opacity .4s; background: var(--surface-1); }
+  .ex-report-pv.is-glyph::after { content: ''; position: absolute; inset: 0; background: radial-gradient(120% 80% at 50% 120%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 60%); }
+  /* Folder controls fold away: the context is the REPORT; the folder is
+     how someone who runs it feeds data in, so it opens on demand. */
+  details.ex-connect > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 6px; width: 100%; }
+  details.ex-connect > summary::-webkit-details-marker { display: none; }
+  details.ex-connect > summary::before { content: '▸'; font-size: 10px; color: var(--ink-faint); }
+  details.ex-connect[open] > summary::before { content: '▾'; }
+  details.ex-connect:not([open]) > :not(summary) { display: none; }
+  .ex-sources-hint { font-size: var(--fs-11); color: var(--ink-dim); width: 100%; }
+  .ex-folder-tools { display: flex; gap: var(--space-2); flex-wrap: wrap; width: 100%; }
+  .ex-report-strip { display: flex; gap: var(--space-3); overflow-x: auto; padding: 2px; scrollbar-width: thin; }
+  .ex-report-strip:empty { display: none; }
+  .ex-report-card {
+    flex: 0 0 auto; width: 236px; text-align: left;
+    display: flex; flex-direction: column; gap: 6px; cursor: pointer;
+    background: var(--surface-1); border: 0; border-radius: var(--r-6);
+    box-shadow: 0 0 0 1px var(--border) inset; padding: 0 0 12px; font: inherit; overflow: hidden;
+    transition: box-shadow .12s, transform .12s;
+  }
+  .ex-report-card::before {
+    content: ''; display: block; height: 4px;
+    background: var(--border-soft);
+  }
+  .ex-report-card:hover { transform: translateY(-1px); box-shadow: 0 0 0 1px var(--border) inset, 0 6px 18px rgba(0,0,0,.06); }
+  .ex-report-card.active { box-shadow: 0 0 0 2px var(--accent) inset; }
+  .ex-report-card.active::before { background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 40%, transparent)); }
+  .ex-report-card > * { margin-left: 14px; margin-right: 14px; }
+  .ex-report-title { font-size: var(--fs-13); color: var(--ink); font-weight: 600; line-height: 1.3; }
+  .ex-report-gen {
+    align-self: flex-start; font-family: var(--font-mono); font-size: var(--fs-10);
+    color: var(--ink-dim); background: var(--surface-2); border-radius: 999px;
+    padding: 1px 8px; box-shadow: 0 0 0 1px var(--border) inset;
+    max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .ex-report-state { font-size: var(--fs-11); color: var(--ink-dim); line-height: 1.35; }
+  .ex-report-server { font-size: var(--fs-11); color: var(--ink-dim); }
+  .ex-report-load {
+    align-self: flex-start; font-size: var(--fs-11); color: var(--accent); font-weight: 500;
+    cursor: pointer; text-decoration: none; padding: 2px 8px; margin-left: 8px; border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+  .ex-report-load:hover { background: color-mix(in srgb, var(--accent) 20%, transparent); }
+
+  .ex-panel.ex-connect {
+    display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;
+    align-content: flex-start;
+    background: var(--surface-1); border-radius: var(--r-4);
+    box-shadow: 0 0 0 1px var(--border) inset;
+    padding: 10px 14px;
+  }
+  .ex-progress { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 160px; }
+  .ex-progress-bar {
+    flex: 1; height: 6px; border-radius: 999px; background: var(--surface-2);
+    overflow: hidden; box-shadow: 0 0 0 1px var(--border) inset;
+  }
+  .ex-progress-fill { height: 100%; width: 0%; background: var(--accent); transition: width .15s var(--ease); }
+  .ex-progress-fill.busy { animation: ex-pulse 1.2s ease-in-out infinite; }
+  @keyframes ex-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+  .ex-progress-msg { font-size: var(--fs-11); color: var(--ink); white-space: nowrap; }
+  .ex-summary { font-size: var(--fs-11); color: var(--ink-dim); width: 100%; }
+
+  /* ── 2. The question is the hero: one card, the text large, the button
+     inside; a soft accent halo says where to type. ─────────────────── */
+  .ex-ask { margin-bottom: var(--space-5, 24px); }
+  .ex-ask-card {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border-radius: var(--r-6);
+    box-shadow: 0 0 0 1px var(--border) inset; padding: 6px 6px 6px 14px;
+    transition: box-shadow .15s;
+  }
+  .ex-ask-card:focus-within { box-shadow: 0 0 0 1px var(--accent), 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent); }
+  .ex-ask-ico { width: 18px; height: 18px; color: var(--accent); flex: none; }
+  .ex-ask-row + .ex-ask-row { margin-top: var(--space-2); }
+  .ex-ask-card .ex-nl-in {
+    flex: 1; min-width: 0; resize: none; border: 0; outline: 0; background: transparent;
+    font: inherit; font-size: 16px; line-height: 24px; padding: 6px 0; max-height: 120px; color: var(--ink);
+  }
+  .ex-ask-card .ex-nl-in::placeholder { color: var(--ink-faint); }
+  .ex-ask-btn { flex: none; height: 34px; padding: 0 16px; font-size: 14px; }
+  #ex-llm-key-row .ex-nl-in { flex: 1; }
+  .ex-metrics-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
+  .ex-nl-status { font-size: var(--fs-11); color: var(--ink-dim); margin-top: 8px; min-height: 1em; }
+
+  .ex-metrics-head {
+    margin: 0 4px 0 0; font-size: var(--fs-10); font-weight: 500;
+    font-family: var(--font-mono); letter-spacing: .06em;
+    text-transform: uppercase; color: var(--ink-dim);
+  }
+  /* Metric CHIPS — same buttons (.ex-recipe-btn[data-kpi]), chip shape. */
+  .ex-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ex-chips .ex-recipe-btn {
+    border: 0; cursor: pointer; font: inherit; font-size: var(--fs-12);
+    background: var(--surface-2); color: var(--ink-muted);
+    border-radius: 999px; padding: 4px 12px;
+    box-shadow: 0 0 0 1px var(--border) inset;
+  }
+  .ex-chips .ex-recipe-btn:hover { color: var(--ink); }
+  .ex-chips .ex-recipe-btn.active { background: var(--accent-soft); color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+  .ex-recipe-form { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+  .ex-recipe-form:empty { margin-top: 0; }
+  .ex-recipe-form select, .ex-recipe-form input { width: 100%; }
+  .ex-recipe-form .btn { align-self: flex-start; }
+  /* The metric form: a quiet card under the chips, labels as eyebrows,
+     controls in a row — one glance, one "Calculate". */
+  .ex-recipe-form:not(:empty) { margin-top: 10px; }
+  .ex-metric-wrap {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, max-content)); gap: 8px 20px; align-items: end;
+    background: var(--surface-1); border-radius: var(--r-6); box-shadow: 0 0 0 1px var(--border) inset; padding: 12px 14px;
+  }
+  .ex-metric-wrap > .ex-metric-def { grid-column: 1 / -1; font-size: var(--fs-11); color: var(--ink-dim); }
+  .ex-metric-wrap > label {
+    grid-column: 1 / -1; font-family: var(--font-mono); font-size: var(--fs-10); letter-spacing: .06em;
+    text-transform: uppercase; color: var(--ink-dim); margin-top: 2px;
+  }
+  .ex-metric-wrap > .input.sm { max-width: 260px; }
+  .ex-metric-wrap > [data-metric-run] { grid-column: 1 / -1; justify-self: start; margin-top: 4px; }
+  .ex-metric-wrap > .ex-metric-status { grid-column: 1 / -1; }
+  .ex-reports { align-items: start; }
+  .ex-report-card { min-height: 0; }
+  .ex-metric-def { font-size: var(--fs-11); color: var(--ink-dim); white-space: normal; }
+  .ex-metric-dims { display: flex; flex-wrap: wrap; gap: 4px 10px; }
+  .ex-metric-dim { display: inline-flex; align-items: center; font-size: var(--fs-12); cursor: pointer; }
+  .ex-metric-status { font-size: var(--fs-11); color: var(--ink-dim); white-space: normal; }
+
+  /* ── 3. The answer card ──────────────────────────────────────────── */
+  .ex-answer {
+    display: grid; grid-template-columns: minmax(0, 1fr) 340px;
+    gap: var(--space-3); align-items: start; margin-bottom: var(--space-4);
+  }
+  .ex-answer-main {
+    min-width: 0; background: var(--surface-1); border-radius: var(--r-4);
+    box-shadow: 0 0 0 1px var(--border) inset; padding: 12px 14px;
+  }
+  .ex-answer-title {
+    font-size: var(--fs-15); color: var(--ink); line-height: var(--lh-ui);
+    margin-bottom: 8px;
+  }
+  .ex-answer-title:empty { display: none; }
+  .ex-how {
+    background: var(--surface-1); border-radius: var(--r-4);
+    box-shadow: 0 0 0 1px var(--border) inset; padding: 12px 14px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .ex-how-def { font-size: var(--fs-12); color: var(--ink-muted); white-space: normal; }
+  .ex-how-calc { font-size: var(--fs-12); color: var(--ink); }
+  .ex-how-sources { display: flex; flex-direction: column; gap: 3px; }
+  .ex-how-src { font-size: var(--fs-11); color: var(--ink-dim); }
+
+  .ex-result-head { display: flex; align-items: center; gap: 10px; }
+  .ex-badge {
+    font-family: var(--font-mono); font-size: var(--fs-11);
+    color: var(--ink-dim); background: var(--surface-2);
+    border-radius: 999px; padding: 2px 10px;
+    box-shadow: 0 0 0 1px var(--border) inset;
+  }
+  .ex-badge.is-incomplete { color: var(--warning); background: var(--warning-soft); }
+  .ex-result-ms { font-size: var(--fs-11); color: var(--ink-faint); margin-left: auto; }
+
+  /* Result grid can be arbitrarily wide (many columns) — scroll the grid
+     itself, never the page (artifact-design responsive rule). */
+  .ex-result-wrap { width: 100%; overflow-x: auto; max-height: 560px; overflow-y: auto; margin-top: 8px; }
+  .ex-result-table th {
+    cursor: pointer; user-select: none; white-space: nowrap; position: sticky; top: 0;
+    background: var(--surface-1);
+  }
+  .ex-result-table th.sorted-asc::after { content: " \25B2"; font-size: 9px; }
+  .ex-result-table th.sorted-desc::after { content: " \25BC"; font-size: 9px; }
+  .ex-result-table td { white-space: nowrap; font-family: var(--font-mono); font-size: var(--fs-12); }
+
+  /* ── 4. The secondary rows ───────────────────────────────────────── */
+  .ex-rows { display: flex; flex-direction: column; gap: var(--space-2); }
+  details.ex-row {
+    background: var(--surface-1); border-radius: var(--r-4);
+    box-shadow: 0 0 0 1px var(--border) inset;
+  }
+  details.ex-row > summary {
+    cursor: pointer; list-style: none; padding: 8px 14px;
+    font-size: var(--fs-11); font-family: var(--font-mono);
+    letter-spacing: .04em; color: var(--ink-dim);
+    display: flex; align-items: center; gap: 8px;
+  }
+  details.ex-row > summary::-webkit-details-marker { display: none; }
+  details.ex-row > summary::before { content: "▸"; font-size: 9px; color: var(--ink-faint); }
+  details.ex-row[open] > summary::before { content: "▾"; }
+  details.ex-row > summary:hover { color: var(--ink); background: var(--surface-2); border-radius: var(--r-4); }
+  .ex-row-body, .ex-row > .ex-sql-block { padding: 0 14px 12px; }
+
+  .ex-builder-layout {
+    display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: var(--space-4); align-items: start;
+  }
+  .ex-builder { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .ex-builder-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .ex-builder-row > label {
+    width: 90px; flex: none; font-size: var(--fs-11); color: var(--ink-dim);
+  }
+  .ex-b-cols { display: flex; flex-wrap: wrap; gap: 4px; }
+  .ex-b-col-chip {
+    font-size: var(--fs-11); padding: 2px 8px; border-radius: 999px; cursor: pointer;
+    background: var(--surface-2); color: var(--ink-dim);
+    box-shadow: 0 0 0 1px var(--border) inset;
+  }
+  .ex-b-col-chip.active { background: var(--accent-soft); color: var(--accent); }
+  .ex-b-filters { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 240px; }
+  .ex-b-filter-row { display: flex; gap: 6px; align-items: center; }
+  .ex-b-filter-row select, .ex-b-filter-row input { width: auto; }
+  .ex-b-filter-row .ex-b-filter-col { min-width: 120px; }
+  .ex-b-filter-row .ex-b-filter-val { min-width: 140px; flex: 1; }
+
+  .ex-recipes { min-width: 0; }
+  .ex-recipes h3 {
+    margin: 0 0 8px; font-size: var(--fs-10); font-weight: 500;
+    font-family: var(--font-mono); letter-spacing: .06em;
+    text-transform: uppercase; color: var(--ink-dim);
+  }
+  .ex-recipe-list { display: flex; flex-direction: column; gap: 4px; }
+  .ex-recipe-btn {
+    text-align: left; border: 0; cursor: pointer; background: transparent;
+    color: var(--ink-muted); font: inherit; font-size: var(--fs-12);
+    padding: 6px 8px; border-radius: var(--r-3);
+  }
+  .ex-recipe-btn:hover { background: var(--surface-2); color: var(--ink); }
+  .ex-recipe-btn.active { background: var(--accent-soft); color: var(--accent); }
+
+  .ex-sql-label {
+    display: block; font-size: var(--fs-10); font-weight: 500;
+    font-family: var(--font-mono); letter-spacing: .06em;
+    text-transform: uppercase; color: var(--ink-dim); margin-bottom: 6px;
+  }
+  .ex-sql-editor {
+    width: 100%; resize: vertical; background: var(--surface-2);
+    border-radius: var(--r-4); box-shadow: 0 0 0 1px var(--border) inset;
+    padding: 10px; font-size: var(--fs-12); color: var(--ink); line-height: 1.5;
+  }
+  .ex-sql-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
+  .ex-save-title { width: 180px; }
+  .ex-sql-status { font-size: var(--fs-11); color: var(--ink-dim); margin-top: 6px; min-height: 1em; }
+
+  .ex-saved-head { margin-top: 14px !important; }
+  .ex-saved-list { display: flex; flex-direction: column; gap: 4px; }
+  .ex-saved-row { display: flex; align-items: center; gap: 4px; }
+  .ex-saved-btn {
+    flex: 1; min-width: 0; text-align: left; border: 0; cursor: pointer;
+    background: transparent; color: var(--ink-muted); font: inherit;
+    font-size: var(--fs-12); padding: 4px 8px; border-radius: var(--r-3);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .ex-saved-btn:hover { background: var(--surface-2); color: var(--ink); }
+  .ex-saved-empty { font-size: var(--fs-11); color: var(--ink-faint); }
+
+  /* "Check folder" (H2) */
+  .ex-check-panel { background: var(--surface-2); border-radius: var(--r-4); padding: 10px 12px; }
+  .ex-check-head { display: flex; align-items: center; gap: var(--space-3); margin-bottom: 6px; }
+  .ex-check-head span { font-size: var(--fs-11); color: var(--ink-dim); flex: 1; }
+  .ex-check-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; max-height: 320px; overflow-y: auto; }
+  .ex-check-item { display: flex; align-items: baseline; gap: 8px; font-size: var(--fs-11); padding: 4px 6px; border-radius: var(--r-2); }
+  .ex-check-item.sev-warn { background: color-mix(in srgb, var(--warning, orange) 8%, transparent); }
+  .ex-check-item.sev-info { background: var(--surface-1); }
+  .ex-check-sev { text-transform: uppercase; font-size: 9px; letter-spacing: .03em; color: var(--ink-dim); min-width: 34px; }
+  .ex-check-msg { color: var(--ink); flex: 1; }
+  .ex-check-sample { color: var(--ink-dim); }
+
+  /* ── "Chat" (phase 3): a messenger, not a form ─────────────────────
+     One .ex-bub per record = the question (right, accent) + the answer
+     card (left, white). The thread scrolls; the compose row stays put. */
+  .ex-chat { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: var(--space-3); align-items: stretch; height: calc(100vh - 150px); min-height: 480px; }
+  .ex-chat-side {
+    background: var(--surface-1); border-radius: var(--r-4);
+    box-shadow: 0 0 0 1px var(--border) inset; padding: 12px 14px; overflow-y: auto;
+  }
+  .ex-chat-main {
+    display: flex; flex-direction: column; min-width: 0; min-height: 0;
+    background: var(--surface-1); border-radius: var(--r-4); box-shadow: 0 0 0 1px var(--border) inset; overflow: hidden;
+  }
+  .ex-chat-head {
+    display: flex; align-items: center; gap: 8px; padding: 0 14px; height: 44px; flex: none;
+    border-bottom: 1px solid var(--border-soft); background: var(--surface-1);
+  }
+  .ex-chat-title { font-weight: 600; font-size: var(--fs-13); white-space: nowrap; }
+  .ex-chat-folder {
+    display: inline-flex; align-items: center; height: 18px; padding: 0 8px; border-radius: 999px;
+    font-size: 10px; background: var(--surface-2); color: var(--ink-muted); white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis; max-width: 58%;
+  }
+  .ex-chat-folder.is-ok { background: color-mix(in srgb, var(--success, #2e9e5b) 14%, transparent); color: var(--success, #2e9e5b); }
+  .ex-chat-folder.is-warn { background: color-mix(in srgb, var(--warning, orange) 16%, transparent); color: var(--warning, #b06a00); }
+  .ex-chat-today { font-size: 10px; color: var(--ink-faint); white-space: nowrap; }
+  .ex-chat-sp { flex: 1 1 auto; min-width: 0; }
+  .ex-chat-threads { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+  .ex-chat-thread-row {
+    display: flex; flex-direction: column; gap: 2px; text-align: left;
+    border: 0; cursor: pointer; font: inherit; background: transparent;
+    padding: 6px 8px; border-radius: var(--r-3); min-width: 0;
+  }
+  .ex-chat-thread-row:hover { background: var(--surface-2); }
+  .ex-chat-thread-row.active { background: var(--accent-soft); }
+  .ex-chat-thread-title { font-size: var(--fs-12); color: var(--ink); }
+  .ex-chat-thread-last, .ex-chat-thread-time {
+    font-size: var(--fs-11); color: var(--ink-dim);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%;
+  }
+  .ex-chat-empty { font-size: var(--fs-11); color: var(--ink-faint); }
+  .ex-chat-thread {
+    flex: 1; min-height: 0; overflow-y: auto; padding: 14px;
+    display: flex; flex-direction: column; gap: 12px; background: var(--bg-base);
+  }
+  .ex-chat-thread:empty::before {
+    /* The text itself lives on the element (data-empty), not in the rule:
+       a CSS string cannot go through _(). */
+    content: attr(data-empty);
+    margin: auto; max-width: 320px; text-align: center; font-size: var(--fs-12); color: var(--ink-faint);
+  }
+  .ex-bub { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .ex-bub-q {
+    align-self: flex-end; max-width: 78%; font-size: var(--fs-13); color: var(--ink);
+    background: color-mix(in srgb, var(--accent) 14%, var(--surface-1));
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent) inset;
+    border-radius: 12px 12px 2px 12px; padding: 8px 12px; white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .ex-bub-a {
+    align-self: flex-start; width: 100%; max-width: 640px; background: var(--surface-1);
+    border-radius: 12px 12px 12px 2px; box-shadow: 0 0 0 1px var(--border) inset, 0 1px 2px rgba(0,0,0,.04); overflow: hidden;
+  }
+  .ex-bub-hd { padding: 8px 12px 0; display: flex; gap: 6px; flex-wrap: wrap; }
+  .ex-bub-tag {
+    display: inline-flex; align-items: center; height: 18px; padding: 0 8px; border-radius: 999px; font-size: 10px;
+    background: color-mix(in srgb, var(--success, #2e9e5b) 14%, transparent); color: var(--success, #2e9e5b); white-space: nowrap;
+  }
+  .ex-bub-body { padding: 8px 12px 10px; display: flex; flex-direction: column; gap: 6px; }
+  .ex-bub-num { font-size: 22px; color: var(--ink); font-family: var(--font-mono); }
+  .ex-bub-line { font-size: var(--fs-12); color: var(--ink); }
+  .ex-bub-dim { color: var(--ink-dim); }
+  .ex-bub-note { color: var(--ink-dim); font-style: italic; }
+  .ex-clarify { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+  .ex-clarify-line { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .ex-clarify-word { font-size: var(--fs-12); color: var(--ink); }
+  .ex-clarify-chip { font: inherit; font-size: var(--fs-12); padding: 3px 10px;
+    border: 1px solid var(--line); border-radius: 999px; background: var(--panel, transparent);
+    color: var(--ink); cursor: pointer; }
+  .ex-clarify-chip:hover { border-color: var(--accent); color: var(--accent); }
+  .ex-clarify-skip { color: var(--ink-dim); }
+  .ex-bub-clarify-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .ex-bub-compare { color: var(--accent); }
+  .ex-bub-down { color: var(--danger, #c0392b); }
+  .ex-bub-bar-row { display: flex; align-items: center; gap: 8px; font-size: var(--fs-12); }
+  .ex-bub-bar-label { flex: 0 0 38%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); }
+  .ex-bub-bar-track { flex: 1; height: 6px; border-radius: 2px; background: var(--surface-2); overflow: hidden; }
+  .ex-bub-bar-fill { display: block; height: 100%; background: var(--accent); border-radius: 2px; }
+  .ex-bub-bar-fill.is-neg { background: var(--danger, #c0392b); }
+  .ex-bub-bar-num { flex: none; font-family: var(--font-mono); font-size: var(--fs-11); color: var(--ink); min-width: 56px; text-align: right; }
+  .ex-bub-ft { display: flex; align-items: center; gap: 4px; padding: 6px 8px 6px 6px; border-top: 1px solid var(--border-soft); }
+  .ex-bub-ft .btn.xs { height: 22px; padding: 0 6px; font-size: var(--fs-11); }
+  .ex-bub-meta { margin-left: auto; font-size: 10px; color: var(--ink-faint); white-space: nowrap; }
+  .ex-bub-acts { display: contents; }
+  /* Composer: one bordered surface, the text inside it, the send button in
+     its corner. No resize handle, no second frame — the box IS the input. */
+  .ex-chat-compose { flex: none; display: flex; flex-direction: column; gap: 8px; padding: 8px 14px 10px; border-top: 1px solid var(--border-soft); background: var(--surface-1); }
+  .ex-chat-chips { display: flex; gap: 4px; overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; padding-bottom: 2px;
+    -webkit-mask-image: linear-gradient(90deg, #000 92%, transparent); mask-image: linear-gradient(90deg, #000 92%, transparent); }
+  .ex-chat-chips::-webkit-scrollbar { display: none; }
+  .ex-chat-chips:empty { display: none; }
+  .ex-chat-chips .ex-recipe-btn { flex: none; height: 22px; font-size: 11px; padding: 0 9px; border-radius: 999px; }
+  .ex-chat-box {
+    display: flex; align-items: flex-end; gap: 6px; padding: 6px 6px 6px 12px;
+    background: var(--surface-1); border-radius: 14px;
+    box-shadow: 0 0 0 1px var(--border) inset; transition: box-shadow .12s;
+  }
+  .ex-chat-box:focus-within { box-shadow: 0 0 0 1.5px var(--accent) inset; }
+  .ex-chat-in {
+    flex: 1; min-width: 0; resize: none; border: 0; outline: 0; background: transparent;
+    font: inherit; font-size: var(--fs-13); line-height: 20px; color: var(--ink);
+    padding: 4px 0; max-height: 120px; overflow-y: auto;
+  }
+  .ex-chat-in::placeholder { color: var(--ink-faint); }
+  .ex-chat-send {
+    flex: none; width: 30px; height: 30px; border-radius: 50%; border: 0; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--accent); color: #fff; transition: transform .1s, opacity .12s;
+  }
+  .ex-chat-send .ico { width: 14px; height: 14px; }
+  .ex-chat-send:hover { transform: translateY(-1px); }
+  .ex-chat-send:disabled { opacity: .45; cursor: default; transform: none; }
+  .ex-chat-status { font-size: var(--fs-11); color: var(--ink-dim); line-height: 1.3; }
+  .ex-chat-status:empty { display: none; }
+  #ex-chat-clear { margin-left: 4px; }
+  .ex-chat-nav { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; }
+
+
+  /* ── P3a: the pane's header, the answer card, the pending card ──────
+     The design the owner approved (prototype 2026-09-06): one header row,
+     an empty state that teaches, a pending card with real stages, and an
+     answer card that says how confident it is BEFORE it says the number. */
+
+  /* Coverage pill: what the index in THIS browser actually covers. */
+  .ex-chat-cov {
+    display: inline-flex; align-items: center; gap: 6px; height: 18px; padding: 0 8px;
+    border-radius: 999px; background: var(--surface-2); color: var(--ink-muted);
+    font-size: 10px; white-space: nowrap; max-width: 46%; overflow: hidden;
+  }
+  .ex-chat-cov-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); flex: none; }
+  /* The text is addressed by id — the span carries `mono`, not a class of
+     its own, and a class selector here quietly did nothing. */
+  #ex-chat-cov-text { overflow: hidden; text-overflow: ellipsis; }
+
+  /* Icon buttons + the «⋯» menu. */
+  .ex-chat-ib {
+    flex: none; width: 26px; height: 26px; border: 0; border-radius: var(--r-6); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: transparent; color: var(--ink-dim); transition: background var(--dur), color var(--dur);
+  }
+  .ex-chat-ib:hover { background: var(--surface-2); color: var(--ink); }
+  .ex-chat-ib[aria-pressed="true"] { background: var(--surface-2); color: var(--accent); }
+  .ex-chat-x {
+    flex: none; display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 10px;
+    border: 1px solid var(--border); border-radius: var(--r-6); background: var(--surface-1);
+    color: var(--ink-muted); font: inherit; font-size: var(--fs-11); cursor: pointer;
+    transition: border-color var(--dur), color var(--dur);
+  }
+  .ex-chat-x:hover { border-color: var(--accent); color: var(--accent); }
+  .ex-chat-menu-wrap { position: relative; flex: none; }
+  .ex-chat-menu {
+    position: absolute; right: 0; top: 30px; z-index: 40; min-width: 244px; padding: 5px;
+    display: flex; flex-direction: column; gap: 2px;
+    background: var(--surface-3); border-radius: var(--r-8); box-shadow: var(--elev-2);
+  }
+  .ex-chat-menu button {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 1px; text-align: left;
+    padding: 7px 10px; border: 0; border-radius: var(--r-6); background: transparent;
+    font: inherit; font-size: var(--fs-12); color: var(--ink); cursor: pointer;
+  }
+  .ex-chat-menu button:hover { background: var(--surface-2); }
+  .ex-chat-menu button.danger:hover { background: var(--danger-soft); color: var(--danger); }
+  .ex-chat-menu button .k { font-family: var(--font-mono); font-size: 10px; color: var(--ink-faint); }
+  .ex-chat-menu-sep { height: 1px; margin: 4px 2px; background: var(--border-soft); }
+
+  /* Empty state: what this thing can be asked, in the report's own words. */
+  /* P3b — "Clarify" under a card, and the conversation history. */
+  .ex-bub-refine-box { margin: 6px 0 2px; }
+  .ex-bub-refine { display: flex; flex-direction: column; gap: 6px; padding: 8px;
+    border: 1px solid var(--border-soft); border-radius: 8px; background: var(--surface-1); }
+  .ex-refine-row { display: flex; gap: 6px; align-items: center; }
+  .ex-refine-in { flex: 1 1 auto; min-width: 0; height: 26px; padding: 0 8px;
+    border: 1px solid var(--border-soft); border-radius: 6px; background: var(--surface-0);
+    color: var(--ink); font-size: var(--fs-12); }
+  .ex-refine-go { flex: none; height: 26px; padding: 0 10px; border: 0; border-radius: 6px;
+    background: var(--accent); color: var(--on-accent, #fff); font-size: var(--fs-12); cursor: pointer; }
+  .ex-bub-lowconf { display: flex; flex-direction: column; gap: 5px; margin-top: 6px; }
+  .ex-bub-dims { flex-wrap: wrap; }
+  .ex-chat-hist { display: flex; flex-direction: column; gap: 6px; padding: 4px 2px; }
+  .ex-chat-hist-t { margin: 0; font-size: var(--fs-13); font-weight: var(--fw-semi); color: var(--ink); }
+  .ex-chat-hist-row { display: flex; gap: 8px; align-items: baseline; width: 100%; text-align: left;
+    padding: 6px 8px; border: 1px solid var(--border-soft); border-radius: 8px;
+    background: var(--surface-1); color: var(--ink); font-size: var(--fs-12); cursor: pointer; }
+  .ex-chat-hist-row:hover { background: var(--surface-2); }
+  .ex-chat-hist-row.active { background: var(--accent-soft); }
+  .ex-chat-hist-q { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ex-chat-hist-time, .ex-chat-hist-n { flex: none; font-size: 10px; color: var(--ink-faint); }
+  .ex-chat-intro { display: flex; flex-direction: column; gap: 10px; padding: 4px 2px; margin: auto 0; }
+  .ex-chat-intro h3 { margin: 0; font-size: var(--fs-13); font-weight: var(--fw-semi); color: var(--ink); }
+  .ex-chat-intro p { margin: 0; max-width: 46ch; font-size: var(--fs-12); color: var(--ink-dim); line-height: var(--lh-prose); }
+  .ex-chat-sugg { display: flex; flex-direction: column; gap: 5px; }
+  .ex-chat-sugg button {
+    display: flex; justify-content: space-between; gap: 10px; text-align: left;
+    padding: 8px 11px; border: 0; border-radius: var(--r-6); background: var(--surface-2);
+    font: inherit; font-size: var(--fs-12); color: var(--ink); cursor: pointer;
+    transition: background var(--dur), transform var(--dur);
+  }
+  .ex-chat-sugg button:hover { background: var(--accent-soft); color: var(--accent); transform: translateX(2px); }
+  .ex-chat-sugg button .k { font-family: var(--font-mono); font-size: 10px; color: var(--ink-faint); flex: none; }
+  .ex-chat-covline { font-family: var(--font-mono); font-size: 10px; color: var(--ink-faint); }
+
+  /* Pending: three real stages, a tenth-of-a-second clock, a real cancel. */
+  .ex-bub-pending .ex-pend {
+    display: flex; flex-direction: column; gap: 8px; padding: 10px 12px;
+    border-radius: var(--r-8); box-shadow: 0 0 0 1px var(--border) inset; background: var(--surface-1);
+  }
+  .ex-pend-stages { display: flex; flex-wrap: wrap; gap: 4px; font-size: var(--fs-11); color: var(--ink-dim); }
+  .ex-pend-stage {
+    display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 999px;
+    background: var(--surface-2);
+  }
+  .ex-pend-stage::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--border-strong); }
+  .ex-pend-stage.is-on { background: var(--accent-soft); color: var(--accent); }
+  .ex-pend-stage.is-on::before { background: var(--accent); animation: ex-pulse 1s infinite; }
+  .ex-pend-stage.is-done { color: var(--success); }
+  .ex-pend-stage.is-done::before { background: var(--success); }
+  @keyframes ex-pulse { 50% { opacity: .3; } }
+  .ex-pend-row { display: flex; align-items: center; gap: 10px; }
+  .ex-pend-timer { font-family: var(--font-mono); font-size: var(--fs-11); color: var(--ink-faint); }
+  .ex-pend-cancel {
+    margin-left: auto; padding: 2px 9px; border: 0; border-radius: 999px; background: transparent;
+    font: inherit; font-size: var(--fs-11); color: var(--ink-dim); cursor: pointer;
+  }
+  .ex-pend-cancel:hover { background: var(--danger-soft); color: var(--danger); }
+  .ex-pend-cancel:disabled { opacity: .45; cursor: default; background: transparent; color: var(--ink-faint); }
+  /* What "Cancel" leaves standing: the question, dimmed, and the offer to
+     ask it again. Never blank space. */
+  .ex-bub-cancelled .ex-bub-q { opacity: .6; }
+  .ex-bub-cancelled .ex-bub-ask-t { color: var(--ink-dim); }
+
+  /* The answer card. */
+  .ex-bub-title { margin: 0; flex: 1 1 auto; min-width: 0; font-size: var(--fs-13); font-weight: var(--fw-semi); color: var(--ink); }
+  .ex-bub-hd { align-items: center; }
+  .ex-bub-tag.is-model { background: var(--warning-soft); color: var(--warning); }
+  .ex-bub-tag.is-draft { background: var(--surface-2); color: var(--ink-dim); }
+  .ex-bub-tag.is-bad { background: var(--danger-soft); color: var(--danger); }
+  .ex-bub-seg {
+    display: inline-flex; flex: none; border-radius: var(--r-6); overflow: hidden;
+    box-shadow: 0 0 0 1px var(--border) inset; font-size: var(--fs-11);
+  }
+  .ex-bub-seg button {
+    padding: 3px 9px; border: 0; background: transparent; font: inherit; font-size: var(--fs-11);
+    color: var(--ink-dim); cursor: pointer;
+  }
+  .ex-bub-seg button.is-on { background: var(--accent-soft); color: var(--accent); }
+  .ex-bub-und { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; padding: 6px 12px 0; font-size: var(--fs-11); color: var(--ink-dim); }
+  .ex-bub-chip {
+    display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px;
+    background: var(--surface-2); color: var(--ink); font-size: var(--fs-11);
+    box-shadow: 0 0 0 1px var(--border-soft) inset;
+  }
+  .ex-bub-chip b { font-weight: var(--fw-medium); }
+  .ex-bub-tablewrap { overflow-x: auto; }
+  .ex-bub-table { width: 100%; border-collapse: collapse; font-size: var(--fs-11); }
+  .ex-bub-table th, .ex-bub-table td { padding: 4px 6px; border-bottom: 1px solid var(--border-soft); text-align: left; }
+  .ex-bub-table th { color: var(--ink-dim); font-weight: var(--fw-medium); font-size: 10px; }
+  .ex-bub-table td.n { font-family: var(--font-mono); text-align: right; white-space: nowrap; }
+
+  /* "How it's calculated" / "Show in report" / 👍👎 / "Regenerate". */
+  .ex-bub-how {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+    padding: 7px 10px 7px 12px; border-top: 1px solid var(--border-soft);
+    font-size: var(--fs-11); color: var(--ink-dim);
+  }
+  .ex-bub-lnk {
+    padding: 0; border: 0; background: transparent; font: inherit; font-size: var(--fs-11);
+    color: var(--accent); cursor: pointer;
+  }
+  .ex-bub-lnk:hover { text-decoration: underline; }
+  .ex-bub-lnk[disabled] { color: var(--ink-faint); cursor: default; text-decoration: none; }
+  .ex-bub-how-sp { flex: 1 1 auto; }
+  .ex-bub-vote {
+    flex: none; width: 24px; height: 24px; border: 0; border-radius: var(--r-6); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: transparent; color: var(--ink-dim);
+  }
+  .ex-bub-vote:hover { background: var(--surface-2); color: var(--ink); }
+  .ex-bub-vote.is-on { color: var(--accent); background: var(--accent-soft); }
+  .ex-bub-vote svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.7;
+    stroke-linecap: round; stroke-linejoin: round; }
+  .ex-bub-locmsg { font-size: var(--fs-11); color: var(--warning); }
+  .ex-bub-sql {
+    margin: 0 12px 10px; padding: 8px 10px; border-radius: var(--r-6); background: var(--surface-inset);
+    font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-muted);
+    white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.5;
+  }
+  .ex-bub-fu { display: flex; flex-wrap: wrap; gap: 5px; padding: 0 12px 10px; }
+  .ex-bub-fu button {
+    padding: 3px 10px; border: 0; border-radius: 999px; background: var(--accent-soft);
+    font: inherit; font-size: var(--fs-11); color: var(--accent); cursor: pointer;
+  }
+  .ex-bub-fu button:hover { background: var(--accent); color: var(--accent-ink); }
+
+  /* A superseded answer ("Regenerate" replaced it): one quiet line. */
+  .ex-bub.is-old .ex-bub-a { display: none; }
+  .ex-bub-old-line {
+    align-self: flex-start; font-family: var(--font-mono); font-size: 10px; color: var(--ink-faint);
+    padding: 2px 8px; border-radius: 999px; background: var(--surface-2);
+  }
+
+  /* The clarify card: what stands INSTEAD of an empty answer. */
+  .ex-bub-ask {
+    align-self: stretch; display: flex; flex-direction: column; gap: 8px; padding: 10px 12px;
+    border-radius: var(--r-8); background: var(--surface-1); box-shadow: 0 0 0 1px var(--border) inset;
+  }
+  .ex-bub-ask.is-err { box-shadow: 0 0 0 1px var(--danger) inset; }
+  .ex-bub-ask-t { font-size: var(--fs-12); color: var(--ink); }
+  .ex-bub-ask-d { font-size: var(--fs-11); color: var(--ink-dim); }
+  .ex-bub-opts { display: flex; flex-direction: column; gap: 5px; }
+  .ex-bub-opt {
+    display: flex; justify-content: space-between; gap: 10px; text-align: left;
+    padding: 7px 10px; border: 0; border-radius: var(--r-6); background: var(--surface-2);
+    font: inherit; font-size: var(--fs-12); color: var(--ink); cursor: pointer;
+  }
+  .ex-bub-opt:hover { background: var(--accent-soft); color: var(--accent); }
+  .ex-bub-opt .k { font-family: var(--font-mono); font-size: 10px; color: var(--ink-faint); flex: none; }
+
+  .ex-chat-foot { display: flex; justify-content: space-between; gap: 10px; font-size: 10px; color: var(--ink-faint); }
+
+  /* Narrow pane (`op_chat_width` < 400): the chrome gets out of the way. */
+  .ex-chat.is-narrow .ex-chat-x span { display: none; }
+  .ex-chat.is-narrow .ex-chat-x { padding: 0 7px; }
+  .ex-chat.is-narrow .ex-chat-foot { display: none; }
+  .ex-chat.is-narrow .ex-chat-cov { max-width: 100%; }
+  .ex-chat.is-narrow .ex-chat-title { overflow: hidden; text-overflow: ellipsis; }
+  /* Wide pane: the card gets a second column for its table. */
+  .ex-chat.is-wide .ex-bub-a { max-width: 900px; }
+  .ex-chat.is-wide .ex-bub-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ex-pend-stage.is-on::before { animation: none; }
+    .ex-chat-sugg button:hover { transform: none; }
+  }
+
+  /* ── embed mode (`?embed=1`): the page inside the viewer's "Chat" pane ──
+     No sidebar and no topbar are RENDERED at all, so the shell's two-column
+     grid has nothing to hold; the page head is hidden rather than removed so
+     `#ex-status` / `#ex-chat-btn` / `#ex-chat-count` keep existing for the
+     handlers that own them. The thread list is dropped too: the pane is
+     scoped to ONE report by `?report=`, so a picker would only offer the
+     thread already on screen. */
+  .ex-embed { display: block; height: 100vh; }
+  .ex-embed .main { height: 100vh; }
+  .ex-embed .content { padding: 0; height: 100vh; }
+  .ex-embed .page-head, .ex-embed .ex-step { display: none; }
+  .ex-embed .ex-chat { grid-template-columns: minmax(0, 1fr); height: 100vh; min-height: 0; gap: 0; }
+  .ex-embed .ex-chat-side { display: none; }
+  .ex-embed .ex-chat-main { border-radius: 0; box-shadow: none; }
+  .ex-embed .ex-bub-a { max-width: 100%; }
+  /* In the pane the head is the panel's ONE header row: the clear icon moved
+     into «⋯», and the two folder controls only appear when there is no index
+     (syncFolderHead hides them otherwise). */
+  .ex-embed #ex-chat-clear { display: none; }
+  .ex-embed .ex-chat-head { padding: 0 8px 0 14px; gap: 6px; }
+
+  @media (max-width: 900px) {
+    .ex-reports, .ex-answer, .ex-builder-layout, .ex-chat { grid-template-columns: 1fr; }
+    .ex-ask-row { flex-direction: column; }
+    .ex-ask-btn { align-self: stretch; }
+  }
+</style>
+
+<script src="/static/js/explore-recipes.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/explore.js?v={{ asset_v }}" defer></script>
+{# AFTER explore.js: explore-chat.js reads window.OP_EXPLORE, which that file
+   publishes as it runs. Both are plain deferred scripts, so document order is
+   execution order. #}
+<script src="/static/js/explore-chat.js?v={{ asset_v }}" defer></script>
+{% endblock %}

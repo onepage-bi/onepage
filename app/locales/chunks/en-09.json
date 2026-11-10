@@ -1,0 +1,467 @@
+{
+  "_meta": {
+    "chunk": "09",
+    "count": 150,
+    "lang": "en",
+    "source_files": [
+      "static/js/presentations.js",
+      "static/js/quests-how.js",
+      "static/js/quests-page.js"
+    ]
+  },
+  "strings": {
+    " Colleagues": {
+      "ref": "static/js/quests-page.js:1335"
+    },
+    " points": {
+      "ref": "static/js/quests-page.js:1447"
+    },
+    " · correct {p1}": {
+      "ref": "static/js/quests-page.js:350"
+    },
+    "+1 surprise": {
+      "ref": "static/js/quests-page.js:1448"
+    },
+    "10 points for a correct answer, plus 5 more if you answer in under half the allotted time. You get a surprise just for taking part.": {
+      "ref": "static/js/quests-page.js:1240"
+    },
+    "2 surprises": {
+      "ref": "static/js/quests-page.js:78"
+    },
+    "3 questions, a surprise for taking part": {
+      "ref": "static/js/quests-page.js:370"
+    },
+    "45 to 90 seconds per question, depending on its length.": {
+      "ref": "static/js/quests-page.js:1233"
+    },
+    "<div class=\"q-mk-btn\">+ Add dashboard</div>": {
+      "ref": "static/js/quests-how.js:484"
+    },
+    "<div class=\"q-mk-hint\">Link created</div><div class=\"q-scr-link\">https://onepage/…/s/k7Qm2x</div><div class=\"q-scr-ok\">Copied</div>": {
+      "ref": "static/js/quests-how.js:478"
+    },
+    "<div class=\"q-mt\"><span>Result</span>Page turns dark</div><div class=\"q-scr q-scr-dark\"><div class=\"q-scr-top\"><b>OnePage</b><span>Dashboards</span></div><div class=\"q-scr-rows\"><div class=\"q-mk-li\"><span>Sales by region</span></div><div class=\"q-mk-li\"><span>OPS Health · week</span></div></div></div>": {
+      "ref": "static/js/quests-how.js:98"
+    },
+    "<div class=\"q-mt\"><span>Step 2</span>Page: {p1}</div><div class=\"q-scr\">{p2}</div>": {
+      "ref": "static/js/quests-how.js:83"
+    },
+    "<div class=\"q-scr-grid\"><div class=\"q-gc\"><i class=\"q-gc-i q-gc-1\"></i><b>Sales by region</b></div><div class=\"q-gc\"><i class=\"q-gc-i q-gc-2\"></i><b>OPS Health · week</b></div><div class=\"q-gc\"><i class=\"q-gc-i q-gc-3\"></i><b>Stock levels</b></div></div>": {
+      "ref": "static/js/quests-how.js:456"
+    },
+    "<div class=\"q-scr-slide\">Slide 1: select dashboard</div><div class=\"q-scr-slide\">Slide 2: select dashboard</div>": {
+      "ref": "static/js/quests-how.js:488"
+    },
+    "<div class=\"q-scr-top\"><b>Dashboards</b><span class=\"q-mk-seg\"><em class=\"on\" id=\"mini-table\">Table</em><em id=\"mini-grid\">Grid</em></span></div><div class=\"q-scr-rows\"><div class=\"q-mk-li\"><span>Sales by region</span><i>☆</i></div><div class=\"q-mk-li hl\" id=\"mini-fav-row\"><span>OPS Health · week</span><i id=\"mini-star\">☆</i></div><div class=\"q-mk-li\"><span>Stock levels</span><i>☆</i></div></div>": {
+      "ref": "static/js/quests-how.js:87"
+    },
+    "<div class=\"q-scr-top\"><b>OPS Health · week</b><span class=\"q-mk-tabs\"><em>Info</em><em>Access</em><em id=\"mini-share-tab\">Share</em></span></div><div class=\"q-scr-body\"><div class=\"q-scr-chart\"></div><div class=\"q-scr-dock\"><div class=\"q-mk-btn\" id=\"mini-sharebtn\">Create link</div><div class=\"q-mk-hint\">Valid 7 days</div></div></div>": {
+      "ref": "static/js/quests-how.js:90"
+    },
+    "<div class=\"q-scr-top\"><b>Presentations</b><div class=\"q-mk-btn\" id=\"mini-new\">+ New presentation</div></div><div class=\"q-scr-rows\"><div class=\"q-mk-li\"><span>Weekly summary · 4 slides</span></div><div class=\"q-mk-li\"><span>Director brief · 6 slides</span></div></div>": {
+      "ref": "static/js/quests-how.js:93"
+    },
+    "A new presentation will open: add two dashboards to it": {
+      "ref": "static/js/quests-how.js:146"
+    },
+    "A new set: one card per working day, eight in all.": {
+      "ref": "static/js/quests-page.js:471"
+    },
+    "Above the list on the right, switch Table → Grid": {
+      "ref": "static/js/quests-how.js:126"
+    },
+    "Already {p1} of them. Five matching cards can be exchanged for a new surprise.": {
+      "ref": "static/js/quests-page.js:1084"
+    },
+    "Autumn theme": {
+      "ref": "static/js/quests-page.js:769"
+    },
+    "Claim surprise": {
+      "ref": "static/js/quests-page.js:1451"
+    },
+    "Click “+ New presentation”": {
+      "ref": "static/js/quests-how.js:143"
+    },
+    "Click “Create link”": {
+      "ref": "static/js/quests-how.js:135"
+    },
+    "Collapse the «{p1}» set": {
+      "ref": "static/js/quests-page.js:534"
+    },
+    "Colleague": {
+      "ref": "static/js/quests-page.js:404"
+    },
+    "Colleagues were faster today": {
+      "ref": "static/js/quests-page.js:1436"
+    },
+    "Colleagues yesterday": {
+      "ref": "static/js/quests-page.js:1238"
+    },
+    "Collect all eight and a companion appears.": {
+      "ref": "static/js/quests-page.js:470"
+    },
+    "Common": {
+      "ref": "static/js/quests-page.js:178"
+    },
+    "Companion": {
+      "ref": "static/js/quests-page.js:652"
+    },
+    "Completed": {
+      "ref": "static/js/quests-page.js:335"
+    },
+    "Correct and fast! +{p1}": {
+      "ref": "static/js/quests-page.js:1411"
+    },
+    "Correct! +{p1}": {
+      "ref": "static/js/quests-page.js:1411"
+    },
+    "Could not save": {
+      "ref": "static/js/quests-page.js:675"
+    },
+    "Couldn't change the leaderboard setting": {
+      "ref": "static/js/quests-page.js:1179"
+    },
+    "Couldn't exchange the cards": {
+      "ref": "static/js/quests-page.js:1163"
+    },
+    "Couldn't open the surprise": {
+      "ref": "static/js/quests-page.js:1129"
+    },
+    "Couldn't start the question": {
+      "ref": "static/js/quests-page.js:1279"
+    },
+    "Couldn't start the quiz": {
+      "ref": "static/js/quests-page.js:1212"
+    },
+    "Couldn't submit the answer": {
+      "ref": "static/js/quests-page.js:1383"
+    },
+    "Couldn't update the quest status": {
+      "ref": "static/js/quests-page.js:928"
+    },
+    "Day {p1} of {p2}": {
+      "ref": "static/js/quests-page.js:59"
+    },
+    "Den": {
+      "ref": "static/js/quests-page.js:659"
+    },
+    "Done: link created and copied — ready to share": {
+      "ref": "static/js/quests-how.js:138"
+    },
+    "Done: palette closes, theme switches to dark. Ctrl+K again returns to light.": {
+      "ref": "static/js/quests-how.js:113"
+    },
+    "Done: rows changed to report preview tiles": {
+      "ref": "static/js/quests-how.js:129"
+    },
+    "Done: starred — report moved to Favourites": {
+      "ref": "static/js/quests-how.js:121"
+    },
+    "Draw": {
+      "ref": "static/js/quests-page.js:1436"
+    },
+    "Epic": {
+      "ref": "static/js/quests-page.js:178"
+    },
+    "Exchange 5 for a surprise": {
+      "ref": "static/js/quests-page.js:575"
+    },
+    "Exchanged 5 duplicates for a surprise, it's waiting in the header": {
+      "ref": "static/js/quests-page.js:1159"
+    },
+    "Five matching cards can be exchanged for a new surprise.": {
+      "ref": "static/js/quests-page.js:468"
+    },
+    "Flawless!": {
+      "ref": "static/js/quests-page.js:1436"
+    },
+    "Go": {
+      "ref": "static/js/quests-page.js:329"
+    },
+    "Great": {
+      "ref": "static/js/quests-page.js:1523"
+    },
+    "Hover over report row and click star": {
+      "ref": "static/js/quests-how.js:118"
+    },
+    "Inside is one of eight cards in the set": {
+      "ref": "static/js/quests-page.js:236"
+    },
+    "It's a day off — the daily surprise is given on working days. Next one {p1}.": {
+      "ref": "static/js/quests-page.js:240"
+    },
+    "Keep it up!": {
+      "ref": "static/js/quests-page.js:1531"
+    },
+    "Legendary": {
+      "ref": "static/js/quests-page.js:179"
+    },
+    "Let's go": {
+      "ref": "static/js/quests-page.js:1242"
+    },
+    "Lives in the workspace, shows up rarely and silently. Switched off in the Collection.": {
+      "ref": "static/js/quests-page.js:763"
+    },
+    "Missed. The correct answer is highlighted": {
+      "ref": "static/js/quests-page.js:1412"
+    },
+    "New card in your collection": {
+      "ref": "static/js/quests-page.js:1085"
+    },
+    "New presentation · 0 slides": {
+      "ref": "static/js/quests-how.js:482"
+    },
+    "Next surprise {p1}": {
+      "ref": "static/js/quests-page.js:242"
+    },
+    "Next surprise: {day}": {
+      "ref": "static/js/quests-page.js:277"
+    },
+    "No more surprises for today": {
+      "ref": "static/js/quests-page.js:1128"
+    },
+    "No surprises for today. Complete a task or play a quiz.": {
+      "ref": "static/js/quests-page.js:1108"
+    },
+    "Now it lives in OnePage. It will drop by now and then.": {
+      "ref": "static/js/quests-page.js:755"
+    },
+    "OnePage autumn theme": {
+      "ref": "static/js/quests-page.js:678"
+    },
+    "Open Share tab in right panel": {
+      "ref": "static/js/quests-how.js:134"
+    },
+    "Open surprise ({p1})": {
+      "ref": "static/js/quests-page.js:230"
+    },
+    "Open today to extend until {n}": {
+      "ref": "static/js/quests-page.js:280"
+    },
+    "Play": {
+      "ref": "static/js/quests-page.js:368"
+    },
+    "Played today: ": {
+      "ref": "static/js/quests-page.js:359"
+    },
+    "Press Ctrl+K — command palette opens": {
+      "ref": "static/js/quests-how.js:108"
+    },
+    "Quiz on working days. Next {p1}": {
+      "ref": "static/js/quests-page.js:364"
+    },
+    "Rare": {
+      "ref": "static/js/quests-page.js:178"
+    },
+    "Received": {
+      "ref": "static/js/quests-page.js:324"
+    },
+    "Remove slide from presentation?": {
+      "ref": "static/js/presentations.js:388"
+    },
+    "Report not added": {
+      "ref": "static/js/presentations.js:621"
+    },
+    "Restore the previous theme": {
+      "ref": "static/js/quests-page.js:785"
+    },
+    "Result": {
+      "ref": "static/js/quests-page.js:1416"
+    },
+    "Saved {p1}:{p2}": {
+      "ref": "static/js/presentations.js:508"
+    },
+    "Select «Toggle theme»": {
+      "ref": "static/js/quests-how.js:110"
+    },
+    "Show as": {
+      "ref": "static/js/quests-page.js:327"
+    },
+    "Show every card in the «{p1}» set": {
+      "ref": "static/js/quests-page.js:535"
+    },
+    "Show the companion": {
+      "ref": "static/js/quests-page.js:669"
+    },
+    "Slide note — visible to you only": {
+      "ref": "static/js/presentations.js:361"
+    },
+    "Slides added: {p1}": {
+      "ref": "static/js/presentations.js:695"
+    },
+    "Something was hiding here.": {
+      "ref": "static/js/quests-page.js:754"
+    },
+    "Special": {
+      "ref": "static/js/quests-page.js:179"
+    },
+    "Special {ctx:2}": {
+      "ref": "static/js/quests-page.js:602"
+    },
+    "Splitting PDF into pages…": {
+      "ref": "static/js/presentations.js:686"
+    },
+    "Step 1. Open Dashboards": {
+      "ref": "static/js/quests-how.js:116"
+    },
+    "Step 1. Open your report from Dashboards": {
+      "ref": "static/js/quests-how.js:132"
+    },
+    "Step 1. Open “Presentations”": {
+      "ref": "static/js/quests-how.js:141"
+    },
+    "Surprise opened. Next one {p1}.": {
+      "ref": "static/js/quests-page.js:244"
+    },
+    "Take the course": {
+      "ref": "static/js/quests-page.js:617"
+    },
+    "Task completed": {
+      "ref": "static/js/quests-page.js:1530"
+    },
+    "Tasks completed": {
+      "ref": "static/js/quests-page.js:1530"
+    },
+    "The OnePage autumn theme is yours — already on: warm paper, ochre, soft shadows.": {
+      "ref": "static/js/quests-page.js:770"
+    },
+    "The collection is complete. Someone lives here.": {
+      "ref": "static/js/quests-page.js:465"
+    },
+    "The full collection unlocked": {
+      "ref": "static/js/quests-page.js:757"
+    },
+    "The reward is yours!": {
+      "ref": "static/js/quests-page.js:1531"
+    },
+    "The set is complete.": {
+      "ref": "static/js/quests-page.js:466"
+    },
+    "The timer keeps running on the server. Close the quiz?": {
+      "ref": "static/js/quests-page.js:1021"
+    },
+    "Three work situations.": {
+      "ref": "static/js/quests-page.js:1231"
+    },
+    "Time's up": {
+      "ref": "static/js/quests-page.js:1409"
+    },
+    "To": {
+      "ref": "static/js/quests-page.js:1238"
+    },
+    "To collection": {
+      "ref": "static/js/quests-page.js:1057"
+    },
+    "Today's questions are coming soon": {
+      "ref": "static/js/quests-page.js:366"
+    },
+    "Weekends and holidays don't break your streak. One missed day a week is forgiven.": {
+      "ref": "static/js/quests-page.js:251"
+    },
+    "Weekends and holidays don't break your streak. This week's freeze has already been used.": {
+      "ref": "static/js/quests-page.js:252"
+    },
+    "You": {
+      "ref": "static/js/quests-page.js:155"
+    },
+    "You ": {
+      "ref": "static/js/quests-page.js:1333"
+    },
+    "You beat your colleagues": {
+      "ref": "static/js/quests-page.js:1436"
+    },
+    "You can get another one for a task or quiz": {
+      "ref": "static/js/quests-page.js:232"
+    },
+    "You have {n} surprise. Each contains a card from the set|You have {n} surprises. Each contains a card from the set": {
+      "plural": true,
+      "ref": "static/js/quests-page.js:237"
+    },
+    "all {p1} collected": {
+      "ref": "static/js/quests-page.js:506"
+    },
+    "day|days": {
+      "plural": true,
+      "ref": "static/js/quests-page.js:271"
+    },
+    "earn points to see your place": {
+      "ref": "static/js/quests-page.js:384"
+    },
+    "earned": {
+      "ref": "static/js/quests-page.js:611"
+    },
+    "for a course": {
+      "ref": "static/js/quests-page.js:611"
+    },
+    "for finished School courses — outside the set of eight": {
+      "ref": "static/js/quests-page.js:603"
+    },
+    "image": {
+      "ref": "static/js/presentations.js:120"
+    },
+    "on Friday": {
+      "ref": "static/js/quests-page.js:145"
+    },
+    "on Monday": {
+      "ref": "static/js/quests-page.js:144"
+    },
+    "on Saturday": {
+      "ref": "static/js/quests-page.js:146"
+    },
+    "on Sunday": {
+      "ref": "static/js/quests-page.js:144"
+    },
+    "on Thursday": {
+      "ref": "static/js/quests-page.js:145"
+    },
+    "on Tuesday": {
+      "ref": "static/js/quests-page.js:144"
+    },
+    "on Wednesday": {
+      "ref": "static/js/quests-page.js:145"
+    },
+    "on the next working day": {
+      "ref": "static/js/quests-page.js:135"
+    },
+    "pdf-lib failed to load": {
+      "ref": "static/js/presentations.js:669"
+    },
+    "publication {p1}": {
+      "ref": "static/js/presentations.js:291"
+    },
+    "reward for the full collection": {
+      "ref": "static/js/quests-page.js:656"
+    },
+    "reward for the «{p1}» set": {
+      "ref": "static/js/quests-page.js:655"
+    },
+    "surprise": {
+      "ref": "static/js/quests-page.js:1522"
+    },
+    "surprise and {n} point|surprise and {n} points": {
+      "plural": true,
+      "ref": "static/js/quests-page.js:320"
+    },
+    "surprises": {
+      "ref": "static/js/quests-page.js:1522"
+    },
+    "surprises {ctx:2}": {
+      "ref": "static/js/quests-page.js:1522"
+    },
+    "this report no longer opens": {
+      "ref": "static/js/presentations.js:288"
+    },
+    "your report": {
+      "ref": "static/js/quests-how.js:134"
+    },
+    "{p1} KB": {
+      "ref": "static/js/presentations.js:296"
+    },
+    "{p1} — page {p2} of {p3}.pdf": {
+      "ref": "static/js/presentations.js:130"
+    },
+    "· data as of {p1}": {
+      "ref": "static/js/presentations.js:292"
+    }
+  }
+}

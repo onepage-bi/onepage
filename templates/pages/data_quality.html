@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+{% block title %}OnePage — {{ _('Data Quality') }}{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'data-quality' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '#', false], [_('Data Quality'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content fluid">
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow">{{ _('workspace · schema, freshness and value drift') }}</div>
+          <h1 class="page-title">{{ _('Data Quality') }}</h1>
+        </div>
+      </div>
+
+      <div id="dq-root"
+           data-findings="{{ findings_json }}"
+           data-sources="{{ sources_json }}"
+           data-history="{{ history_json }}"
+           data-stats="{{ stats_json }}"
+           data-pending="{{ pending_json }}"></div>
+
+      {# ── Tiles ─────────────────────────────────────────────────────── #}
+      <div class="dq-tiles">
+        <div class="dq-tile is-accent">
+          <div class="dq-tile-k">{{ _('Sources OK') }}</div>
+          <div class="dq-tile-v" id="dq-tile-ok">0</div>
+        </div>
+        <div class="dq-tile is-warn">
+          <div class="dq-tile-k">{{ _('Sources Warn') }}</div>
+          <div class="dq-tile-v" id="dq-tile-warn">0</div>
+        </div>
+        <div class="dq-tile is-danger">
+          <div class="dq-tile-k">{{ _('Sources Error') }}</div>
+          <div class="dq-tile-v" id="dq-tile-error">0</div>
+        </div>
+        <div class="dq-tile">
+          <div class="dq-tile-k">{{ _('Open findings') }}</div>
+          <div class="dq-tile-v" id="dq-tile-open">0</div>
+        </div>
+        <div class="dq-tile">
+          <div class="dq-tile-k">{{ _('Values awaiting review') }}</div>
+          <div class="dq-tile-v" id="dq-tile-pending">0</div>
+        </div>
+        <div class="dq-tile">
+          <div class="dq-tile-k">{{ _('Stale sources') }}</div>
+          <div class="dq-tile-v" id="dq-tile-stale">0</div>
+        </div>
+      </div>
+
+      {# ── Filter row ────────────────────────────────────────────────── #}
+      <div class="dq-toolbar">
+        <div class="input-wrap" style="width:240px">
+          <svg class="ico ico-12 leading"><use href="#ic-search"/></svg>
+          <input id="dq-search" class="input sm" placeholder="{{ _('Message, source, column…') }}" />
+        </div>
+        <div class="dq-chips">
+          <button type="button" class="dq-facet" data-dq-sev="error">{{ _('Error') }}</button>
+          <button type="button" class="dq-facet" data-dq-sev="warn">{{ _('Warn') }}</button>
+          <button type="button" class="dq-facet" data-dq-sev="info">{{ _('Info') }}</button>
+        </div>
+        <div class="dq-chips">
+          <button type="button" class="dq-facet" data-dq-group="schema">{{ _('Schema') }}</button>
+          <button type="button" class="dq-facet" data-dq-group="freshness">{{ _('Freshness') }}</button>
+          <button type="button" class="dq-facet" data-dq-group="checks">{{ _('Checks') }}</button>
+          <button type="button" class="dq-facet" data-dq-group="drift">{{ _('Drift') }}</button>
+          <button type="button" class="dq-facet" data-dq-group="other">{{ _('Other') }}</button>
+        </div>
+        <select id="dq-source" class="input sm"><option value="">{{ _('All sources') }}</option></select>
+        <select id="dq-generator" class="input sm"><option value="">{{ _('All generators') }}</option></select>
+        <label class="dq-toggle">
+          <input type="checkbox" id="dq-show-acked" /> {{ _('Show acknowledged') }}
+        </label>
+      </div>
+
+      <div id="dq-thresholds" class="dq-thresholds" hidden></div>
+
+      {# ── Findings table ───────────────────────────────────────────── #}
+      <div class="dq-table-wrap">
+        <table class="tbl dq-table">
+          <thead>
+            <tr>
+              <th style="width:12%">{{ _('Kind') }}</th>
+              <th>{{ _('Message') }}</th>
+              <th style="width:14%">{{ _('Source') }}</th>
+              <th style="width:10%">{{ _('Generator') }}</th>
+              <th style="width:18%">{{ _('Location') }}</th>
+              <th class="numeric" style="width:7%">{{ _('Since run') }}</th>
+              <th class="numeric" style="width:7%">{{ _('Age') }}</th>
+            </tr>
+          </thead>
+          <tbody id="dq-tbody"></tbody>
+        </table>
+      </div>
+      <div id="dq-empty" class="dock-hint" hidden>{{ _('No findings match this filter.') }}</div>
+
+    </div>
+  </main>
+</div>
+
+<div id="dq-scrim" class="dq-scrim" hidden></div>
+<aside id="dq-drawer" class="dq-drawer" role="dialog" aria-modal="true" aria-labelledby="dq-drawer-title" hidden>
+  <header class="dq-drawer-head">
+    <h2 id="dq-drawer-title" class="mono" data-drawer-title></h2>
+    <button type="button" class="btn xs ghost" data-drawer-close aria-label="{{ _('Close') }}">
+      <svg class="ico ico-12"><use href="#ic-x"/></svg>
+    </button>
+  </header>
+  <div class="dq-drawer-body" data-drawer-body></div>
+</aside>
+
+<style>
+  [hidden] { display: none !important; }
+
+  /* ── Tiles ────────────────────────────────────────────────────────── */
+  .dq-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+  .dq-tile {
+    background: var(--surface-1);
+    border-radius: var(--r-4);
+    box-shadow: 0 0 0 1px var(--border) inset;
+    padding: 12px 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .dq-tile::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+    background: transparent;
+  }
+  .dq-tile.is-accent::before { background: var(--success); }
+  .dq-tile.is-warn::before   { background: var(--warning); }
+  .dq-tile.is-danger::before { background: var(--danger); }
+  .dq-tile-k {
+    font-family: var(--font-mono); font-size: var(--fs-10);
+    letter-spacing: .06em; text-transform: uppercase; color: var(--ink-dim);
+  }
+  .dq-tile-v {
+    font-size: 25px; font-weight: 600; line-height: 1.25; margin-top: 2px;
+    font-variant-numeric: tabular-nums; letter-spacing: -.015em;
+  }
+  .dq-tile.is-accent .dq-tile-v { color: var(--success); }
+  .dq-tile.is-warn   .dq-tile-v { color: var(--warning); }
+  .dq-tile.is-danger .dq-tile-v { color: var(--danger); }
+
+  /* ── Toolbar ──────────────────────────────────────────────────────── */
+  .dq-toolbar {
+    display: flex; align-items: center; gap: var(--space-3);
+    flex-wrap: wrap; margin-bottom: var(--space-3);
+  }
+  .dq-chips { display: flex; gap: 4px; flex-wrap: wrap; }
+  .dq-facet {
+    height: 24px; padding: 0 10px; border: 0; cursor: pointer;
+    background: var(--surface-2); color: var(--ink-dim);
+    border-radius: 999px; font-family: inherit; font-size: var(--fs-11);
+    box-shadow: 0 0 0 1px var(--border) inset;
+    transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
+  }
+  .dq-facet:hover { color: var(--ink); }
+  .dq-facet.active {
+    background: color-mix(in oklab, var(--accent) 16%, transparent);
+    color: var(--accent);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 45%, transparent) inset;
+  }
+  .dq-toggle {
+    display: flex; align-items: center; gap: 5px;
+    font-size: var(--fs-11); color: var(--ink-dim); cursor: pointer;
+  }
+  #dq-source, #dq-generator { width: 160px; }
+
+  /* ── Thresholds panel ─────────────────────────────────────────────── */
+  .dq-thresholds {
+    background: var(--surface-1); border-radius: var(--r-4);
+    box-shadow: 0 0 0 1px var(--border) inset;
+    padding: 10px 12px; margin-bottom: var(--space-3);
+  }
+  .dq-thr-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .dq-thr-row .input { width: 90px; }
+  .dq-lbl { font-size: var(--fs-11); color: var(--ink-dim); }
+
+  /* ── Table ────────────────────────────────────────────────────────── */
+  /* The findings table can run wider than the viewport (Location is a
+     file › sheet › column chain) — scroll the table itself horizontally
+     instead of the page (artifact-design responsive rule: no page-level
+     horizontal scroll). */
+  .dq-table-wrap { width: 100%; overflow-x: auto; }
+  .dq-table tbody tr { cursor: pointer; position: relative; }
+  .dq-loc {
+    max-width: 220px; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .dq-empty-clear {
+    background: none; border: none; color: var(--accent); cursor: pointer;
+    font: inherit; padding: 0; text-decoration: underline;
+  }
+  .dq-table tbody td { position: relative; }
+  /* The severity bar lives on the first CELL, not on the row: Chrome turns a
+     `tr::before` into an anonymous extra cell (absolute positioning on a
+     table-row is not honoured), which shifted every column one place right
+     of its header. */
+  .dq-table tbody td:first-child::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+  }
+  .dq-row.dq-sev-error td:first-child::before { background: var(--danger); }
+  .dq-row.dq-sev-warn td:first-child::before  { background: var(--warning); }
+  .dq-row.dq-sev-info td:first-child::before  { background: var(--ink-faint); }
+  .dq-row.is-acked { opacity: .5; }
+  .dq-row.is-sampled .dq-msg { color: var(--ink-dim); }
+  .dq-badge-sampled {
+    margin-left: 4px; color: var(--ink-dim); background: var(--surface-2);
+    border: 1px dashed var(--ink-faint);
+  }
+  .dq-msg { color: var(--ink); }
+  .dq-sub { color: var(--ink-dim); }
+
+  .dq-badge {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: .03em; padding: 1px 6px; border-radius: 3px;
+    text-transform: uppercase; white-space: nowrap;
+    color: var(--ink-muted); background: var(--surface-2);
+  }
+  .dq-sev-badge-error { color: var(--danger); background: var(--danger-soft); }
+  .dq-sev-badge-warn  { color: var(--warning); background: var(--warning-soft); }
+  .dq-sev-badge-info  { color: var(--ink-dim); background: var(--surface-2); }
+  .dq-conf-declared      { color: var(--ink-dim); }
+  .dq-conf-sheet_level   { color: var(--warning); }
+  .dq-conf-unobservable  { color: var(--ink-faint); }
+  .dq-conf-consumed_as_of_run { color: var(--success); }
+
+  /* ── Drawer ───────────────────────────────────────────────────────── */
+  .dq-scrim {
+    position: fixed; inset: 0; z-index: 40;
+    background: color-mix(in oklab, var(--bg-base) 62%, transparent);
+  }
+  .dq-drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; z-index: 41;
+    width: min(460px, 100vw);
+    display: flex; flex-direction: column;
+    background: var(--surface-1);
+    box-shadow: -1px 0 0 0 var(--border) inset, var(--elev-3);
+  }
+  .dq-drawer-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 14px 16px; border-bottom: 1px solid var(--border-subtle); flex: none;
+  }
+  .dq-drawer-head h2 { margin: 0; font-size: var(--fs-12); font-weight: 600; color: var(--ink); }
+  .dq-drawer-body { padding: 16px; overflow-y: auto; flex: 1; }
+  .dq-drawer-sect { margin-top: var(--space-5); }
+  .dq-drawer-sect:first-child { margin-top: 0; }
+  .dq-drawer-sect h3 {
+    margin: 0 0 8px; font-size: var(--fs-10); font-weight: 500;
+    font-family: var(--font-mono); letter-spacing: .06em;
+    text-transform: uppercase; color: var(--ink-dim);
+  }
+  .dq-dl {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 1px; background: var(--border-subtle);
+    box-shadow: 0 0 0 1px var(--border-subtle); border-radius: var(--r-4);
+    overflow: hidden; margin-top: 10px;
+  }
+  .dq-dl > div { background: var(--surface-1); padding: 8px 10px; }
+  .dq-dl dt {
+    margin: 0 0 2px; font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: .06em; text-transform: uppercase; color: var(--ink-dim);
+  }
+  .dq-dl dd { margin: 0; font-size: var(--fs-12); color: var(--ink); }
+  .dq-note { font-size: var(--fs-11); color: var(--ink-dim); line-height: 1.5; }
+  .dq-note-in { width: 100%; min-height: 50px; resize: vertical; }
+  .dq-chiprow { display: flex; flex-wrap: wrap; gap: 5px; margin: 6px 0; }
+  .dq-chip {
+    font-family: var(--font-mono); font-size: 10px; color: var(--ink-muted);
+    background: var(--surface-2); border-radius: 3px; padding: 1px 6px;
+  }
+  .dq-chip.dq-warn { color: var(--warning); background: var(--warning-soft); }
+  .dq-chip.dq-info { color: var(--accent); background: var(--accent-soft); }
+  .dq-example {
+    font-size: var(--fs-11); color: var(--ink-dim); background: var(--surface-2);
+    border-radius: 3px; padding: 1px 6px;
+  }
+  .dq-checklist { display: flex; flex-direction: column; gap: 4px; margin: 6px 0; max-height: 220px; overflow-y: auto; }
+  .dq-checkrow { display: flex; align-items: center; gap: 6px; font-size: var(--fs-12); }
+  .dq-affected { display: flex; flex-direction: column; gap: 6px; }
+  .dq-affected-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .dq-spark { margin: 4px 0 10px; }
+  .dq-spark-svg { display: block; }
+  .dq-spark-line { fill: none; stroke: var(--accent); stroke-width: 1.5; }
+  .dq-spark-dot { fill: var(--accent); }
+  .dq-pill {
+    display: inline-block; font-size: var(--fs-11); color: var(--ink-muted);
+    background: var(--surface-2); border-radius: 3px;
+    padding: 1px 7px; margin: 2px 3px 2px 0; text-decoration: none;
+  }
+  .dq-pill:hover { color: var(--ink); background: var(--surface-3); }
+  .dq-ackrow { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .dq-status { display: block; margin-top: 8px; font-size: var(--fs-11); }
+</style>
+
+<script src="/static/js/data-quality.js?v={{ asset_v }}" defer></script>
+{% endblock %}

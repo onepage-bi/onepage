@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}OnePage — {{ _('Sign in') }}{% endblock %}
+{% block mode %}standalone{% endblock %}
+
+{% block body %}
+<div class="standalone">
+  <div class="login-card">
+    <div class="brand">
+      <span class="mark">OP</span>
+      OnePage
+    </div>
+    <h1>{{ _('Sign in') }}</h1>
+    <div class="lead">{{ _('Authenticate with your corporate identity to access the operational console.') }}</div>
+
+    {% if error %}
+    <div class="login-error" role="alert">{{ error }}</div>
+    {% endif %}
+
+    {% if sso_allowed is not defined or sso_allowed %}
+    <a class="btn primary" href="/saml/login">
+      <svg class="ico ico-12"><use href="#ic-shield"/></svg>
+      {{ _('Continue with Company SSO') }}
+      <svg class="ico ico-12"><use href="#ic-chevron-right"/></svg>
+    </a>
+    {% endif %}
+
+    {% if oidc_allowed %}
+    <a class="btn primary" href="/oidc/login">
+      <svg class="ico ico-12"><use href="#ic-shield"/></svg>
+      {{ _('Continue with SSO') }}
+      <svg class="ico ico-12"><use href="#ic-chevron-right"/></svg>
+    </a>
+    {% endif %}
+
+    {% if local_auth_allowed %}
+    <form class="login-form" method="post" action="/local-login" autocomplete="on">
+      <input class="input" name="person_id" placeholder="{{ _('Username') }}" autocomplete="username" required autofocus />
+      <input class="input" type="password" name="password" placeholder="{{ _('Password') }}" autocomplete="current-password" required />
+      <button type="submit" class="btn primary">{{ _('Sign in with password') }}</button>
+    </form>
+    {% endif %}
+
+    {% if dev_bypass_allowed %}
+    <details {% if dev_bypass_open %}open{% endif %}>
+      <summary>{{ _('↓ dev bypass') }}</summary>
+      <form class="dev-block" method="post" action="/dev-login">
+        <div style="font-size:11px;color:var(--warning);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.04em">
+          ⚠ OP_DEV_BYPASS_AUTH=true
+        </div>
+        <input class="input sm mono" name="person_id" placeholder="person_id" required />
+        <button type="submit" class="btn sm" style="width:100%">{{ _('Continue as person_id') }}</button>
+      </form>
+    </details>
+    {% endif %}
+
+    {# Anonymous page: main.js's handler falls back to writing the op_lang
+       cookie directly, since there is no account to store the choice on. #}
+    <div class="login-lang">{% include "components/lang_switch.html" %}</div>
+
+    <div class="login-foot">
+      <span>onepage {{ version | default('v2.x') }}</span>
+      <span>{{ build | default(_('build · dev')) }}</span>
+    </div>
+  </div>
+</div>
+{% endblock %}

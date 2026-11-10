@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}OnePage — {{ _('Practicum') }}{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/learn.css?v={{ asset_v }}" />
+{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'learn' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '/', false], [_('Practicum'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content">
+      <div class="lr-index">
+        <header class="lr-index-head">
+          <div class="lr-eyebrow">{{ _('practicum') }}</div>
+          <h1 class="lr-title">{{ _('Where do we start?') }}</h1>
+          <p class="lr-sub">{{ _('Two courses: the short one to make a report today, the long one to understand how it all works.') }}</p>
+        </header>
+
+        <div class="lr-courses">
+          {% for c in cards %}
+          <a class="lr-course lr-course-{{ c.id }}" href="/learn/{{ c.id }}">
+            <div class="lr-course-art">
+              <img src="/static/img/learn/{{ 'prep1' if c.id == 'prep' else 'unit3' }}.webp?v={{ asset_v }}"
+                   alt="" loading="lazy" />
+            </div>
+            <div class="lr-course-body">
+              <div class="lr-course-kicker">
+                {% if c.id == 'prep' %}{{ _('preparatory') }}{% else %}{{ _('base') }}{% endif %}
+                · {% if c.minutes >= 90 %}{{ (c.minutes / 60) | round | int }} {{ _('h') }}{% else %}{{ c.minutes }} {{ _('min') }}{% endif %}
+              </div>
+              <div class="lr-course-title">{{ c.title }}</div>
+              <div class="lr-course-sub">{{ c.subtitle }}</div>
+              <div class="lr-course-bar"><i style="width: {{ (100 * c.done / c.total) | round | int if c.total else 0 }}%"></i></div>
+              <div class="lr-course-meta">
+                <span>{{ c.done }} / {{ c.total }} {{ _('lessons') }}</span>
+                <span class="lr-course-go">
+                  {% if c.done == 0 %}{{ _('Start') }}{% elif c.done < c.total %}{{ _('Continue') }}{% else %}{{ _('Completed {ctx:4}') }}{% endif %} →
+                </span>
+              </div>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+
+        <p class="lr-index-foot">
+          {{ _h('Need a short reference rather than a course — that is the {a}Dev Guide{a_}.', a='<a href="/docs">', a_='</a>') }}
+        </p>
+      </div>
+    </div>
+  </main>
+</div>
+{% include "components/palette.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/palette.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/hotkeys.js?v={{ asset_v }}" defer></script>
+{% endblock %}

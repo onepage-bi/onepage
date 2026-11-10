@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Diploma') }} — OnePage{% endblock %}
+
+{#
+  Diploma for a completed course. The page deliberately does not look like the rest of the platform:
+  it is a document, not a screen. Hence three differences from the canon:
+
+  * no sidebar, no topbar — a sheet on a desk, not another tab;
+  * the theme is always light: a document is printed, not read at night;
+  * the whole sheet layout lives in `.dp-sheet` with a fixed A4 proportion, and the
+    same geometry is repeated in canvas (`static/js/diploma.js`), from which
+    the PDF is built. Change it here — change it there too, or screen and file will diverge.
+#}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/diploma.css?v={{ asset_v }}" />
+{% endblock %}
+
+{% block body %}
+<div class="dp-page">
+  <div class="dp-bar">
+    <a class="btn sm ghost" href="/learn/{{ course }}">{{ _('Back to the course') }}</a>
+    <div class="dp-bar-right">
+      <button type="button" class="btn sm" id="dp-print">{{ _('Print') }}</button>
+      <button type="button" class="btn sm primary" id="dp-pdf">{{ _('Download PDF') }}</button>
+    </div>
+  </div>
+
+  <div class="dp-sheet" id="dp-sheet"
+       data-name="{{ person.name }}"
+       data-title="{{ person.title }}"
+       data-dept="{{ person.dept }}"
+       data-course="{{ fin.title }}"
+       data-lessons="{{ fin.lessons }}"
+       data-xp="{{ fin.xp }}"
+       data-level="{{ fin.level }}"
+       data-date="{{ finished.strftime('%d.%m.%Y') if finished else '' }}"
+       data-number="{{ number }}"
+       data-school="{{ _('Practicum') }}"
+       data-diploma="{{ _('Diploma') }}"
+       data-lead="{{ _('this certifies that') }}"
+       data-course-word="{{ _('completed the course') }}"
+       data-meta="{{ fin.lessons }} {{ _('lessons') }} · {{ fin.xp }} XP · {{ _('level') }} «{{ fin.level }}»"
+       data-date-word="{{ _('date') }}"
+       data-number-word="{{ _('number') }}"
+       data-art="/static/img/learn/diploma-art.png?v={{ asset_v }}">
+    <img class="dp-art" src="/static/img/learn/diploma-art.png?v={{ asset_v }}" alt="" />
+    <div class="dp-inner">
+      <div class="dp-brand">
+        <span class="dp-mark">OP</span>
+        <span class="dp-eyebrow">OnePage · {{ _('Practicum') }}</span>
+      </div>
+
+      <h1 class="dp-title">{{ _('Diploma') }}</h1>
+      <div class="dp-rule"></div>
+
+      <div class="dp-lead">{{ _('this certifies that') }}</div>
+      <div class="dp-name">{{ person.name }}</div>
+      {% if person.title or person.dept %}
+      <div class="dp-role">
+        {{ person.title }}{% if person.title and person.dept %} · {% endif %}{{ person.dept }}
+      </div>
+      {% endif %}
+
+      <div class="dp-lead dp-lead-2">{{ _('completed the course') }}</div>
+      <div class="dp-course">{{ fin.title }}</div>
+
+      <div class="dp-meta">
+        {{ fin.lessons }} {{ _('lessons') }} · {{ fin.xp }} XP · {{ _('level') }} «{{ fin.level }}»
+      </div>
+
+      <div class="dp-foot">
+        <span>{{ _('date') }} {{ finished.strftime('%d.%m.%Y') if finished else '' }}</span>
+        <span>{{ _('number') }} {{ number }}</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="dp-note">
+    {{ _('The diploma is built from your own progress and opens only for you. The number is reproducible: the same course gives the same number.') }}
+  </p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/diploma.js?v={{ asset_v }}" defer></script>
+{% endblock %}

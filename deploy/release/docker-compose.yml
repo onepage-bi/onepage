@@ -1,0 +1,82 @@
+# OnePage: first-install compose (prebuilt image, password sign-in).
+#
+# No `build:` here: the image arrives as onepage-image.tar.gz (`docker load`).
+# Everything that depends on your site comes from the .env file next to this one
+# (copy env.template to .env). Performance values below are hard-coded on
+# purpose; they were measured, not guessed (docs/PERF_DECISIONS.md).
+
+services:
+  onepage:
+    image: onepage:latest
+
+    ports:
+      # host port from .env (default 8000) -> the app's port inside the container.
+      # Bound to all interfaces because this is a server. With a reverse proxy on
+      # the same machine set OP_BIND=127.0.0.1 in .env (INSTALL.md, "Behind HTTPS").
+      - "${OP_BIND:-0.0.0.0}:${OP_PUBLIC_PORT:-8000}:8743"
+
+    volumes:
+      # SQLite and uploaded files. Keep it: without the mount the database lives
+      # inside the container and is lost when the container is recreated.
+      - ./data:/data
+
+    environment:
+      OP_HOST: "0.0.0.0"
+      OP_PORT: "8743"
+      OP_WORKERS: "1"
+      OP_DB_PATH: "/data/onepage.db"
+      OP_UPLOADS_DIR: "/data/uploads"
+
+      # ── Site values, from .env ──────────────────────────────────────────────
+      OP_SAML_SP_BASE_URL: "${OP_SAML_SP_BASE_URL:?set OP_SAML_SP_BASE_URL in .env}"
+      OP_SAML_HTTPS: "${OP_SAML_HTTPS:-false}"
+      OP_INITIAL_ADMIN: "${OP_INITIAL_ADMIN:-admin}"
+      OP_LOCAL_USERS: "${OP_LOCAL_USERS:?set OP_LOCAL_USERS in .env (see INSTALL.md step 2)}"
+      # A second address the site is opened under (scheme+host[:port]); usually empty.
+      OP_TRUSTED_ORIGINS: "${OP_TRUSTED_ORIGINS:-}"
+
+      # Passwordless dev sign-in: never on a server.
+      OP_DEV_BYPASS_AUTH: "false"
+
+      # SSO via SAML is not part of this kit's defaults (see docs/DEPLOY.md).
+      OP_SAML_STRICT: "false"
+      OP_SAML_IDP_ENTITY_ID: ""
+      OP_SAML_IDP_SSO_URL: ""
+      OP_SAML_IDP_CERT: ""
+
+      # ── Optional features, off unless you switch them on in .env ────────────
+      OP_EXPLORE_ENABLED: "${OP_EXPLORE_ENABLED:-false}"
+      OP_QUESTS_ENABLED: "${OP_QUESTS_ENABLED:-false}"
+
+      # ── Telemetry (see docs/PERF_DECISIONS.md) ──────────────────────────────
+      OP_PERF_ENABLED: "true"
+      OP_PERF_SAMPLE: "1.0"
+      OP_PERF_ADAPTIVE: "true"
+      OP_PERF_TARGET_RPS: "200"
+      OP_PERF_SAMPLE_FLOOR: "0.01"
+      OP_PERF_SQL: "false"
+      OP_PERF_CLIENT: "true"
+      OP_PERF_DIR: "/data/perflog"
+      OP_PERF_RETENTION_DAYS: "14"
+
+      # ── Render and cache ────────────────────────────────────────────────────
+      OP_PREVIEW_MAX_BYTES: "1500000"
+      OP_SNAPSHOT_EXTERNAL: "false"
+      OP_CACHE_ENCODED: "true"
+      OP_CACHE_WARM: "20"
+      OP_CACHE_MAX_MB: "256"
+      OP_TEMPLATES_AUTO_RELOAD: "false"
+      OP_ACCESS_LOG: "false"
+
+    healthcheck:
+      test:
+        - "CMD"
+        - "python3"
+        - "-c"
+        - "import urllib.request; urllib.request.urlopen('http://localhost:8743/health?deep=1')"
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+
+    restart: unless-stopped

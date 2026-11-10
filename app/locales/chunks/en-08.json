@@ -1,0 +1,473 @@
+{
+  "_meta": {
+    "chunk": "08",
+    "count": 150,
+    "lang": "en",
+    "source_files": [
+      "static/js/gen-engine.js",
+      "static/js/gen-worker.js",
+      "static/js/generators.js",
+      "static/js/learn.js",
+      "static/js/lineage.js",
+      "static/js/palette.js",
+      "static/js/presentations.js"
+    ]
+  },
+  "strings": {
+    " and {p1} slide(s)": {
+      "ref": "static/js/presentations.js:526"
+    },
+    "1…9 to pick, Enter to answer": {
+      "ref": "static/js/learn.js:380"
+    },
+    "1…9 to pick, Enter to continue. The review comes after you submit.": {
+      "ref": "static/js/learn.js:379"
+    },
+    "A course on the platform: lessons and checks": {
+      "ref": "static/js/palette.js:23"
+    },
+    "A special card is waiting for you": {
+      "ref": "static/js/learn.js:618"
+    },
+    "All slides are up to date — ready to present.": {
+      "ref": "static/js/presentations.js:493"
+    },
+    "Answer {ctx:2}": {
+      "ref": "static/js/learn.js:376"
+    },
+    "Collapse": {
+      "ref": "static/js/learn.js:531"
+    },
+    "Copy this text in full": {
+      "ref": "static/js/learn.js:584"
+    },
+    "Could not check that — try again": {
+      "ref": "static/js/learn.js:420"
+    },
+    "Could not save the result — try again": {
+      "ref": "static/js/learn.js:795"
+    },
+    "Counted. The next lesson is open.": {
+      "ref": "static/js/learn.js:781"
+    },
+    "Course finished": {
+      "ref": "static/js/learn.js:603"
+    },
+    "Creating…": {
+      "ref": "static/js/generators.js:120"
+    },
+    "Daily surprise, quiz, rating": {
+      "ref": "static/js/palette.js:20"
+    },
+    "Delete presentation{p1}? Reports stay, only uploaded images and PDFs are removed.": {
+      "ref": "static/js/presentations.js:526"
+    },
+    "Done {ctx:2}": {
+      "ref": "static/js/learn.js:416"
+    },
+    "DuckDB query engine failed to load from {p1} — contact admin (duckdb package is not self-hosted). {p2}": {
+      "ref": "static/js/gen-worker.js:802"
+    },
+    "Enter — next, Backspace — back": {
+      "ref": "static/js/learn.js:323"
+    },
+    "Expand": {
+      "ref": "static/js/learn.js:521"
+    },
+    "Failed to load": {
+      "ref": "static/js/generators.js:86"
+    },
+    "Failed to load _explore.py: HTTP {p1}": {
+      "ref": "static/js/gen-worker.js:805"
+    },
+    "Failed to load _folder_check.py: HTTP {p1}": {
+      "ref": "static/js/gen-worker.js:813"
+    },
+    "Failed to remove slide": {
+      "ref": "static/js/presentations.js:390"
+    },
+    "Failed to save note": {
+      "ref": "static/js/presentations.js:380"
+    },
+    "Failed to save order": {
+      "ref": "static/js/presentations.js:518"
+    },
+    "File rejected": {
+      "ref": "static/js/presentations.js:679"
+    },
+    "File skipped: {p1} ({p2}) — changed or disappeared during run.": {
+      "ref": "static/js/gen-worker.js:513"
+    },
+    "Further reading": {
+      "ref": "static/js/learn.js:336"
+    },
+    "It never drops in the daily surprise and cannot be traded — it exists only for a finished course. Open it in Quests.": {
+      "ref": "static/js/learn.js:620"
+    },
+    "Lesson complete": {
+      "ref": "static/js/learn.js:430"
+    },
+    "Name saved": {
+      "ref": "static/js/presentations.js:544"
+    },
+    "Need attention: {p1} of {p2}": {
+      "ref": "static/js/presentations.js:492"
+    },
+    "New presentation": {
+      "ref": "static/js/presentations.js:736"
+    },
+    "Next lesson": {
+      "ref": "static/js/learn.js:784"
+    },
+    "No generators registered": {
+      "ref": "static/js/generators.js:75"
+    },
+    "No generators registered — ask an administrator": {
+      "ref": "static/js/generators.js:77"
+    },
+    "Not passed yet": {
+      "ref": "static/js/learn.js:749"
+    },
+    "Not quite. ": {
+      "ref": "static/js/learn.js:720"
+    },
+    "Note saved": {
+      "ref": "static/js/presentations.js:381"
+    },
+    "Note ✓": {
+      "ref": "static/js/presentations.js:370"
+    },
+    "Open the card": {
+      "ref": "static/js/learn.js:627"
+    },
+    "Open the page": {
+      "ref": "static/js/learn.js:395"
+    },
+    "Page {p1} of {p2}…": {
+      "ref": "static/js/presentations.js:692"
+    },
+    "Pages linking to reports and other systems": {
+      "ref": "static/js/palette.js:19"
+    },
+    "Pick a generator": {
+      "ref": "static/js/generators.js:116"
+    },
+    "Presentation creation failed": {
+      "ref": "static/js/presentations.js:738"
+    },
+    "Presentation has no slides yet.": {
+      "ref": "static/js/presentations.js:470"
+    },
+    "Publishing… {ctx:2}": {
+      "ref": "static/js/gen-engine.js:2305"
+    },
+    "Quality checks stopped: 20 s budget exceeded — remaining files unchecked.": {
+      "ref": "static/js/gen-worker.js:606"
+    },
+    "Reading the file list…": {
+      "ref": "static/js/gen-engine.js:1470"
+    },
+    "Remember this choice": {
+      "ref": "static/js/gen-engine.js:1732"
+    },
+    "Remove slide": {
+      "ref": "static/js/presentations.js:386"
+    },
+    "Report index loaded ({p1} partitions, {p2} MB)": {
+      "ref": "static/js/gen-engine.js:250"
+    },
+    "Report index not built: {p1} — published report unaffected.": {
+      "ref": "static/js/gen-engine.js:259"
+    },
+    "Report index not loaded (HTTP {p1}) — published report unaffected.": {
+      "ref": "static/js/gen-engine.js:223"
+    },
+    "Report index not published (HTTP {p1}) — published report unaffected.": {
+      "ref": "static/js/gen-engine.js:246"
+    },
+    "Report index: 0/{p1}": {
+      "ref": "static/js/gen-engine.js:147"
+    },
+    "Report index: {p1}/{p2}": {
+      "ref": "static/js/gen-engine.js:170"
+    },
+    "Resolving folders…": {
+      "ref": "static/js/gen-engine.js:3248"
+    },
+    "Restore the original": {
+      "ref": "static/js/learn.js:560"
+    },
+    "Right. ": {
+      "ref": "static/js/learn.js:720"
+    },
+    "Run did not start: {p1}{p2}": {
+      "ref": "static/js/gen-engine.js:2273"
+    },
+    "Run here, in the browser": {
+      "ref": "static/js/gen-engine.js:1917"
+    },
+    "Run on this computer (op-agent)": {
+      "ref": "static/js/gen-engine.js:1918"
+    },
+    "Run rejected by agent.": {
+      "ref": "static/js/gen-engine.js:3176"
+    },
+    "Saving the choice…": {
+      "ref": "static/js/gen-engine.js:1786"
+    },
+    "Selected only": {
+      "ref": "static/js/gen-engine.js:1683"
+    },
+    "Server error {status}": {
+      "ref": "static/js/generators.js:71"
+    },
+    "Show new report": {
+      "ref": "static/js/gen-engine.js:2347"
+    },
+    "Skipped {p1} files — {p2}. Report built without them: file changed or disappeared during run.": {
+      "ref": "static/js/gen-engine.js:2975"
+    },
+    "Someone changed this folder's rules — the list shown is current; check it and try again.": {
+      "ref": "static/js/gen-engine.js:1807"
+    },
+    "Start over": {
+      "ref": "static/js/learn.js:167"
+    },
+    "Starting run…": {
+      "ref": "static/js/gen-engine.js:2253"
+    },
+    "Submit": {
+      "ref": "static/js/learn.js:375"
+    },
+    "That is a lot: {p1} files, {p2} MB. Check that folders.ini names the folder you meant and not a whole drive.": {
+      "ref": "static/js/gen-engine.js:2069"
+    },
+    "That was the last chapter. Below is what you take with you.": {
+      "ref": "static/js/learn.js:604"
+    },
+    "The agent could not resolve the folders: {p1}": {
+      "ref": "static/js/gen-engine.js:1885"
+    },
+    "The chapters are Russian for now — the interface language is switched in the top bar.": {
+      "ref": "static/js/learn.js:151"
+    },
+    "The choice is remembered for this report and applies to later runs.": {
+      "ref": "static/js/gen-engine.js:1738"
+    },
+    "The connected folders are empty.": {
+      "ref": "static/js/gen-engine.js:1699"
+    },
+    "The folder holds {p1} files — more than one decision can cover ({p2}).": {
+      "ref": "static/js/gen-engine.js:1422"
+    },
+    "The list is incomplete: the agent ran out of its {p1} s budget on {p2}. This is an estimate, not the full list.": {
+      "ref": "static/js/gen-engine.js:2008"
+    },
+    "The local copy had no bridge to the data, but the files themselves will go to the platform — the report assembles fully there.": {
+      "ref": "static/js/gen-engine.js:2194"
+    },
+    "The op-agent stopped answering.": {
+      "ref": "static/js/gen-engine.js:1884"
+    },
+    "The report was published, but the agent did not mark the run as published — it will offer the catch-up again. There is no need to publish twice.": {
+      "ref": "static/js/gen-engine.js:2345"
+    },
+    "The task is not done yet.": {
+      "ref": "static/js/learn.js:788"
+    },
+    "There are {p1} unpublished runs; the newest one becomes the new version.": {
+      "ref": "static/js/gen-engine.js:2190"
+    },
+    "There is a report computed on this machine while offline": {
+      "ref": "static/js/gen-engine.js:2179"
+    },
+    "This is an error inside the generator itself; its last lines are below. The platform and the agent worked as expected — fix the input file or the generator code.": {
+      "ref": "static/js/gen-engine.js:3060"
+    },
+    "Title is required": {
+      "ref": "static/js/generators.js:115"
+    },
+    "To the questions": {
+      "ref": "static/js/learn.js:348"
+    },
+    "Total {p1} files · {p2} MB": {
+      "ref": "static/js/gen-engine.js:2014"
+    },
+    "Try again": {
+      "ref": "static/js/learn.js:731"
+    },
+    "Unit test passed": {
+      "ref": "static/js/learn.js:749"
+    },
+    "Unpacking and verifying sha256…": {
+      "ref": "static/js/gen-engine.js:3362"
+    },
+    "What the run will read": {
+      "ref": "static/js/gen-engine.js:1672"
+    },
+    "What to take away": {
+      "ref": "static/js/learn.js:330"
+    },
+    "What we will read…": {
+      "ref": "static/js/gen-engine.js:557"
+    },
+    "Where to run": {
+      "ref": "static/js/gen-engine.js:1916"
+    },
+    "You do not have the rights for this action — the chapter counts without it. Come back if you get them: the practice is worth it.": {
+      "ref": "static/js/learn.js:402"
+    },
+    "You had already passed this lesson.": {
+      "ref": "static/js/learn.js:790"
+    },
+    "a task on the platform": {
+      "ref": "static/js/learn.js:388"
+    },
+    "a {n}-line block|{n}-line block": {
+      "plural": true,
+      "ref": "static/js/learn.js:525"
+    },
+    "cache read failed: {p1}": {
+      "ref": "static/js/gen-worker.js:962"
+    },
+    "case analysis": {
+      "ref": "static/js/learn.js:680"
+    },
+    "check {n} of {total}": {
+      "ref": "static/js/learn.js:356"
+    },
+    "clear all": {
+      "ref": "static/js/gen-engine.js:1567"
+    },
+    "design call": {
+      "ref": "static/js/learn.js:684"
+    },
+    "do not read": {
+      "ref": "static/js/gen-engine.js:1642"
+    },
+    "estimate": {
+      "ref": "static/js/learn.js:682"
+    },
+    "file probably open in Excel — close it and run again, or download via button": {
+      "ref": "static/js/gen-engine.js:3020"
+    },
+    "folder or file not found": {
+      "ref": "static/js/gen-engine.js:1892"
+    },
+    "folders.ini has no such folder set. Available: {p1}.": {
+      "ref": "static/js/gen-engine.js:1880"
+    },
+    "folders.ini on this computer has no section for this report — add [folders:{p1}] and name the folders.": {
+      "ref": "static/js/gen-engine.js:1877"
+    },
+    "level “{level}”": {
+      "ref": "static/js/learn.js:610"
+    },
+    "main set": {
+      "ref": "static/js/gen-engine.js:1969"
+    },
+    "matched no pattern": {
+      "ref": "static/js/gen-engine.js:1634"
+    },
+    "no access": {
+      "ref": "static/js/gen-engine.js:1893"
+    },
+    "no file matched the mask": {
+      "ref": "static/js/gen-engine.js:1895"
+    },
+    "no write permission to folder — re-select and grant access": {
+      "ref": "static/js/gen-engine.js:3023"
+    },
+    "not a folder": {
+      "ref": "static/js/gen-engine.js:1894"
+    },
+    "not read — rule «{p1}»": {
+      "ref": "static/js/gen-engine.js:1611"
+    },
+    "optional practice": {
+      "ref": "static/js/learn.js:388"
+    },
+    "pattern {p1}": {
+      "ref": "static/js/gen-engine.js:1612"
+    },
+    "read": {
+      "ref": "static/js/gen-engine.js:1612"
+    },
+    "read as…": {
+      "ref": "static/js/gen-engine.js:1651"
+    },
+    "read error": {
+      "ref": "static/js/gen-worker.js:513"
+    },
+    "reason unknown": {
+      "ref": "static/js/lineage.js:335"
+    },
+    "reference table not yet created": {
+      "ref": "static/js/gen-engine.js:826"
+    },
+    "reference table not yet populated": {
+      "ref": "static/js/gen-engine.js:826"
+    },
+    "restore all": {
+      "ref": "static/js/gen-engine.js:1572"
+    },
+    "skipped: {p1}": {
+      "ref": "static/js/gen-engine.js:1664"
+    },
+    "spot the bug": {
+      "ref": "static/js/learn.js:683"
+    },
+    "the course is complete": {
+      "ref": "static/js/learn.js:168"
+    },
+    "unit": {
+      "ref": "static/js/learn.js:193"
+    },
+    "unnamed": {
+      "ref": "static/js/gen-engine.js:1881"
+    },
+    "what breaks": {
+      "ref": "static/js/learn.js:681"
+    },
+    "you can edit it right here": {
+      "ref": "static/js/learn.js:527"
+    },
+    "{done} of {total} lessons": {
+      "ref": "static/js/learn.js:160"
+    },
+    "{n} file without a schema: {p3}|{n} files without a schema: {p3}": {
+      "plural": true,
+      "ref": "static/js/lineage.js:326"
+    },
+    "{n} file · {p2} MB|{n} files · {p2} MB": {
+      "plural": true,
+      "ref": "static/js/gen-engine.js:1675"
+    },
+    "{n} lesson|{n} lessons": {
+      "plural": true,
+      "ref": "static/js/learn.js:607"
+    },
+    "{p1} MB": {
+      "ref": "static/js/gen-engine.js:1600"
+    },
+    "{p1} file(s) without schema: {p2}": {
+      "ref": "static/js/lineage.js:328"
+    },
+    "{p1} files · {p2} MB": {
+      "ref": "static/js/gen-engine.js:1992"
+    },
+    "{p1} of {p2}": {
+      "ref": "static/js/gen-engine.js:1562"
+    },
+    "{p1} row|{p1} rows": {
+      "plural": true,
+      "ref": "static/js/lineage.js:279"
+    },
+    "{right} of {total} · pass mark {need}": {
+      "ref": "static/js/learn.js:744"
+    },
+    "{xp} XP to «{level}»": {
+      "ref": "static/js/learn.js:173"
+    }
+  }
+}

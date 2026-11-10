@@ -1,0 +1,19 @@
+# SAML sign-in (ADFS and other SSO). Installed SEPARATELY:
+#
+#     pip install -r requirements-saml.txt
+#
+# Why it is not in requirements.txt: python3-saml pulls in `xmlsec`, which has no
+# prebuilt wheels: it needs the system `libxmlsec1-dev libxml2-dev pkg-config`
+# and a compiler. On a clean macOS or Windows a plain `pip install -r
+# requirements.txt` broke right there, i.e. the project would not start for
+# someone who does not need SSO at all.
+#
+# Debian/Ubuntu:  apt-get install libxmlsec1-dev libxml2-dev pkg-config
+# macOS:          brew install libxmlsec1 pkg-config
+#
+# Without this package the platform works fully except /saml/*: sign-in goes
+# by password (OP_LOCAL_USERS), via OIDC or dev-login. The code handles this
+# gracefully: app/auth/saml.py imports the library softly and sets
+# SAML_AVAILABLE=False, and preflight refuses to start if SSO is configured
+# but the package is missing (otherwise the failure would only show on the login page).
+python3-saml==1.16.0

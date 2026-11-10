@@ -1,0 +1,467 @@
+{
+  "_meta": {
+    "chunk": "11",
+    "count": 150,
+    "lang": "en",
+    "source_files": [
+      "templates/pages/admin.html",
+      "templates/pages/admin_employees.html",
+      "templates/pages/admin_generators.html",
+      "templates/pages/admin_quests.html",
+      "templates/pages/admin_quests_stats.html"
+    ]
+  },
+  "strings": {
+    "% viewed": {
+      "ref": "templates/pages/admin_quests_stats.html:172"
+    },
+    "'First time' — person's first daily reward. 'Quiz' — completed / started. 'Bonus reveals' — cards from tasks, quiz and exchange.": {
+      "ref": "templates/pages/admin_quests_stats.html:203"
+    },
+    "Active staff": {
+      "ref": "templates/pages/admin_employees.html:38"
+    },
+    "Add": {
+      "ref": "templates/pages/admin_generators.html:76"
+    },
+    "Archive": {
+      "ref": "templates/pages/admin_generators.html:181"
+    },
+    "Archived": {
+      "ref": "templates/pages/admin_generators.html:166"
+    },
+    "Average per working day before season {b}{base}{b_} ({base_days} days.), in season {b}{season}{b_} ({season_days} completed days.), today {b}{today}{b_}.": {
+      "ref": "templates/pages/admin_quests_stats.html:145"
+    },
+    "Base weight, %": {
+      "ref": "templates/pages/admin_quests.html:151"
+    },
+    "Best": {
+      "ref": "templates/pages/admin_quests_stats.html:239"
+    },
+    "Bonus reveals": {
+      "ref": "templates/pages/admin_quests_stats.html:189"
+    },
+    "Bundle (.zip)": {
+      "ref": "templates/pages/admin_generators.html:40"
+    },
+    "Cancel": {
+      "ref": "templates/pages/admin_generators.html:524"
+    },
+    "Card": {
+      "ref": "templates/pages/admin_quests.html:149"
+    },
+    "Card count": {
+      "ref": "templates/pages/admin_quests_stats.html:241"
+    },
+    "Card list": {
+      "ref": "templates/pages/admin_quests.html:144"
+    },
+    "Changes in last": {
+      "ref": "templates/pages/admin_employees.html:48"
+    },
+    "Check": {
+      "ref": "templates/pages/admin_quests.html:133"
+    },
+    "Close": {
+      "ref": "templates/pages/admin_generators.html:304"
+    },
+    "Companion for the full collection": {
+      "ref": "templates/pages/admin_quests.html:58"
+    },
+    "Completed {ctx:2}": {
+      "ref": "templates/pages/admin_quests_stats.html:172"
+    },
+    "Core —": {
+      "ref": "templates/pages/admin_quests_stats.html:169"
+    },
+    "Correct": {
+      "ref": "templates/pages/admin_quests_stats.html:241"
+    },
+    "Created": {
+      "ref": "templates/pages/admin_generators.html:132"
+    },
+    "Current version": {
+      "ref": "templates/pages/admin_generators.html:129"
+    },
+    "Daily reward": {
+      "ref": "templates/pages/admin_quests_stats.html:189"
+    },
+    "Daily rewards by day": {
+      "ref": "templates/pages/admin_quests_stats.html:186"
+    },
+    "Dashboard": {
+      "ref": "templates/pages/admin_generators.html:206"
+    },
+    "Day": {
+      "ref": "templates/pages/admin_quests_stats.html:189"
+    },
+    "Days": {
+      "ref": "templates/pages/admin_quests_stats.html:239"
+    },
+    "Definition": {
+      "ref": "templates/pages/admin_generators.html:64"
+    },
+    "Delete this term?": {
+      "ref": "templates/pages/admin_generators.html:564"
+    },
+    "Department": {
+      "ref": "templates/pages/admin_quests_stats.html:238"
+    },
+    "Do they visit platform more often": {
+      "ref": "templates/pages/admin_quests_stats.html:120"
+    },
+    "Does the mechanic work": {
+      "ref": "templates/pages/admin_quests_stats.html:76"
+    },
+    "Done: {name} version {n} is registered.": {
+      "ref": "templates/pages/admin_generators.html:300"
+    },
+    "Drawn": {
+      "ref": "templates/pages/admin_quests.html:152"
+    },
+    "Edit": {
+      "ref": "templates/pages/admin_generators.html:100"
+    },
+    "Engine": {
+      "ref": "templates/pages/admin_generators.html:210"
+    },
+    "Enter term and definition": {
+      "ref": "templates/pages/admin_generators.html:539"
+    },
+    "Error": {
+      "ref": "templates/pages/admin_generators.html:212"
+    },
+    "Export CSV from Greenplum (DBeaver or psql):": {
+      "ref": "templates/pages/admin_employees.html:72"
+    },
+    "Failed to delete": {
+      "ref": "templates/pages/admin_generators.html:568"
+    },
+    "Failed to save ({p1})": {
+      "ref": "templates/pages/admin_generators.html:553"
+    },
+    "File received. The server is checking the manifest and dependencies…": {
+      "ref": "templates/pages/admin_generators.html:299"
+    },
+    "Fix the bundle and upload it again — nothing was changed on the server.": {
+      "ref": "templates/pages/admin_generators.html:306"
+    },
+    "Generator «{name}» is already registered. Upload this bundle as a new version of it?": {
+      "ref": "templates/pages/admin_generators.html:307"
+    },
+    "Git": {
+      "ref": "templates/pages/admin_generators.html:133"
+    },
+    "Glossary": {
+      "ref": "templates/pages/admin_generators.html:53"
+    },
+    "Grant": {
+      "ref": "templates/pages/admin.html:226"
+    },
+    "Holidays": {
+      "ref": "templates/pages/admin_quests.html:101"
+    },
+    "Import": {
+      "ref": "templates/pages/admin_quests.html:134"
+    },
+    "Inactive staff accounts": {
+      "ref": "templates/pages/admin.html:67"
+    },
+    "LLM · 'Ask' on /explore": {
+      "ref": "templates/pages/admin.html:180"
+    },
+    "Last login": {
+      "ref": "templates/pages/admin.html:110"
+    },
+    "Last name / first name (Russian or English), person_id, email…": {
+      "ref": "templates/pages/admin_employees.html:92"
+    },
+    "Last name, first name or person_id…": {
+      "ref": "templates/pages/admin.html:156"
+    },
+    "Last refresh": {
+      "ref": "templates/pages/admin_employees.html:43"
+    },
+    "Last seen": {
+      "ref": "templates/pages/admin.html:81"
+    },
+    "Load built-in bank (45)": {
+      "ref": "templates/pages/admin_quests.html:135"
+    },
+    "Model (empty = provider default)": {
+      "ref": "templates/pages/admin.html:203"
+    },
+    "Name": {
+      "ref": "templates/pages/admin_generators.html:128"
+    },
+    "New version": {
+      "ref": "templates/pages/admin_generators.html:172"
+    },
+    "No such accounts.": {
+      "ref": "templates/pages/admin.html:88"
+    },
+    "Not registered: the connection dropped before the server answered.": {
+      "ref": "templates/pages/admin_generators.html:303"
+    },
+    "Not registered: the server rejected the bundle ({status}).": {
+      "ref": "templates/pages/admin_generators.html:302"
+    },
+    "Ollama (local model)": {
+      "ref": "templates/pages/admin.html:186"
+    },
+    "One ISO date (YYYY-MM-DD) per line. These days exclude from streak count and season scale.": {
+      "ref": "templates/pages/admin_quests.html:104"
+    },
+    "OnePage account active but Staff reference table ({a}/admin/employees{a_}) this person no longer works. Deactivation closes their sessions immediately.": {
+      "ref": "templates/pages/admin.html:72"
+    },
+    "OnePage account is listed as active even though the employee is already inactive in the staff directory:|OnePage accounts are listed as active even though the employees are already inactive in the staff directory:": {
+      "plural": true,
+      "ref": "templates/pages/admin_employees.html:61"
+    },
+    "OnePage — Admin · Quests": {
+      "ref": "templates/pages/admin_quests.html:2"
+    },
+    "OnePage — Admin · Staff": {
+      "ref": "templates/pages/admin_employees.html:2"
+    },
+    "Only designated admin can assign access.": {
+      "ref": "templates/pages/admin.html:229"
+    },
+    "Open on Users page": {
+      "ref": "templates/pages/admin_employees.html:63"
+    },
+    "Optional": {
+      "ref": "templates/pages/admin.html:161"
+    },
+    "Owner": {
+      "ref": "templates/pages/admin_generators.html:207"
+    },
+    "Paid API access only for users in this list (key and server calls); Ollama available to all. Assigned by designated admin ({c}OP_LLM_ACCESS_ADMINS{c_}).": {
+      "ref": "templates/pages/admin.html:219"
+    },
+    "Provider": {
+      "ref": "templates/pages/admin.html:184"
+    },
+    "Quests enabled": {
+      "ref": "templates/pages/admin_quests.html:44"
+    },
+    "Quiz bank": {
+      "ref": "templates/pages/admin_quests.html:120"
+    },
+    "Rarity": {
+      "ref": "templates/pages/admin_quests.html:150"
+    },
+    "Refresh": {
+      "ref": "templates/pages/admin_employees.html:80"
+    },
+    "Refresh from export": {
+      "ref": "templates/pages/admin_employees.html:69"
+    },
+    "Refresh now": {
+      "ref": "templates/pages/admin_generators.html:305"
+    },
+    "Register generator": {
+      "ref": "templates/pages/admin_generators.html:36"
+    },
+    "Reset to env": {
+      "ref": "templates/pages/admin_quests.html:51"
+    },
+    "Role": {
+      "ref": "templates/pages/admin.html:80"
+    },
+    "Runs": {
+      "ref": "templates/pages/admin_generators.html:131"
+    },
+    "Save": {
+      "ref": "templates/pages/admin.html:208"
+    },
+    "Save holidays": {
+      "ref": "templates/pages/admin_quests.html:108"
+    },
+    "Scope": {
+      "ref": "templates/pages/admin_generators.html:84"
+    },
+    "Scopes": {
+      "ref": "templates/pages/admin.html:61"
+    },
+    "Search by person_id or name…": {
+      "ref": "templates/pages/admin.html:96"
+    },
+    "Search reference table": {
+      "ref": "templates/pages/admin_employees.html:88"
+    },
+    "Season length (working days)": {
+      "ref": "templates/pages/admin_quests.html:81"
+    },
+    "Season start": {
+      "ref": "templates/pages/admin_quests.html:70"
+    },
+    "Sending {name} ({size})…": {
+      "ref": "templates/pages/admin_generators.html:298"
+    },
+    "Sessions": {
+      "ref": "templates/pages/admin.html:42"
+    },
+    "Share, %": {
+      "ref": "templates/pages/admin_quests.html:153"
+    },
+    "Staff": {
+      "ref": "templates/pages/admin.html:60"
+    },
+    "Started by": {
+      "ref": "templates/pages/admin_generators.html:208"
+    },
+    "Stats →": {
+      "ref": "templates/pages/admin_quests.html:21"
+    },
+    "Status": {
+      "ref": "templates/pages/admin_generators.html:134"
+    },
+    "Term": {
+      "ref": "templates/pages/admin_generators.html:60"
+    },
+    "Term added": {
+      "ref": "templates/pages/admin_generators.html:549"
+    },
+    "Term updated": {
+      "ref": "templates/pages/admin_generators.html:549"
+    },
+    "The bundle is fine — this is simply a different place for it: a new version of an existing generator, not a new generator.": {
+      "ref": "templates/pages/admin_generators.html:309"
+    },
+    "The page refreshes in a moment to show it.": {
+      "ref": "templates/pages/admin_generators.html:301"
+    },
+    "Unarchive": {
+      "ref": "templates/pages/admin_generators.html:181"
+    },
+    "Upload a bundle above to register the first one.": {
+      "ref": "templates/pages/admin_generators.html:194"
+    },
+    "Upload as a new version": {
+      "ref": "templates/pages/admin_generators.html:308"
+    },
+    "Upload bundle": {
+      "ref": "templates/pages/admin_generators.html:43"
+    },
+    "Version": {
+      "ref": "templates/pages/admin_generators.html:209"
+    },
+    "Versions": {
+      "ref": "templates/pages/admin_generators.html:130"
+    },
+    "Visibility": {
+      "ref": "templates/pages/admin_generators.html:68"
+    },
+    "When (UTC)": {
+      "ref": "templates/pages/admin_generators.html:205"
+    },
+    "[ glossary empty ]": {
+      "ref": "templates/pages/admin_generators.html:110"
+    },
+    "[ no failed runs in the last 50 ]": {
+      "ref": "templates/pages/admin_generators.html:235"
+    },
+    "[ no generators registered yet ]": {
+      "ref": "templates/pages/admin_generators.html:193"
+    },
+    "access control": {
+      "ref": "templates/pages/admin.html:18"
+    },
+    "active questions:": {
+      "ref": "templates/pages/admin_quests.html:124"
+    },
+    "add first term using form above.": {
+      "ref": "templates/pages/admin_generators.html:111"
+    },
+    "added / updated / deactivated": {
+      "ref": "templates/pages/admin_employees.html:52"
+    },
+    "administration": {
+      "ref": "templates/pages/admin.html:18"
+    },
+    "administration · quests": {
+      "ref": "templates/pages/admin_quests.html:17"
+    },
+    "administration · report generators": {
+      "ref": "templates/pages/admin_generators.html:17"
+    },
+    "administration · staff {ctx:HR directory of people, not the platform Reference tables}": {
+      "ref": "templates/pages/admin_employees.html:20"
+    },
+    "and upload file here. Sensitive fields (birth date, phone, time off) discarded on import. Staff missing from export marked inactive.": {
+      "ref": "templates/pages/admin_employees.html:74"
+    },
+    "build {sha}": {
+      "ref": "templates/pages/admin.html:18"
+    },
+    "bundle.zip with manifest.json at its root; the name comes from the manifest.": {
+      "ref": "templates/pages/admin_generators.html:46"
+    },
+    "entire platform": {
+      "ref": "templates/pages/admin_generators.html:94"
+    },
+    "error/lost generation_runs will appear here with their dashboard, owner and generator version.": {
+      "ref": "templates/pages/admin_generators.html:236"
+    },
+    "failed runs (last 50)": {
+      "ref": "templates/pages/admin_generators.html:199"
+    },
+    "leave empty to keep unchanged": {
+      "ref": "templates/pages/admin.html:196"
+    },
+    "no": {
+      "ref": "templates/pages/admin_quests.html:125"
+    },
+    "off — the creature, the den and the autumn theme disappear for everyone; collections are untouched": {
+      "ref": "templates/pages/admin_quests.html:60"
+    },
+    "operator terms ('SL', 'hub', 'network') — platform-wide (visible to all) or tied to one generator; appear in model hints for questions on /explore.": {
+      "ref": "templates/pages/admin_generators.html:56"
+    },
+    "overlay": {
+      "ref": "templates/pages/admin_quests.html:50"
+    },
+    "overlay (this setting) overrides env var until reset": {
+      "ref": "templates/pages/admin_quests.html:46"
+    },
+    "registered generators · versions + run counts from generation_runs": {
+      "ref": "templates/pages/admin_generators.html:118"
+    },
+    "token set": {
+      "ref": "templates/pages/admin_generators.html:162"
+    },
+    "total in reference table": {
+      "ref": "templates/pages/admin_employees.html:40"
+    },
+    "yes": {
+      "ref": "templates/pages/admin_quests.html:125"
+    },
+    "{n} canceled": {
+      "ref": "templates/pages/admin_generators.html:156"
+    },
+    "{n} failed": {
+      "ref": "templates/pages/admin_generators.html:154"
+    },
+    "{n} ok": {
+      "ref": "templates/pages/admin_generators.html:152"
+    },
+    "{n} running": {
+      "ref": "templates/pages/admin_generators.html:155"
+    },
+    "{n} users": {
+      "ref": "templates/pages/admin.html:99"
+    },
+    "· days complete:": {
+      "ref": "templates/pages/admin_quests.html:125"
+    },
+    "· last import:": {
+      "ref": "templates/pages/admin_quests.html:126"
+    },
+    "— entire platform —": {
+      "ref": "templates/pages/admin_generators.html:70"
+    }
+  }
+}

@@ -1,0 +1,36 @@
+Создай HTML-файл для платформы OnePage. Отчёт работает в изолированном
+iframe, данные приходят через postMessage.
+
+1. При загрузке страницы:
+   window.parent.postMessage({ type: 'op_ready', slots: [0] }, '*')
+
+2. Слушай входящий файл:
+   window.addEventListener('message', (e) => {
+     if (e.data?.type === 'op_file' && e.data.slot === 0) {
+       processFile(e.data.data, e.data.name)   // data — ArrayBuffer
+     }
+   })
+
+3. Если читатель поменял файл внутри отчёта:
+   window.parent.postMessage({ type: 'op_save_file', slot: 0,
+     name: file.name, data: buf }, '*', [buf])
+
+4. Fallback: если op_file не пришёл за 500 мс — покажи зону drag&drop.
+
+ЧТЕНИЕ EXCEL
+Ни в коде, ни в тексте на странице не проси пересохранить книгу в CSV и не
+пиши, что .xlsx в песочнице не читается: на этой платформе он читается.
+CSV принимай тоже, но как второй вариант, а не как единственный.
+
+Просить у человека CSV не нужно: .xlsx отчёт читает сам. Библиотека уже
+лежит на сервере платформы — это тот же адрес, что и у отчёта, вход не
+нужен, интернет не нужен:
+
+   <script src="/static/js/vendor/xlsx.full.min.js"></script>   <!-- SheetJS 0.20.3 -->
+
+   var wb   = XLSX.read(new Uint8Array(e.data.data), { type: 'array' })
+   var rows = XLSX.utils.sheet_to_json(wb.Sheets['By Month'], { header: 1 })
+
+Библиотеку графиков платформа не отдаёт: рисуй на canvas/SVG сам либо
+встрой её код в <script>. Ссылки на CDN по-прежнему запрещены — сервер
+в интернет не выходит, и такой отчёт просто останется пустым.

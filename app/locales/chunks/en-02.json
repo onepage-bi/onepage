@@ -1,0 +1,467 @@
+{
+  "_meta": {
+    "chunk": "02",
+    "count": 150,
+    "lang": "en",
+    "source_files": [
+      "app/services/quests.py",
+      "app/services/quests_quiz.py",
+      "app/services/quests_stats.py",
+      "app/services/reference.py",
+      "app/services/rls.py",
+      "static/js/account.js"
+    ]
+  },
+  "strings": {
+    " ({pct}% correct answers)": {
+      "ref": "app/services/quests_stats.py:344"
+    },
+    " · sampled estimate": {
+      "ref": "app/services/quests_stats.py:360"
+    },
+    "A reference table cannot contain more than {max} rows": {
+      "ref": "app/services/reference.py:432"
+    },
+    "Active platform users": {
+      "ref": "app/services/quests_stats.py:284"
+    },
+    "Column {n}: empty name": {
+      "ref": "app/services/reference.py:93"
+    },
+    "Column {n}: must be an object {{name, type}}": {
+      "ref": "app/services/reference.py:89"
+    },
+    "Column «{name}»: name is longer than 64 characters": {
+      "ref": "app/services/reference.py:96"
+    },
+    "Column «{name}»: name is repeated (case-insensitive)": {
+      "ref": "app/services/reference.py:102"
+    },
+    "Column «{name}»: type must be one of {types}": {
+      "ref": "app/services/reference.py:98"
+    },
+    "Completed at least one task": {
+      "ref": "app/services/quests_stats.py:289"
+    },
+    "Copied": {
+      "ref": "static/js/account.js:122"
+    },
+    "Could not issue the key.": {
+      "ref": "static/js/account.js:161"
+    },
+    "Could not load the list of keys.": {
+      "ref": "static/js/account.js:97"
+    },
+    "Could not revoke the key.": {
+      "ref": "static/js/account.js:183"
+    },
+    "Data exceeds the {max} MB limit": {
+      "ref": "app/services/reference.py:441"
+    },
+    "Did the mechanic reach people?": {
+      "ref": "app/services/quests_stats.py:321"
+    },
+    "Do people come back for the surprise?": {
+      "ref": "app/services/quests_stats.py:330"
+    },
+    "Do they do anything besides opening it?": {
+      "ref": "app/services/quests_stats.py:340"
+    },
+    "Golden toad": {
+      "ref": "app/services/quests.py:405"
+    },
+    "Have people started visiting the platform more often?": {
+      "ref": "app/services/quests_stats.py:363"
+    },
+    "Issuing a key…": {
+      "ref": "static/js/account.js:150"
+    },
+    "It's working, keep it": {
+      "ref": "app/services/quests_stats.py:383"
+    },
+    "Keeps Data Quality in the green zone.": {
+      "ref": "app/services/quests.py:334"
+    },
+    "Keeps the reference tables. Her codes and names always find each other.": {
+      "ref": "app/services/quests.py:392"
+    },
+    "Key issued. Copy it now — it will not be shown again.": {
+      "ref": "static/js/account.js:109"
+    },
+    "Made it to the end of “The First Report” — and now answers with a number, not an opinion.": {
+      "ref": "app/services/quests.py:1407"
+    },
+    "No keys yet. Issue one if you have installed the desktop app.": {
+      "ref": "static/js/account.js:45"
+    },
+    "No more than {max} columns": {
+      "ref": "app/services/reference.py:84"
+    },
+    "Novice": {
+      "ref": "app/services/quests.py:592"
+    },
+    "One in a hundred surprises. Caught a star at the top.": {
+      "ref": "app/services/quests.py:349"
+    },
+    "Opened it on 2 or more days": {
+      "ref": "app/services/quests_stats.py:287"
+    },
+    "Opened it on 3 or more days": {
+      "ref": "app/services/quests_stats.py:288"
+    },
+    "Opened the surprise of the day at least once": {
+      "ref": "app/services/quests_stats.py:286"
+    },
+    "Paste it into the desktop app. Valid until {p1}.": {
+      "ref": "static/js/account.js:136"
+    },
+    "People come back and do something besides just opening it. Keep an eye on the «core» and on attendance.": {
+      "ref": "app/services/quests_stats.py:384"
+    },
+    "Played the quiz to the end": {
+      "ref": "app/services/quests_stats.py:290"
+    },
+    "Practitioner": {
+      "ref": "app/services/quests.py:593"
+    },
+    "Questioning toad": {
+      "ref": "app/services/quests.py:385"
+    },
+    "RLS: the HTML contains a non-empty bootstrap snapshot — the data would go out to everyone": {
+      "ref": "app/services/rls.py:232"
+    },
+    "RLS: the report has a saved snapshot.json with data — remove it first": {
+      "ref": "app/services/rls.py:234"
+    },
+    "RLS: the {kind} report's data lives in the HTML, there's nothing to filter": {
+      "ref": "app/services/rls.py:223"
+    },
+    "Rarely drawn. Looks splendid next to the golden fox.": {
+      "ref": "app/services/quests.py:407"
+    },
+    "Revoke": {
+      "ref": "static/js/account.js:79"
+    },
+    "Revoke the key “{p1}”? The app on that machine will stop updating reports.": {
+      "ref": "static/js/account.js:177"
+    },
+    "Revoke the unlabelled key? The app on that machine will stop updating reports.": {
+      "ref": "static/js/account.js:178"
+    },
+    "Revoking…": {
+      "ref": "static/js/account.js:180"
+    },
+    "Runs the export through the Anonymizer, then shows it to the AI. Not the other way round.": {
+      "ref": "app/services/quests.py:382"
+    },
+    "Russian is the question itself; no separate translation is needed": {
+      "ref": "app/services/quests_quiz.py:184"
+    },
+    "Samurai toad": {
+      "ref": "app/services/quests.py:410"
+    },
+    "Season 1 — foxes": {
+      "ref": "app/services/quests.py:421"
+    },
+    "Season 2 — toads": {
+      "ref": "app/services/quests.py:431"
+    },
+    "Student toad": {
+      "ref": "app/services/quests.py:400"
+    },
+    "Switch the report list from table to grid": {
+      "ref": "app/services/quests.py:669"
+    },
+    "That did not work — select the key and copy it by hand": {
+      "ref": "static/js/account.js:126"
+    },
+    "The Analyst Fox": {
+      "ref": "app/services/quests.py:1406"
+    },
+    "The Graduate Fox": {
+      "ref": "app/services/quests.py:1409"
+    },
+    "The exchange wasn't recorded, try again": {
+      "ref": "app/services/quests.py:1220"
+    },
+    "The first column (key) «{name}» must be of type text": {
+      "ref": "app/services/reference.py:106"
+    },
+    "The mechanic isn't working": {
+      "ref": "app/services/quests_stats.py:380"
+    },
+    "The schema must contain at least 2 columns": {
+      "ref": "app/services/reference.py:82"
+    },
+    "The signals are mixed: people open the surprise, but there's no depth or growth in attendance. Consider adding tasks or a second reason to come back.": {
+      "ref": "app/services/quests_stats.py:387"
+    },
+    "This card cannot be traded: the season is closed": {
+      "ref": "app/services/quests.py:1190"
+    },
+    "Three slides, one idea, zero questions from the floor.": {
+      "ref": "app/services/quests.py:329"
+    },
+    "Tidy toad": {
+      "ref": "app/services/quests.py:380"
+    },
+    "Today is a day off — the quiz runs on working days": {
+      "ref": "app/services/quests_quiz.py:617"
+    },
+    "Today is a day off — the surprise of the day is waiting for the next working day": {
+      "ref": "app/services/quests.py:1238"
+    },
+    "Today's chest has already been opened": {
+      "ref": "app/services/quests.py:1245"
+    },
+    "Too early to tell": {
+      "ref": "app/services/quests_stats.py:372"
+    },
+    "Two or more signals are below the alarm threshold. Either change the rewards and tasks, or turn it off.": {
+      "ref": "app/services/quests_stats.py:381"
+    },
+    "Unknown client event: {kind}": {
+      "ref": "app/services/quests.py:1152"
+    },
+    "Unknown quest: {quest_id}": {
+      "ref": "app/services/quests.py:957"
+    },
+    "Unlabelled key": {
+      "ref": "static/js/account.js:59"
+    },
+    "Visited «Quests»": {
+      "ref": "app/services/quests_stats.py:285"
+    },
+    "Working at half strength": {
+      "ref": "app/services/quests_stats.py:386"
+    },
+    "Writes a note on the report itself, before the thought cools down.": {
+      "ref": "app/services/quests.py:377"
+    },
+    "a bank item must be an object": {
+      "ref": "app/services/quests_quiz.py:252"
+    },
+    "a translation must be an object": {
+      "ref": "app/services/quests_quiz.py:191"
+    },
+    "all questions have been answered": {
+      "ref": "app/services/quests_quiz.py:650"
+    },
+    "an answer option is longer than {max} characters": {
+      "ref": "app/services/quests_quiz.py:217"
+    },
+    "answer options cannot be empty": {
+      "ref": "app/services/quests_quiz.py:215"
+    },
+    "answer options must be distinct": {
+      "ref": "app/services/quests_quiz.py:296"
+    },
+    "attempt not found": {
+      "ref": "app/services/quests_quiz.py:706"
+    },
+    "attempt not found after the race": {
+      "ref": "app/services/quests_quiz.py:641"
+    },
+    "column «{name}»: type {have} in the reference table, {want} in the declaration": {
+      "ref": "app/services/reference.py:280"
+    },
+    "day must be an integer between 1 and {max}": {
+      "ref": "app/services/quests_quiz.py:278"
+    },
+    "day {day} should have {want} questions, found {got}": {
+      "ref": "app/services/quests_quiz.py:335"
+    },
+    "duplicate id {id}": {
+      "ref": "app/services/quests_quiz.py:273"
+    },
+    "exactly 4 answer options are required": {
+      "ref": "app/services/quests_quiz.py:290"
+    },
+    "exactly {want} answer options are required, as in the original": {
+      "ref": "app/services/quests_quiz.py:213"
+    },
+    "good from +15% over baseline, alarming on a decline": {
+      "ref": "app/services/quests_stats.py:365"
+    },
+    "good from 30%, alarming below 15%": {
+      "ref": "app/services/quests_stats.py:326"
+    },
+    "good from 50% return, alarming below 30%": {
+      "ref": "app/services/quests_stats.py:336"
+    },
+    "id must be an integer": {
+      "ref": "app/services/quests_quiz.py:266"
+    },
+    "id must be between 1 and {max}": {
+      "ref": "app/services/quests_quiz.py:269"
+    },
+    "key is empty": {
+      "ref": "app/services/reference.py:217"
+    },
+    "key is longer than {max} characters": {
+      "ref": "app/services/reference.py:189"
+    },
+    "key: «{have}» in the reference table, «{want}» in the declaration": {
+      "ref": "app/services/reference.py:283"
+    },
+    "language {lang} is not supported; available: {langs}": {
+      "ref": "app/services/quests_quiz.py:187"
+    },
+    "no active questions for day {day}": {
+      "ref": "app/services/quests_quiz.py:464"
+    },
+    "no performance log data for the base period (telemetry is off or the retention period has expired)": {
+      "ref": "app/services/quests_stats.py:353"
+    },
+    "not a date: {value}": {
+      "ref": "app/services/reference.py:211"
+    },
+    "not a number: {value}": {
+      "ref": "app/services/reference.py:205"
+    },
+    "passthrough: a list of indices": {
+      "ref": "app/services/rls.py:103"
+    },
+    "passthrough[{i}]: index {index} is repeated": {
+      "ref": "app/services/rls.py:109"
+    },
+    "passthrough[{i}]: integer ≥ 0": {
+      "ref": "app/services/rls.py:107"
+    },
+    "question {index} has already been answered": {
+      "ref": "app/services/quests_quiz.py:781"
+    },
+    "share of participants; good from 40%, alarming below 20%": {
+      "ref": "app/services/quests_stats.py:349"
+    },
+    "slots: a non-empty list": {
+      "ref": "app/services/rls.py:115"
+    },
+    "slots[index={index}].via.slot: slot {slot} is itself a via — via depth is 1": {
+      "ref": "app/services/rls.py:185"
+    },
+    "slots[index={index}].via.slot: slot {slot} is not declared in slots": {
+      "ref": "app/services/rls.py:182"
+    },
+    "slots[{i}].via.slot: a slot cannot reference itself": {
+      "ref": "app/services/rls.py:169"
+    },
+    "slots[{i}].via.slot: integer ≥ 0": {
+      "ref": "app/services/rls.py:167"
+    },
+    "slots[{i}].via: must be an object": {
+      "ref": "app/services/rls.py:155"
+    },
+    "slots[{i}].via: unknown fields: {fields}": {
+      "ref": "app/services/rls.py:159"
+    },
+    "slots[{i}]: exactly one of column or via": {
+      "ref": "app/services/rls.py:140"
+    },
+    "slots[{i}]: index must be an integer ≥ 0": {
+      "ref": "app/services/rls.py:129"
+    },
+    "slots[{i}]: index {index} is also in passthrough": {
+      "ref": "app/services/rls.py:134"
+    },
+    "slots[{i}]: index {index} is repeated": {
+      "ref": "app/services/rls.py:132"
+    },
+    "slots[{i}]: key is only allowed together with via": {
+      "ref": "app/services/rls.py:147"
+    },
+    "slots[{i}]: must be an object": {
+      "ref": "app/services/rls.py:121"
+    },
+    "slots[{i}]: unknown fields: {fields}": {
+      "ref": "app/services/rls.py:125"
+    },
+    "the attempt is already finished": {
+      "ref": "app/services/quests_quiz.py:708"
+    },
+    "the attempt was already finished by another tab": {
+      "ref": "app/services/quests_quiz.py:776"
+    },
+    "the attempt's question has disappeared from the bank": {
+      "ref": "app/services/quests_quiz.py:718"
+    },
+    "the bank must be a list": {
+      "ref": "app/services/quests_quiz.py:237"
+    },
+    "the bank needs {want} questions per day and at least {min_days} days; got {got} questions": {
+      "ref": "app/services/quests_quiz.py:243"
+    },
+    "the correct-answer index must be between 0 and 3": {
+      "ref": "app/services/quests_quiz.py:300"
+    },
+    "the explanation is empty": {
+      "ref": "app/services/quests_quiz.py:202"
+    },
+    "the explanation is longer than {max} characters": {
+      "ref": "app/services/quests_quiz.py:204"
+    },
+    "the explanation must be a string": {
+      "ref": "app/services/quests_quiz.py:304"
+    },
+    "the next question has disappeared from the bank": {
+      "ref": "app/services/quests_quiz.py:822"
+    },
+    "the number must be finite": {
+      "ref": "app/services/quests_quiz.py:262"
+    },
+    "the number of values doesn't match the schema": {
+      "ref": "app/services/reference.py:316"
+    },
+    "the policy must be an object": {
+      "ref": "app/services/rls.py:95"
+    },
+    "the question text is empty": {
+      "ref": "app/services/quests_quiz.py:197"
+    },
+    "the question text is longer than {max} characters": {
+      "ref": "app/services/quests_quiz.py:199"
+    },
+    "the topic must be a string no longer than {max} characters": {
+      "ref": "app/services/quests_quiz.py:207"
+    },
+    "time per question must be an integer between 30 and 180 seconds": {
+      "ref": "app/services/quests_quiz.py:312"
+    },
+    "today's quiz has already been played": {
+      "ref": "app/services/quests_quiz.py:644"
+    },
+    "translations must be an object {{language: translation}}": {
+      "ref": "app/services/quests_quiz.py:326"
+    },
+    "unique visitors per working day: before the season {base} (over {base_days} days), during the season {season} (over {season_days} days), today {today}": {
+      "ref": "app/services/quests_stats.py:357"
+    },
+    "unknown fields: {fields}": {
+      "ref": "app/services/rls.py:98"
+    },
+    "unknown type": {
+      "ref": "app/services/reference.py:214"
+    },
+    "{done} of the {need} needed working days have passed. The first few days are always better than average: watch return rate and attendance after {date}.": {
+      "ref": "app/services/quests_stats.py:373"
+    },
+    "{lang}: {n} of {total}": {
+      "ref": "app/services/quests_quiz.py:355"
+    },
+    "{opened} of {active} active users opened at least one surprise": {
+      "ref": "app/services/quests_stats.py:323"
+    },
+    "{quests} people completed the task, {quiz} people played the quiz{accuracy} · an average of {per_day} opens per person per day": {
+      "ref": "app/services/quests_stats.py:342"
+    },
+    "{returned} of {eligible} returned on the next working day after their first surprise · core (≥80% of days): {core} people · today {today}% of those who ever opened one did so": {
+      "ref": "app/services/quests_stats.py:332"
+    },
+    "{where}: a non-empty string": {
+      "ref": "app/services/rls.py:81"
+    },
+    "{where}: longer than {max} characters": {
+      "ref": "app/services/rls.py:83"
+    }
+  }
+}

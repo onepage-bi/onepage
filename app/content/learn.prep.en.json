@@ -1,0 +1,2039 @@
+{
+ "version": 1,
+ "id": "prep",
+ "title": "Your first report",
+ "subtitle": "A real analysis: from someone else's complaint to a number you can defend in a meeting",
+ "style": "soft",
+ "exams": false,
+ "levels": [
+  {
+   "xp": 0,
+   "name": "Beginner"
+  },
+  {
+   "xp": 180,
+   "name": "Confident"
+  },
+  {
+   "xp": 390,
+   "name": "Fluent"
+  },
+  {
+   "xp": 615,
+   "name": "Ready"
+  }
+ ],
+ "units": [
+  {
+   "id": "p0",
+   "title": "Frame the problem",
+   "subtitle": "How to turn someone else's complaint into a question that can be answered",
+   "image": "prep1",
+   "lessons": [
+    {
+     "id": "p0l1",
+     "title": "A question that can be answered",
+     "summary": "A complaint is not a task. A task is a decision, a deadline and a constraint",
+     "minutes": 5,
+     "xp": 25,
+     "cards": [
+      {
+       "heading": "What we are going to do",
+       "text": "The whole course is built around one real-world problem at a distributor called Delta. You play an analyst in your first weeks on the job: the same data extract, the same colleagues with questions and the same deadline, next Tuesday. By the end you will have a report on the platform and an answer you can state calmly in a meeting.\n\nHere is the problem. Over the quarter, sales grew by 4%. At the same time, expiry write-offs grew by 31%, and “out of stock on the shelf” complaints doubled. What is going on, and what should be done about it?",
+       "list": [
+        "break down someone else's complaint into a question that has an answer;",
+        "get a report from the model and upload it to the platform;",
+        "check the data extract and find six things in it that change the conclusion;",
+        "fix the report and publish a second version;",
+        "write five lines to your manager that lead to someone making a decision."
+       ],
+       "note": "You will do the calculations yourself, and that is the point: something you found with your own hands sounds different in a meeting. Pick your tool: Excel or queries on the platform; both paths are laid out step by step. If your numbers do not match, a separate lesson shows how to find where they diverge. About two hours in total; one lesson a day works fine."
+      },
+      {
+       "cast": {
+        "who": "head",
+        "say": "Sales are up, yet the shelves are empty. Get to the bottom of it by Tuesday.",
+        "role": "Head of Sales, Delta"
+       },
+       "text": "Delta buys bottled drinks from a manufacturer: water in two sizes, 0.5 and 1.5 liters, lemonade and iced tea. Four items, and that is exactly what they are called in the extract. It delivers them to sixty stores in three cities. The stores differ: supermarkets, convenience stores and petrol stations. Once a week the warehouse collects a batch from the manufacturer, and once a week a truck makes the round of the stores. Two actions and two levers: how much to buy in total, and how to split what was bought across stores.\n\nOver the quarter, sales grew by 4%. At the same time, expiry write-offs grew by 31%, and “out of stock on the shelf” complaints doubled."
+      },
+      {
+       "heading": "What you have to work with",
+       "text": "The analyst was given a twelve-week extract from the accounting system: an Excel workbook with two sheets. The main sheet, Sales, has one row per store, per item, per day.\n\nThe second sheet, Warehouse, is shorter: what the warehouse shipped to each store on delivery day, and at what price. You will need it for reconciliation: sales and shipments should match, and wherever they do not, that is usually where the explanation hides.\n\nHere it is. Download it and take a look inside right now. We will keep coming back to it throughout the course, and it helps if by then you have already seen what it looks like. No Excel? Use the same sheets as plain files: delta-sales.csv for sales, delta-stock.csv for the warehouse.",
+       "list": [
+        "sold that day, in units;",
+        "delivered that day: how much the truck dropped off;",
+        "written off at expiry;",
+        "stock at the end of the day."
+       ],
+       "note": "Neither the growth in sales nor the growth in write-offs is visible in this extract. It covers twelve weeks day by day, and the previous quarter is not there at all, so there is nothing to compare against. This happens a lot: part of what you are told cannot be checked. That is fine. What is not fine is not knowing which part.",
+       "file": [
+        "delta-sales.xlsx",
+        "delta-sales.csv",
+        "delta-stock.csv"
+       ]
+      },
+      {
+       "heading": "Two problems at once is a clue",
+       "text": "Write-offs mean that some stores have more product than they can sell. Empty shelves mean that others have less than customers want to buy. Each problem on its own is fixed by purchasing: buy more or less from the manufacturer.\n\nBut both grew at once. So the total we buy is roughly right; what is wrong is how that volume is split across stores. That conclusion is reached before the file is even opened.\n\nThis gives a task you can actually start on: revise the per-store delivery quota for next week without changing the purchase from the manufacturer. Such a decision costs nothing: the total volume stays the same, only its distribution changes."
+      },
+      {
+       "heading": "What the task must make clear",
+       "text": "Before calculating anything, test the brief against four points. If even one is missing, go back to whoever brought you the task and ask. This is not nitpicking: without these four things you will still produce a report, but it will be of no use.",
+       "list": [
+        "What decision the answer drives: how much product to send to each store.",
+        "By when: in time for next Tuesday's delivery.",
+        "What is off limits: buying more from the manufacturer.",
+        "What result would make the answer useless: if no store has a surplus, there is nothing to redistribute."
+       ],
+       "note": "If the task does not say what decision the report will inform, the work never ends. Any table will do, and none of them will help."
+      }
+     ],
+     "checks": [
+      {
+       "kind": "rule",
+       "q": "Here are four ways to phrase the same task. Which one makes clear what to do and when the work is finished?",
+       "options": [
+        "Analyze the trend in sales and write-offs over the last quarter",
+        "Find out why the company's product write-offs are increasing",
+        "By Tuesday, revise the delivery quota without raising purchases",
+        "Put together a summary of all stores broken down by channel"
+       ],
+       "answer": 2,
+       "why": "It states what is being decided (the delivery quota), by when (Tuesday) and what is off limits (raising purchases). A task like this tells you when to stop. The other three do not say what result counts as done: you could keep building tables against them forever."
+      }
+     ]
+    },
+    {
+     "id": "p0l2",
+     "title": "The issue tree",
+     "summary": "Break the problem down so the branches do not overlap and together cover everything",
+     "minutes": 4,
+     "xp": 25,
+     "cards": [
+      {
+       "heading": "Four branches",
+       "text": "Before calculating, break the question “why are shortages and write-offs growing together” into non-overlapping causes. There should be only a few, and together they must cover everything.",
+       "list": [
+        "Purchases are too small: the total volume is not enough for the whole network.",
+        "Volume goes to the wrong stores: a surplus in some places, a shortage in others.",
+        "Volume goes to the wrong items within a store: the assortment is off.",
+        "The data is wrong: the extract is flawed, and so is every conclusion drawn from it."
+       ]
+      },
+      {
+       "text": "The fourth branch is not a technical formality before the real work starts; it is a cause in its own right. Until it is closed, the first three are worth nothing: you will be explaining to the business things that never happened.\n\nThat is exactly why it is checked first. At Delta, the extract turned out to contain a duplicated week, two cities using different units of measure, and a store with blanks instead of numbers. Any conclusion drawn before that clean-up would have been wrong, and convincing."
+      },
+      {
+       "heading": "One number closes a branch",
+       "text": "The first branch is the quickest to rule out. Over twelve weeks the warehouse shipped 1,817,738 bottles to stores, while estimated demand was 1,762,387. In other words, 3.1% more reached the shelves than customers were ready to take.\n\nIn total there is enough product. A quarter of the work fell away after a single comparison, and the question left is not “how much to buy” but “how to split it across stores”.",
+       "note": "If a single number closes a branch, calculate it first. At Delta, comparing shipments with demand took a minute and removed a whole branch from the work: purchase volume no longer needed any thought."
+      },
+      {
+       "heading": "Store or item",
+       "text": "The two middle branches are easy to confuse, yet they lead to different decisions: one is about volume per store, the other about assortment within it. A single calculation separates them.\n\nAll fourteen stores with shortages run out of all four items at once, and the spread between items is almost zero. If assortment were the issue, one or two items would suffer, not the whole shelf. So the assortment branch is closed, and what remains is volume per store.",
+       "note": "Neighboring branches differ in what you would have to do: change the per-store delivery quota, or change the assortment within a store. Until you have calculated which one holds, there is nothing to base a decision on."
+      }
+     ],
+     "checks": [
+      {
+       "kind": "rule",
+       "q": "Why is the “the data is wrong” branch checked before the others?",
+       "options": [
+        "Otherwise conclusions on the other branches are worthless",
+        "It is the quickest one and needs no calculations at all",
+        "That is the custom in any analysis; it is a general rule",
+        "You'll be asked about it in the meeting, so check it early"
+       ],
+       "answer": 0,
+       "why": "A duplicated week or mixed-up units produce a convincing and wrong answer, and the error will not show. The other three branches are calculated on the same data, so their results only make sense after the clean-up."
+      }
+     ]
+    },
+    {
+     "id": "p0l3",
+     "title": "Hypothesis before data",
+     "summary": "First a hypothesis and a way to disprove it, then the extract",
+     "minutes": 3,
+     "xp": 25,
+     "cards": [
+      {
+       "text": "The temptation to open the file and “see what's in there” is expensive: the extract has twenty thousand rows, and every one of them says something. Two hours later you will know a lot of interesting things, and none of them will be an answer.\n\nSo you write down a hypothesis first and only then go to the data. Not to confirm it, but to try to break it."
+      },
+      {
+       "heading": "The hypothesis and what would kill it",
+       "text": "At Delta, the hypothesis was: there is enough volume, it is just in the wrong place. What would disprove it was stated up front as well.",
+       "list": [
+        "If no store has a surplus, there is nowhere to take volume from, and the hypothesis is dead.",
+        "If write-offs and shortages occur at the same stores, distribution is not the problem.",
+        "If stores with shortages run out at random rather than towards the end of the week, the cause is something else."
+       ]
+      },
+      {
+       "text": "The data did not break the hypothesis. Surpluses were found at 46 stores and shortages at 14, and they are different stores: the overlap is empty. Every single write-off is at a store with a surplus.\n\nNote what exactly makes this result strong. Not that it matched expectations, but that before the calculation it was stated which outcome would force you to discard them.",
+       "note": "Write the line “I will drop this idea if…” before you calculate. Once you have seen the numbers, you can no longer write it honestly: for any result you will find a reason why it still confirms what you thought all along."
+      }
+     ],
+     "checks": [
+      {
+       "kind": "taste",
+       "q": "A colleague says: “I'll look at the data and figure out what's going on.” What is wrong with that?",
+       "options": [
+        "The data should only be reviewed together with the client",
+        "He has not said in advance what outcome would change his mind",
+        "The format of the future report needs to be agreed first",
+        "The extract is too large to be reviewed by eye"
+       ],
+       "answer": 1,
+       "why": "Twenty thousand rows will contain support for almost any idea. Only one thing protects against that: stating, before the calculation, which result would force you to discard the hypothesis."
+      }
+     ]
+    },
+    {
+     "id": "p0l4",
+     "title": "What the data does not contain",
+     "summary": "Sales are not demand, and here that difference decides everything",
+     "minutes": 4,
+     "xp": 25,
+     "cards": [
+      {
+       "cast": {
+        "who": "field",
+        "say": "My shelves are empty by Thursday, and in your reports I'm a weak store.",
+        "role": "Area Manager, Delta"
+       },
+       "text": "There is no “demand” column in the extract, and there cannot be: the company only sees what it sold. If the product ran out on Friday, sales for the week equal what was delivered, not how many people wanted to buy.\n\nThe observation is capped from above, and it is not the customer who capped it but the company's own warehouse. In the file, such a store is indistinguishable from one where the product simply does not sell, and it looks weak precisely when it is the most starved of stock."
+      },
+      {
+       "heading": "How to see it in the data",
+       "text": "The signal is simple: in a row, sales are zero and stock is zero. So there was nothing to sell that day.\n\nBefore building conclusions on this, make sure the signal does not fire falsely. At Delta, the check took three queries.",
+       "list": [
+        "Not a single row where sales are zero but stock is not: here, zero sales always means an empty shelf, never a lack of customers.",
+        "Out-of-stock days come in runs of two or three; the file has 672 such cases.",
+        "Out-of-stock runs end on delivery day: the truck arrives on Tuesday and sales resume."
+       ]
+      },
+      {
+       "text": "There is no demand figure, so you need a proxy: the average daily sales rate on days when the product was in stock, multiplied by the number of days it was not. That gives 163,551 bottles over the quarter, 10.2% of all sales.\n\nBut the estimate rests on assumptions, and you are the one who must name them, not whoever catches you out in the meeting. Demand within the week is assumed to be flat, although Friday is higher than Monday. Promotion days are excluded from the rate calculation. A customer who did not find the product is assumed not to have come back later.\n\nSo the conclusion reads “we are losing at least 10% of sales under these assumptions”, not “exactly this much”.",
+       "note": "Write “at least”, not an exact number. Out-of-stock days tell you a sale could not happen, but not how many people walked away empty-handed. The loss cannot be smaller than calculated; it can easily be larger."
+      },
+      {
+       "cast": {
+        "who": "planner",
+        "role": "Supply Planning Manager, Delta",
+        "say": "A store's quota is based on its own sales. That's how we've always done it."
+       },
+       "heading": "Why it does not correct itself",
+       "text": "The delivered-to-sold ratio at stores with shortages is exactly one: they receive as much as they sold last time. At stores with a surplus it is around 1.3.\n\nThen a loop kicks in. The store received too little, so it sold little; based on those sales, it was given the same quota for the following week; it received too little again. This repeats every week. From the outside it looks like a weak store, but the store is not to blame: its delivery quota has simply never been revisited.\n\nSo the report's conclusion is not “these stores are bad” but “the delivery quota is calculated from sales, when it should be calculated from demand”."
+      }
+     ],
+     "checks": [
+      {
+       "kind": "analysis",
+       "q": "A store sold little and spent all of Friday with zero stock. What does this mean?",
+       "options": [
+        "Demand at the store is low; its volume should be cut",
+        "The store's data is wrong; it is better excluded",
+        "Sales hit the ceiling of what was delivered; demand is higher",
+        "The store was closed on Friday; it is an empty day"
+       ],
+       "answer": 2,
+       "why": "Zero stock means there was nothing to sell: sales equal what was delivered, not demand. Cutting this store's volume deepens the shortage exactly where it already exists; a closed day would look different, with no numbers at all."
+      },
+      {
+       "kind": "taste",
+       "q": "Why is the conclusion phrased as “at least” rather than as an exact number?",
+       "options": [
+        "To leave yourself a margin in case of a calculation error",
+        "That is the customary way to write reports for management",
+        "Nobody is going to check the exact figure anyway",
+        "Some observations are capped, so the estimate is a lower bound"
+       ],
+       "answer": 3,
+       "why": "Out-of-stock days do not show how many people walked away empty-handed; that can only be estimated. An estimate based on the average rate understates the result, because shortages fall at the end of the week, when demand is above average."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "p1",
+   "title": "From question to report",
+   "subtitle": "The prompt for the model, the check, the upload and a name people can find it by",
+   "image": "prep1",
+   "lessons": [
+    {
+     "id": "p1l1",
+     "title": "One report, one answer",
+     "minutes": 2,
+     "xp": 20,
+     "summary": "The most important rule: a report answers one question",
+     "cards": [
+      {
+       "text": "Delta delivers packaged drinks to 60 stores in three cities. The warehouse ships once a week, on Tuesdays. The quarter has closed, and Delta's Head of Sales calls in the analyst, who is in their first month at the company.\n\nThe conversation opens with “why is everything going wrong”. You cannot write a report against that question: it is unclear what counts as the problem, rising write-offs, empty shelves or purchase volume. Until the question has been narrowed down to a single one, any report will be long and answer nothing.\n\nSo the first move is not to open the extract but to finish the sentence: “the report is needed to decide…”. If you cannot finish it, it is too early to start.",
+       "cast": {
+        "who": "head",
+        "say": "Write-offs are up by a third, and empty-shelf complaints have doubled.",
+        "role": "Head of Sales, Delta"
+       }
+      },
+      {
+       "text": "The analyst turns this into one question: which stores should get more product and which less, without buying more. That can be solved, and a report like this drives a decision: which store's quota to raise and which to lower.\n\nThe report's headline number is lost sales by store: how much a store would have sold had the product not run out before the next delivery. Not revenue. Revenue rises and falls for a dozen reasons at once, while lost sales tell you directly where to send the product.\n\nThe headline number goes at the top, in large type. Next to it, what we compare it with: the same store's actual sales. Detail on the other stores follows further down the page, for those who want it.",
+       "note": "Thirty metrics on a screen mean that none of them matters."
+      },
+      {
+       "heading": "How to tell it worked",
+       "text": "Show the draft to someone who knows the business, and explain nothing out loud. The area manager visits the stores every week and will spot a gap faster than anyone. If they stumble on even one point, do not fix the labels or the colors; fix the question the report answers.",
+       "list": [
+        "Your colleague can say within five seconds which number matters most here.",
+        "Your colleague understands, without your comments, whether that number is good or bad.",
+        "Your colleague does not ask “why is this here?”"
+       ],
+       "cast": {
+        "who": "field",
+        "say": "I can see the number. I can't see what I'm supposed to do with it.",
+        "role": "Area Manager, Delta"
+       }
+      }
+     ],
+     "checks": [
+      {
+       "kind": "taste",
+       "q": "Your manager asks for a report title that is clear at a glance. Which title is best?",
+       "options": [
+        "Lost sales by store · weekly",
+        "Quarterly sales extract report",
+        "Sales analytics, version two",
+        "Weekly summary of all stores"
+       ],
+       "answer": 0,
+       "why": "A title names the decision, not the data source. “Lost sales by store · weekly” tells you why to open it; the other three tell you where the file came from, which does not help the reader."
+      }
+     ]
+    },
+    {
+     "id": "p1l2",
+     "title": "The prompt for the model",
+     "minutes": 7,
+     "xp": 20,
+     "summary": "A ready-made prompt that produces a working file the first time",
+     "cards": [
+      {
+       "text": "The analyst has an extract: 60 stores, 12 weeks, daily sales, deliveries, write-offs and stock for every item. Next to the date there is already the weekday and the week number, so that “deliveries on Tuesdays” can be seen rather than worked out. You can open it, but it is not obvious what to do with it.\n\nThe extract is the workbook delta-sales.xlsx with two sheets. Not everyone has Excel, so the same two sheets are also provided as plain files: delta-sales.csv for sales and delta-stock.csv for the warehouse. They open in Notepad and in any spreadsheet editor.\n\nThe report will be written by a model. Any model that can write code will do: what matters is not the name but how precise the prompt is.\n\nThe prompt has four parts: where the file will live, what it must look like, what question it answers and what your data looks like. The first two are the same for everyone and come ready-made. Only the third and fourth are yours: the decision the whole exercise is for, and the header row of your table.",
+       "file": [
+        "delta-sales.xlsx",
+        "delta-sales.csv",
+        "delta-stock.csv"
+       ],
+       "cast": {
+        "who": "analyst",
+        "say": "I have the extract. I don't have a report.",
+        "role": "Analyst, Delta"
+       },
+       "note": "If you have no subscription of your own: duck.ai (Claude and GPT) and HuggingChat work without registration. With free registration: DeepSeek, Qwen, Mistral, Claude, ChatGPT, Gemini.\n\nBefore your first prompt, ask IT which services the company allows: that is a decision for the security team, not for this course. The choice of service does not affect the data rule: only column headers and made-up rows ever leave your machine."
+      },
+      {
+       "heading": "What is inside the file",
+       "text": "Not everyone has Excel, and you may simply have nothing to open the workbook with. So here is everything it contains; reading it here is as good as reading the file itself.\n\nThe workbook has two sheets. The Sales sheet has 21,840 rows, one per store, item and day from 3 March to 25 May 2026. Below are the columns of this sheet with a sample value from the first row.",
+       "table": {
+        "head": [
+         "column",
+         "what it holds",
+         "example"
+        ],
+        "rows": [
+         [
+          "date",
+          "the day the row refers to",
+          "03.03.2026"
+         ],
+         [
+          "weekday",
+          "the same day as a word",
+          "Tuesday"
+         ],
+         [
+          "week",
+          "week number from the start of the extract, 1 to 12",
+          "1"
+         ],
+         [
+          "city",
+          "one of three: Riverton, Northfield, Lakeside",
+          "Riverton"
+         ],
+         [
+          "channel",
+          "type of store: supermarket, convenience store, petrol station",
+          "supermarket"
+         ],
+         [
+          "store",
+          "store code, 60 in total",
+          "RV-01"
+         ],
+         [
+          "item",
+          "what is sold: water 0.5, water 1.5, lemonade 0.5, iced tea 0.5",
+          "water 0.5"
+         ],
+         [
+          "sales",
+          "sold that day, in units",
+          "178"
+         ],
+         [
+          "delivery",
+          "delivered that day, in units; zero on days with no delivery",
+          "1606"
+         ],
+         [
+          "write-off",
+          "written off that day, in units",
+          "0"
+         ],
+         [
+          "stock",
+          "how much is held at the store at the end of the day, in units",
+          "1428"
+         ]
+        ]
+       },
+       "note": "The sales columns are in units, but two of the three cities keep their records in packs of 12 bottles. The extract itself says nothing about this: you find out by reconciling against the Warehouse sheet, where everything is always in bottles."
+      },
+      {
+       "heading": "The second sheet: Warehouse",
+       "text": "2,880 rows: what the warehouse shipped to each store on delivery day, and at what price. It is needed for reconciliation: without it there is no way to know how many bottles stand behind the word “pack”.",
+       "table": {
+        "head": [
+         "column",
+         "what it holds",
+         "example"
+        ],
+        "rows": [
+         [
+          "week",
+          "week number, same as on the Sales sheet",
+          "1"
+         ],
+         [
+          "delivery date",
+          "the delivery day, always a Tuesday",
+          "03.03.2026"
+         ],
+         [
+          "store",
+          "code of the store delivered to",
+          "RV-01"
+         ],
+         [
+          "item",
+          "what was delivered",
+          "water 0.5"
+         ],
+         [
+          "shipped, btl",
+          "how many bottles went to the store, always in bottles",
+          "1606"
+         ],
+         [
+          "price per bottle",
+          "price of one bottle; the currency is not stated in the file",
+          "120"
+         ]
+        ]
+       },
+       "note": "Both sheets are provided next to the workbook as plain files: delta-sales.csv for sales and delta-stock.csv for the warehouse. If you have no Excel, use those: a csv holds one table per file, so there are two files rather than one file with tabs."
+      },
+      {
+       "heading": "The ready-made prompt",
+       "text": "Copy it in full and replace the two lines in square brackets: the task and the data. Nothing else needs changing: the first two blocks are the same for any report on this platform.\n\nThe pair of lines “<data>” and “</data>” is a boundary. Everything between them the model reads as data, not as one more instruction; without the boundary, a header row is sometimes taken as a rule. The name inside the angle brackets does not matter; what matters is that the opening and closing lines match.\n\nIn the task line, the analyst writes their own question about lost sales by store. Inside the boundary go the column headers from your file and a couple of rows with made-up numbers.",
+       "code_text": "Write a single HTML file: a report. I will open it with a double click,\ncheck it and upload it to our internal platform, OnePage: there the report\nis shown inside a page, in a sandboxed frame, with no internet access.\n\nTHE REPORT RECEIVES ITS DATA AS A FILE; NO DATA INSIDE IT\n· On load, tell the platform you are ready to receive a file:\n    window.parent.postMessage({type:'op_ready', slots:[0]}, '*')\n· Receive it and parse it (e.data.data is an ArrayBuffer):\n    window.addEventListener('message', function (e) {\n      if (e.data && e.data.type === 'op_file' && e.data.slot === 0) { … }\n    })\n· If no file arrives within two seconds, show a “drop a file here” zone,\n  so the report also works before it is uploaded to the platform.\n· Accept .xlsx and .csv; detect the delimiter yourself (; or ,).\n  Parse Excel with the SheetJS library; it is already on our server,\n  at the same address as the report, and never goes outside:\n      <script src=\"/static/js/vendor/xlsx.full.min.js\"></script>\n      var wb = XLSX.read(new Uint8Array(e.data.data), {type:'array'})\n  When the file is opened with a double click from the desktop, that\n  address does not exist: if XLSX did not load, say so on the page and\n  accept .csv.\n· Do not ask me to re-save the workbook as CSV, and do not write on the\n  page that .xlsx cannot be read in the sandbox: on the platform it can.\n· Normalize numbers: remove thousands separators (spaces), treat a comma\n  as a decimal point. Read dates as both DD.MM.YYYY and YYYY-MM-DD.\n· Embed the parsing code inside the file.\n\nIMPORTANT\n· Everything inside one file: no external links, no external fonts\n  or libraries. The only exception is SheetJS at the address above: that\n  is our server, not the internet.\n· Do not use localStorage, cookies or IndexedDB; the sandbox has none.\n· The report file itself must be under 1.5 MB (otherwise the list shows\n  a placeholder instead of a live preview). This does not limit the size\n  of the DATA file.\n· Define colors as variables in :root and redraw charts on the event\n  window.addEventListener('op:theme', redraw); the platform has light\n  and dark themes.\n· Headline number and comparison at the top, details below.\n\nSO THAT I CAN CHECK IT\n· At the bottom of the page, state how many rows were read and how many\n  of them could not be parsed.\n· Skip any row you could not parse and count it in that number.\n· If something is missing from the data, say so on the page.\n· Do not invent conclusions: write only what is calculated from the file.\n\nTASK\n[what the report must show and what decision is made based on it]\n\nWHAT COLUMNS TO EXPECT\n<data>\n[paste the HEADER ROW of your file here (the column names) and add two\n or three rows with made-up numbers below it: the model needs the shape\n of the data, not the data itself]\n</data>",
+       "note": "A rule with no exceptions: real data is never sent to external models (Claude, ChatGPT or any other), not a single row and not as a file. Not sales, not stock, not store names, not people's names. An external model needs the structure: what the columns are called and how the values are written. So the prompt gets your headers with made-up numbers underneath, and you open your own data in the finished report, where it stays with you.",
+       "editable": true
+      },
+      {
+       "heading": "Where the report gets your numbers from",
+       "text": "The most common question from newcomers: if real data must not be shown to the model, where will it come from in the report?\n\nThe answer is in the first block of the prompt. The file the model writes is empty: it holds the calculation and the layout, but not a single figure of yours. It receives the numbers separately.",
+       "list": [
+        "The model sees only the table header and made-up rows; that is enough to write the analysis.",
+        "You upload your real extract to the platform next to the report, in the “Slot 0 — initial data file” field.",
+        "The platform passes the file to the report whenever it is opened, and the report draws your numbers.",
+        "Before upload the report works the same way: it shows a “drop a file” zone, and you can test it on your laptop."
+       ],
+       "note": "So real data and the model never meet: the model worked with the structure, and the numbers appeared only on your side."
+      },
+      {
+       "heading": "What each line of the prompt does",
+       "text": "None of the points is a matter of taste: each one prevents a specific failure.",
+       "list": [
+        "“I will upload it to an internal platform, in a frame, with no internet”: a model writes the file differently when it knows where it will live: no external fonts, no outside requests, no reliance on browser storage.",
+        "“Everything inside one file”: a report with an external link shows a blank screen on the corporate network; this is the most common newcomer problem.",
+        "“Under 1.5 MB”: for heavier files the platform shows a placeholder in the list instead of a live preview.",
+        "“Headline number at the top”: people look at a report for a few seconds, and if the top is not the main point, they will not understand what it is about."
+       ]
+      },
+      {
+       "heading": "How to tell what broke",
+       "text": "The “so that I can check it” block exists for exactly this. The finished report states at the bottom how many rows it read and how many it could not parse, and that one line answers the main debugging question: is it the data or the calculation?\n\nIf the bottom reads “read 21,840, not parsed 412”, it is the data: most likely the columns in those rows have shifted or the date is written differently. If nothing failed to parse but the number at the top still looks odd, it is the calculation, and you need to discuss it with the model.",
+       "list": [
+        "The report must not fail entirely because of one bad row: skip it, count it, show the number.",
+        "Whatever was missing, the report states on the page rather than silently filling in.",
+        "Ask for one change at a time: otherwise it is unclear what actually helped."
+       ],
+       "note": "A report that silently skipped four hundred rows is more dangerous than one that did not open: you will fix the second today, and present the first to management."
+      },
+      {
+       "heading": "Show the data, do not describe it",
+       "text": "Write the task line the way you would explain it to a colleague from the next department: what must be visible and what decision is made based on it.\n\nThe data, however, should not be described in words; that is the most common mistake. The analyst does not retell the extract in words. They copy the header from the file (the row with the column names) and add two rows of made-up numbers below it. A sample like that shows at once which columns exist, how dates are written and what separates one value from the next.",
+       "note": "Any detail you leave out will be silently made up, and you will only find out from an odd number in the finished report."
+      },
+      {
+       "heading": "Ready-made task block for Delta",
+       "code_title": "Put this into the TASK block",
+       "text": "The TASK block in the prompt is the only place where you say WHAT to calculate. Whatever you write there is what the report will calculate; the other blocks are only about how it works technically.\n\nFor our case, the task reads as follows. Note that it says nothing about how to fix the data: you do not yet know what is peculiar about it yourself, and that is the right order. The first version of the report will be inaccurate, and the course will come back to that.",
+       "code_text": "TASK\nThe report answers one question: how to reallocate the weekly delivery\nvolume between stores.\n\nAt the top, four numbers:\n· how many bottles were lost over the period. Calculate it like this:\n  take the days when sales are zero and stock is zero, and multiply them\n  by that store's usual daily rate for that item;\n· what share of actual sales this represents;\n· how many stores had such days;\n· which store lost the most.\n\nBelow, a table of ALL stores that had such days (there are usually\nfew), sorted by lost sales, descending. Columns: lost sales,\nsold, and SALES RANK (the store's position in the list sorted\nby sales). Do not truncate the table: it is the bottom rows that\ndecide the case. Sales rank is mandatory; without it the table\nis meaningless.\n\nUnder the table, calculate in one line: how many of these stores\nare among the 20 worst by sales.\n\nFurther down, in one sentence: how the usual rate was calculated and\nwhy this is a lower bound rather than the exact size of the loss.",
+       "editable": true,
+       "note": "“Sales rank” looks like a detail, but it is actually the key column of the report: it is what shows that stores with shortages look weak. The line under the table is its conclusion in a single number. Without these two things the report will push towards exactly the wrong decision."
+      },
+      {
+       "heading": "Ready-made data block for Delta",
+       "text": "So you do not have to build it yourself the first time, here is the same block, already filled in from the delta-sales.xlsx file from the first lesson. Press Copy and paste it into the prompt in place of the line in square brackets, together with the “<data>” and “</data>” lines.\n\nIn your own report you will do exactly the same: open your file, copy the row with the column names, add two rows of made-up numbers below it, and explain in words only those columns whose names are not obvious to everyone.",
+       "code_text": "<data>\nFile delta-sales.xlsx: an Excel workbook with two sheets.\n\nSheet Sales, one row = store + item + day:\ndate;weekday;week;city;channel;store;item;sales;delivery;write-off;stock\n03.03.2026;Tuesday;1;City-A;supermarket;ST-01;drink 0.5;178;1606;0;1428\n04.03.2026;Wednesday;1;City-A;supermarket;ST-01;drink 0.5;193;0;0;1235\n\nSheet Warehouse, one row = what was delivered to a store on delivery day:\nweek;delivery date;store;item;shipped, btl;price per bottle\n1;03.03.2026;ST-01;drink 0.5;1606;120\n1;03.03.2026;ST-01;drink 1.5;1039;210\n\nWhat the columns mean, where the name does not make it clear:\n· sales, delivery, write-off, stock: units for that day;\n· delivery is non-zero only on delivery day, which falls on a Tuesday;\n· stock: how much is held at the store at the end of the day;\n· “shipped, btl” on the Warehouse sheet is always in bottles, even where\n  a store records its sales in packs.\n</data>",
+       "editable": true,
+       "note": "Not only the numbers are made up here, but the names too: the city, store and item have been replaced with dissimilar ones. The model needs the SHAPE of a record (how many columns, in what order, what a date and the decimal separator look like), not your real values. None of this will end up in the file it writes: the report reads the names from the extract itself."
+      },
+      {
+       "heading": "If the answer is not right",
+       "text": "The first version is rarely the last, and that is no reason to fix the file by hand. Ask for corrections in the same words you would use with a colleague. One request, one change: that way you can see exactly what changed it, and it is easy to step back.",
+       "list": [
+        "“Too much going on: keep one headline number and the comparison.”",
+        "“Don't touch the data, change only the layout.”",
+        "“Make it readable on a laptop, not just on a large screen.”"
+       ]
+      },
+      {
+       "heading": "How to get a file out of the answer",
+       "text": "The model returns its result in one of two ways. Either with a download button, in which case the file is ready. Or as text right in the conversation, and that is what confuses people most often: it seems something is missing, although the report is right in front of you.\n\nIn the second case, copy the entire answer, paste it into a text editor (Notepad on Windows, TextEdit in plain-text mode on a Mac) and save it under any name ending in .html. The extension matters more than the name: without it the file opens as text, not as a report.",
+       "list": [
+        "Save it with the .html extension, not .txt and not .docx.",
+        "The file name does not matter on the platform: the report will have its own title there.",
+        "Once saved, open it with a double click: the report should open in the browser as a normal page."
+       ],
+       "note": "While the file sits on your laptop it is a draft that only you can see. The course has two more steps: check it in a minute and upload it to the platform; until it is uploaded, the report does not exist for the company. If things did not work out with the model, the upload lesson contains a finished report built on this same extract: you can practice with it and come back to the prompt later."
+      }
+     ],
+     "checks": [
+      {
+       "kind": "rule",
+       "q": "The model suggests: “let's load the charting library via a link; that makes the file lighter.” How do you respond?",
+       "options": [
+        "Agree: that really does make the file lighter",
+        "Ask for all the code to be embedded in the file",
+        "Agree, and send the library separately later",
+        "Drop the charts from the report altogether"
+       ],
+       "answer": 1,
+       "why": "On the platform the report opens in a closed frame with no internet access. Anything loaded via a link simply will not load, and instead of a chart there will be a blank screen."
+      }
+     ]
+    },
+    {
+     "id": "p1l3",
+     "title": "Check before you upload",
+     "minutes": 3,
+     "xp": 20,
+     "summary": "Nice-looking numbers prove nothing: reconcile them with the source",
+     "cards": [
+      {
+       "text": "The file is saved, a double click, and the report opens. The numbers are there, the charts are drawn, and one week in May comes out as a record: exactly twice the usual sales. The manager is pleased.\n\nThe analyst checks it against the deliveries sheet: there is just one shipment that week, yet sales doubled. The reason is simple: the week was exported twice and sits in the file twice.\n\nThe item shares did not give the fake away: everything doubled at once, and the ratio between items stayed the same to three decimal places. The model did not lie. It calculated exactly what it was given.",
+       "cast": {
+        "who": "head",
+        "say": "A record week! What did we do right?",
+        "role": "Head of Sales, Delta"
+       }
+      },
+      {
+       "heading": "What to look at",
+       "text": "Nice-looking numbers prove nothing: a record nobody can explain is a reason to check, not to celebrate. What catches it is not looking at the report but reconciling with the source, and that takes a minute: before upload, not after the first question at the team meeting.",
+       "list": [
+        "Did it open at all, and did everything render?",
+        "Do the numbers look like the ones in your table? A model can round silently.",
+        "Is it readable on a laptop, not just on a large monitor?",
+        "Can you see within three seconds which number matters most?"
+       ]
+      },
+      {
+       "text": "The second finding that same evening: one store was closed for refurbishment for five days. The rows for those days in the extract are blank, not zero, and those are different things. Blank means the store was not trading. Zero means the store was trading but had no product.\n\nIf you treat blank as zero, that store's average daily sales drop by 6%, and the refurbishment week looks like a sales collapse that never happened.\n\nIf something does not add up, do not fix it yourself. Tell the model which number is wrong and what it should be, and ask it to redo the report. This is a normal way of working, not a defeat.",
+       "note": "Checking takes a minute. The “our numbers here are wrong” conversation takes weeks.",
+       "cast": {
+        "who": "field",
+        "say": "There was scaffolding up for five days. There were no sales, and there couldn't have been.",
+        "role": "Area Manager, Delta"
+       }
+      }
+     ],
+     "checks": [
+      {
+       "kind": "rule",
+       "q": "One week in the report came out at exactly twice the usual level. What do you do first?",
+       "options": [
+        "Show it to the manager: finally some good news",
+        "Reconcile that week with the warehouse deliveries sheet",
+        "Ask the model to generate the report one more time",
+        "Remove that week so it does not distort the picture"
+       ],
+       "answer": 1,
+       "why": "A record nobody can explain is most often duplicated rows, not a good week. Item shares do not change when everything doubles, so they will not tell you anything; only reconciling with the source will, and it takes a minute."
+      }
+     ]
+    },
+    {
+     "id": "p1l4",
+     "title": "Upload to the platform",
+     "minutes": 6,
+     "xp": 30,
+     "summary": "Five steps from a file on your laptop to an address you can share",
+     "cards": [
+      {
+       "text": "The report is ready and sits on the analyst's laptop. The manager travels between cities and opens everything on a phone, so emailing the file is pointless: a week later they will be holding an old version, and neither of you will know.\n\nOnce uploaded, the report gets its own address on the platform. The link can be shared, opened on a phone or shown in a meeting, and everyone sees the same thing, because there is one file, not a copy for each person."
+      },
+      {
+       "heading": "Step 1. Open the upload page",
+       "text": "In the left-hand menu, choose “Upload”. The buttons below are named exactly as they appear on screen.",
+       "image": "up-1-menu"
+      },
+      {
+       "heading": "Step 2. Drop in the file",
+       "text": "Drag the file into the frame, or click it and pick the file on your disk. .html and .htm are accepted.\n\nThe “Detect type” and “Configure slots” steps in the bar at the top are handled by the platform: it looks at what is inside the file, and for a self-contained report there is nothing to do there.",
+       "image": "up-2-drop"
+      },
+      {
+       "heading": "If you don't have your own report yet",
+       "text": "You can practice even without a successful answer from the model. Both files are here: a Delta report, already written and built the right way (no data inside; it receives it), and the same sales extract.\n\nDownload both, open the report with a double click and drag the extract into it: you will see the finished analysis. This is exactly what you should end up with using your own data.",
+       "file": [
+        "delta-report.html",
+        "delta-sales.csv"
+       ],
+       "note": "Then upload both to the platform: the report as usual, and the extract into the data field that appears in the next step."
+      },
+      {
+       "heading": "Step 3. Attach the data",
+       "text": "The platform recognizes a report that reads a file and shows a data field labeled “Slot 0 — initial data file”. Choose your extract there: .xlsx, .xls, .csv and a few other formats are accepted.\n\nFrom then on, the platform hands this file to the report every time it is opened. When fresh data arrives, you replace the file; the report itself does not need rewriting.",
+       "note": "No field visible? Then the report does not ask for a file: the data is inside it. That works too, but updating such a report will have to go through the model."
+      },
+      {
+       "heading": "Step 4. Title and publishing",
+       "text": "“Title” is the only required field: it is how people will find the report in the list. “Description” is one line about the decision the report supports.\n\nThe “Publish immediately” box is ticked by default, meaning the report becomes available to colleagues right away. Untick it if you want to review it yourself first.",
+       "image": "up-3-meta",
+       "note": "There is no folder on this page: the report goes into the shared list, and you can sort it into folders later, right there."
+      },
+      {
+       "heading": "Step 5. Publish",
+       "text": "The “Publish dashboard” button at the bottom of the card. After that the report opens at its own address, and that is the link you send to colleagues.",
+       "image": "up-4-publish"
+      },
+      {
+       "heading": "What you end up with",
+       "cast": {
+        "who": "head",
+        "role": "Head of Sales, Delta",
+        "say": "Opened it in the car on the way to the warehouse. It works."
+       },
+       "text": "The report lives on the platform: it has an address, it can be viewed on a phone, and everyone is looking at the same file.\n\nIt worked if the report opened and looks the same as it did on your laptop. If the file was not accepted, the cause is almost always the file itself, not permissions: open it with a double click again and check that everything is in place.",
+       "image": "up-5-done",
+       "note": "You can re-upload the file as many times as you like; it will not create a second report."
+      }
+     ],
+     "checks": [
+      {
+       "kind": "rule",
+       "q": "The report is uploaded and opens for you, but your manager writes “no access”. What do you check first?",
+       "options": [
+        "The file size: perhaps it is far too heavy",
+        "Their browser: maybe another one is needed",
+        "The report title: perhaps they searched for the wrong one",
+        "Whether the report is published and they have access"
+       ],
+       "answer": 3,
+       "why": "A draft is visible only to you. Publishing and the access list are two separate settings, both on the report's page."
+      }
+     ],
+     "task": {
+      "kind": "upload_report",
+      "href": "/upload",
+      "text": "Upload your Delta report. If your prompt to the model has not produced a working file yet, take the ready-made sample and the extract from the “If you don't have your own report yet” card.",
+      "hint": "I can't see any report that you own yet. Upload a file on the Upload page and come back."
+     }
+    },
+    {
+     "id": "p1l5",
+     "title": "A name people can find",
+     "minutes": 2,
+     "xp": 20,
+     "summary": "The title is what people will find you by a month from now",
+     "cards": [
+      {
+       "text": "A month goes by. On the platform the analyst has “report”, “report_final”, “report_final_2”, “final_fixed” and one more whose name they no longer remember. The manager asks for the one about empty shelves.\n\nOpening all five in turn is the price of a bad name. And it has to be paid every single time. A year from now the shared list will hold two hundred reports, and the one that gets found is the one with a clear title.",
+       "cast": {
+        "who": "head",
+        "say": "Send me the one about empty shelves.",
+        "role": "Head of Sales, Delta"
+       }
+      },
+      {
+       "heading": "The three-part rule",
+       "text": "A title is built from three parts, and that is almost always enough. Any order, any separator: what matters is not the look but that each part answers its own question. Check your last report: does it have all three?",
+       "list": [
+        "What it is about: “Lost sales”, “Write-offs”, “Stock”.",
+        "Who or what it covers: a store, a city, the whole network.",
+        "What period: a week, a month, a quarter."
+       ]
+      },
+      {
+       "text": "“Lost sales · stores · week” is found in a second. Nobody will ever find “report_final_v2_fixed”, you included.\n\nA common mistake is putting a date or a version number in the title. The report lives on: its data will be refreshed, while “May” in the name stays and confuses everyone.\n\nThe test is simple: imagine you are looking for this report six months from now and remember only its topic. You can rename it at any time; the address does not change.",
+       "note": "The description is one line about the decision this report supports. That is enough."
+      }
+     ],
+     "checks": [
+      {
+       "kind": "taste",
+       "q": "Which title for a store report will still work six months from now?",
+       "options": [
+        "Report for the manager, as asked",
+        "Final summary 05.2026 (fixed)",
+        "Dashboard No. 4: stores, deliveries",
+        "Lost sales · stores · week"
+       ],
+       "answer": 3,
+       "why": "A title should say what the report is about, what it covers and for what period. A number, a date and the word “final” mean nothing six months later, whereas “Lost sales · stores · week” can be found with a single word."
+      }
+     ],
+     "task": {
+      "kind": "favorite",
+      "href": "/",
+      "text": "Star a report you will keep coming back to. Favorites rise to the top of the list.",
+      "hint": "No favorites yet. Click the star next to any row in the report list."
+     }
+    }
+   ]
+  },
+  {
+   "id": "p2",
+   "title": "Access, updates, presenting",
+   "subtitle": "Who can see it, how to update the data and what to do when something breaks",
+   "image": "prep6",
+   "lessons": [
+    {
+     "id": "p2l1",
+     "title": "Who will see the report",
+     "minutes": 4,
+     "xp": 20,
+     "summary": "Who to show the report to, and who to trust with updating it",
+     "cards": [
+      {
+       "text": "The manager asks you to show the report to the financial controller, who is costing the shortages and wants to look at the numbers himself. He is not on the platform: he never logs in and will not set up an account for a single report.\n\nYou could email the file, but a week later he will be holding an old version, and you will have no way of noticing.\n\nEvery report has its own access list, and by default only you can see it. This is not the platform being fussy: people build first and decide who to show it to afterwards.",
+       "cast": {
+        "who": "head",
+        "say": "Show it to Finance. They're not on the platform.",
+        "role": "Head of Sales, Delta"
+       }
+      },
+      {
+       "heading": "Four options: three for viewing, one for updating",
+       "text": "The first three are about reading. Which one to choose depends not on how important the report is, but on who will read it: a colleague with an account, the whole platform, or someone with no account, like that financial controller. Getting it wrong is no disaster: you can change the option at any time.\n\nThe fourth stands apart: it is about who is allowed to change the data in the report.",
+       "list": [
+        "Name colleagues individually: the most common case.",
+        "Open it to everyone who signs in to the platform: for shared reports.",
+        "Create a link: for people without an account on the platform.",
+        "Grant the right to update data: to whoever will load fresh extracts instead of you."
+       ]
+      },
+      {
+       "cast": {
+        "who": "planner",
+        "role": "Supply Planning Manager, Delta",
+        "say": "The extract reaches me on Tuesday morning. I can upload it myself."
+       },
+       "heading": "The right to update data",
+       "text": "A report lives for weeks, and you go on holiday. To keep it from going stale, the right to load new data is given to whoever receives that data first, and most often that is not the analyst.\n\nThis right opens everything except deletion: the person can upload a new version, edit the description and set up access, but cannot delete the report. There is no need to hand over ownership for this, and you should not: there is one owner, and the owner is accountable for the report.",
+       "note": "Viewing and updating are different things. A link and “open to everyone” only allow viewing; you cannot load new data through them."
+      },
+      {
+       "text": "“Open to everyone” means all employees on the platform, not the whole internet. A link requires no sign-in (it opens without an account), but it only opens from inside the corporate network: the platform itself is not reachable from outside.\n\nSo you cannot show a report via a live link to someone outside the company, and that is not a limitation of the report but how access works. If you need to share outside, export the numbers and send them separately, following your security team's rules.\n\nA more common problem is closer to home: sending the report's address and forgetting to add the person to the access list. They see a “no access” page and conclude the report is broken; you find out a week later. Access first, then the address.",
+       "heading": "Where “sharing” ends",
+       "note": "A link that went to the wrong place can be closed: access through it stops working immediately. The easiest way to check that everything is visible is to ask a colleague to open the link while you watch."
+      }
+     ],
+     "checks": [
+      {
+       "kind": "rule",
+       "q": "The supply planning manager will update the data in your report every week. What should you give him?",
+       "options": [
+        "Make him the report owner in your place",
+        "Grant him the right to update the report's data",
+        "Send him a link to the report with no sign-in",
+        "Open the report to every employee in the company"
+       ],
+       "answer": 1,
+       "why": "The right to update data opens everything except deletion: he can upload new versions but cannot delete the report. A link and “open to everyone” only allow viewing."
+      }
+     ],
+     "task": {
+      "kind": "share_link",
+      "href": "/",
+      "text": "Create a link to any of your reports: open it, go to the Share tab on the right and click Generate. You can close the link at any time.",
+      "hint": "I can't see any link you have created yet. Open your report, go to the Share tab on the right, click Generate and come back."
+     }
+    },
+    {
+     "id": "p2l2",
+     "title": "Update the data",
+     "minutes": 4,
+     "xp": 20,
+     "summary": "A new file in the report, not a new report next to it",
+     "cards": [
+      {
+       "cast": {
+        "who": "planner",
+        "role": "Supply Planning Manager, Delta",
+        "say": "It's Tuesday and I have the extract. Where do I put it?"
+       },
+       "text": "A new week has arrived, and with it a new extract. The temptation is simple: create a second report and publish it alongside the first.\n\nHere is what happens next. Half the department spends the week looking at the old report: some have it bookmarked, some have it in a chat, and their favorite star is on it too. Decisions are made on last week's numbers, and nobody understands what is wrong."
+      },
+      {
+       "heading": "Data changes inside the report itself",
+       "text": "Open the report and expand the panel on the right. The Data tab holds the file the report reads.\n\nChoose the new file in the “Data slots” section and click “Upload slots”. That's it: a second later the report shows fresh numbers.",
+       "image": "upd-1-data",
+       "note": "The report itself does not change by a single byte; only the file it reads changes."
+      },
+      {
+       "heading": "What stays in place",
+       "text": "This is exactly why you replace the file rather than publish a new report: the address, the access list and your colleagues' habits are worth more than one week's figures.",
+       "list": [
+        "The report's address: old links keep working.",
+        "The access list: nobody needs to be added again.",
+        "Its place in the shared list, and the favorite star your colleagues gave it.",
+        "The report's version number: it is about the report, not the data."
+       ]
+      },
+      {
+       "heading": "If the report itself has changed",
+       "text": "Data and the report itself are updated in different places, and the difference is worth keeping in mind. A new calculation, a different chart, a fixed bug: that is a new version of the report. Versions tab, “New version” section, “Upload new version” button. The version number goes up; the address and access stay the same.\n\nPrevious versions do not disappear: they are listed right there, each with a “Restore” button. So updating is not risky: if the new version turns out to have a bug, going back is a single click.",
+       "image": "upd-2-versions",
+       "note": "A restore moves forward, not backward: the contents of the old version are laid down as a new version on top of the current one. No history is lost: the restore itself appears in the list and can be rolled back too. The data stays current: what comes back is the report's calculation and look, not that week's figures."
+      },
+      {
+       "text": "If data arrives regularly, set yourself a fixed day. At Delta it is Tuesday, delivery day: the extract in the morning, the new file in the report by lunchtime. Then colleagues stop asking how fresh the numbers are and start coming to the report on their own.",
+       "note": "A new report alongside = a new link = half the people looking at old numbers."
+      }
+     ],
+     "checks": [
+      {
+       "kind": "rule",
+       "q": "A fresh extract has arrived; the report's calculation has not changed. What do you do?",
+       "options": [
+        "Upload a new version of the report in the Versions tab",
+        "Publish a second report next to it, marked “new”",
+        "Replace the file in the Data tab with “Upload slots”",
+        "Ask colleagues to reopen the report and refresh the page"
+       ],
+       "answer": 2,
+       "why": "The report did not change; the data did, and it lives in a separate file. A report version is needed when the calculation or the layout changes; a new report alongside simply leaves half the department on the old link."
+      }
+     ]
+    },
+    {
+     "id": "p2l3",
+     "title": "Present it in a meeting",
+     "minutes": 4,
+     "xp": 20,
+     "summary": "A live report on screen: on its own or as a slide in a presentation",
+     "cards": [
+      {
+       "text": "The weekly team meeting. On the slide is a screenshot of the report taken the evening before. The analyst states the headline number: this is how much the stores missed out on in sales over the quarter. The supply planning manager asks bluntly: why should we believe this?\n\nIt is a fair question. There is no demand in the extract, only sales, and they stop where the product ran out. Lost sales were calculated with a proxy: the average daily sales rate before the product ran out, multiplied by the number of out-of-stock days.",
+       "cast": {
+        "who": "planner",
+        "say": "Why should we believe this?",
+        "role": "Supply Planning Manager, Delta"
+       }
+      },
+      {
+       "heading": "The answer rests on assumptions",
+       "text": "So the conclusion is not “we are losing exactly this much” but “we are losing at least this much, under three assumptions, and here they are”. An assumption stated out loud does not weaken the report; it ends the argument: from then on people discuss a specific condition, not your integrity.",
+       "list": [
+        "Demand within the week is assumed flat; in reality the end of the week is higher.",
+        "The promotion week is excluded from the rate calculation; otherwise the rate is inflated.",
+        "A customer who did not find the product did not come back for it; some did, so this estimate is high."
+       ]
+      },
+      {
+       "text": "You cannot show assumptions on a picture or open up the detail, and the picture itself went stale the evening it was taken. Promising “I'll send it after the meeting” means losing both the decision and a week.\n\nSo what you show is not a snapshot but the report itself. The platform offers two ways to do this, and the choice between them is the choice between “one report” and “several slides in a row”."
+      },
+      {
+       "heading": "One report: the Present button",
+       "text": "Open the report and click “Present” in the top right. The three options do different things:\n\n“Fullscreen”: the report fills the screen with no menus or panels, which is what you want on a projector. “In this tab”: the same, but within the browser window. “New tab”: a separate tab, so you can open it in advance and not hunt for it in front of everyone.\n\nPress Esc to exit. The report stays live throughout: you can hover over it, expand a detail and answer a question right there on the screen.",
+       "image": "pres-1-present"
+      },
+      {
+       "heading": "Several slides: Presentations",
+       "text": "When the story is longer than one report, build a presentation: Presentations in the left-hand menu, the “+ create presentation” tile, then “Add slide”.\n\nA slide can be a report (it opens live, not as a picture), a PNG or JPG image up to 5 MB, a PDF up to 20 MB (with a checkbox, it is split into one slide per page), or a ready-made HTML file up to 10 MB. You set the order by dragging, and every slide has a field for notes.",
+       "image": "pres-2-build"
+      },
+      {
+       "heading": "The day before: Verify before show",
+       "text": "This button goes through every slide and shows, for each one, the report's publication date and the date of the data it was built from, flagging any that are out of date or no longer open. A minute the day before is worth it, so you are not hunting for a missing slide in front of everyone.\n\nDuring the show, the ← → arrows move between slides, Space goes forward, F switches to full screen and Esc exits. The presentation is visible only to you: you show colleagues your screen, you do not give them access.",
+       "note": "The report does not go out to the internet; the corporate network is all it needs. So in the meeting room it opens just as it does at your desk."
+      }
+     ],
+     "checks": [
+      {
+       "kind": "taste",
+       "q": "At the team meeting you are asked why the report's headline number can be trusted. Which response is strongest?",
+       "options": [
+        "Say that the data came straight from the warehouse",
+        "Point to the model: it did the calculation",
+        "Promise to send a detailed calculation afterwards",
+        "Open the report and state the assumptions aloud"
+       ],
+       "answer": 3,
+       "why": "There is no demand in the data; the number was calculated with a proxy, so trust rests on the assumptions, not the source. A live report on the slide lets you show them and the detail right away instead of promising to send them."
+      }
+     ]
+    },
+    {
+     "id": "p2l4",
+     "title": "If something goes wrong",
+     "minutes": 2,
+     "xp": 20,
+     "summary": "Four common problems and what to do about them",
+     "cards": [
+      {
+       "text": "The report opens for everyone except the supply planning manager, who gets a blank screen. Nothing is broken: the file still contains a link to a font on the internet, and the corporate network has no internet. At home, the analyst's copy fetched the font and opened; the manager's copy has nowhere to fetch it from.\n\nAlmost all report problems come down to four, and each is fixed in a minute if you know where to look. The first step is always the same: find out what the other person sees, not what you see.",
+       "cast": {
+        "who": "planner",
+        "say": "I get a blank screen. Does it open for you?",
+        "role": "Supply Planning Manager, Delta"
+       }
+      },
+      {
+       "heading": "What happened",
+       "text": "The order is always the same: look at what the person sees, reproduce it yourself, and change one thing at a time.",
+       "table": {
+        "head": [
+         "Symptom",
+         "What to do"
+        ],
+        "rows": [
+         [
+          "Blank screen",
+          "The file links to something outside. Open the file in Notepad, search for “http” and ask the model to embed that inside the file"
+         ],
+         [
+          "The report takes a long time to load",
+          "The data is baked into the file itself. Ask the model to rework the report so that it READS a data file (the prompt from the “The prompt for the model” lesson), and upload the extract to slot 0 on the Data tab"
+         ],
+         [
+          "Old numbers are showing",
+          "The browser is showing its own copy. Reload the page and clear the cache: Ctrl+Shift+R (Windows) or ⌘+Shift+R (Mac)"
+         ],
+         [
+          "A colleague cannot see it",
+          "The report is not published or the person is not on the access list: Settings tab, “Published” checkbox; Access tab, add the person"
+         ]
+        ]
+       },
+       "note": "If Ctrl+Shift+R does not help, open the report in an incognito window (Ctrl+Shift+N in Chrome and Edge): there is no cache there at all, and you can tell at once whether it is the browser or the report itself."
+      },
+      {
+       "text": "Most often it turns out to be the first row: the file fetches something from the internet, and the corporate network has no internet, so outside it opened and inside it goes blank. The second most common is “I'm seeing old numbers”, and that is almost always the browser, not the platform.\n\nIf that does not help, write to platform support and attach the file itself. There is no shame in it; it is faster.",
+       "note": "Include three things in your message: what you clicked, what you expected to see and what you saw instead."
+      }
+     ],
+     "checks": [
+      {
+       "kind": "rule",
+       "q": "A store report takes ten seconds to open. What is the most common cause?",
+       "options": [
+        "Too much data inside the report file itself",
+        "The platform server is slow at that hour",
+        "A weak laptop or a congested network",
+        "The report is unpublished and so is slow"
+       ],
+       "answer": 0,
+       "why": "The server sends the file in a fraction of a millisecond. The rest of the time the browser is parsing what is inside: the more data baked into the file, the longer it takes to open."
+      },
+      {
+       "kind": "rule",
+       "q": "The report opened at home, but on the platform it shows a blank white screen. Where do you start?",
+       "options": [
+        "Upload the file again in case it was cut short",
+        "Ask the administrator for more permissions",
+        "Check whether the file has any external links",
+        "Make the file smaller and try once more"
+       ],
+       "answer": 2,
+       "why": "A blank screen almost always means one thing: something is loaded via an internet link, and the report's frame cannot go there. Ask the model to embed it inside the file."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "p3",
+   "title": "Working with the model",
+   "subtitle": "What to delegate, how to explain the task and how to spot a mistake within a minute",
+   "image": "prep8",
+   "lessons": [
+    {
+     "id": "p3l1",
+     "title": "What to delegate and what to decide yourself",
+     "minutes": 3,
+     "xp": 20,
+     "summary": "The model builds the file; you choose what it means",
+     "cards": [
+      {
+       "text": "The manager suggests something simple: let the model decide which metric goes at the top. After all, it has seen thousands of reports.\n\nIt won't. The model is quick at the things that would take you an evening: calculating, building the file, laying out the numbers in sections, labeling charts and redoing all of it as many times as you ask. But it does not know why you came. What matters more, revenue by city or lost sales by store, depends on the decision that will be made, and a person makes that decision.",
+       "cast": {
+        "who": "head",
+        "say": "Let the model decide what matters here.",
+        "role": "Head of Sales, Delta"
+       }
+      },
+      {
+       "heading": "Split it up in advance",
+       "text": "It helps to draw the line before you open the model's window. Then the conversation is short: you are not debating with it what counts as important, you are asking it to do what you have already decided.",
+       "list": [
+        "Yours: the question the report answers, the headline number and a fair comparison for it.",
+        "The model's: the calculation, layout, styling, chart labels and any number of revisions.",
+        "Together: the presentation; you ask for two or three ways of showing the same thing and pick one."
+       ]
+      },
+      {
+       "text": "A useful habit: before opening the model's window, finish that same sentence, “the report is needed to decide…”. Until it is finished, any prompt will be long and vague, and the answer will need reworking.\n\nOnce the sentence is ready, the brief takes one line: you name the decision, show the data and hand everything else to the model. It is not about trusting it; it is about who is accountable for the decision the report will drive.",
+       "note": "If you cannot explain the task to a colleague in a minute, you will not be able to explain it to a model either."
+      }
+     ],
+     "checks": [
+      {
+       "kind": "rule",
+       "q": "You have not decided which number goes at the top. The model offers to choose for you. What is best?",
+       "options": [
+        "Ask for three options and choose yourself",
+        "Agree: it has seen more reports than you",
+        "Put it off until someone more senior decides",
+        "Put every metric at the top all at once"
+       ],
+       "answer": 0,
+       "why": "Choosing the headline number is choosing the decision the report drives, and you are accountable for it. Asking for options is useful: the model widens the list, but the final word stays with a person."
+      }
+     ]
+    },
+    {
+     "id": "p3l2",
+     "title": "How to explain the task",
+     "minutes": 3,
+     "xp": 25,
+     "summary": "A data sample instead of a description in words",
+     "cards": [
+      {
+       "text": "The analyst's first attempt went like this: “there's a date column, then city, then store, then sales, in bottles I think”. The model filled in the rest by itself and said nothing about it: the delimiter, the column order, the date format, the units.\n\nEverything you leave unsaid will be silently made up, and that is the most common cause of odd numbers.\n\nInstead of a description, give a sample: a few rows with headers, exactly as they look in your file. It is shorter than any explanation, can be checked in a second and leaves no room for guesswork.",
+       "cast": {
+        "who": "analyst",
+        "say": "I explained it in words, and it made up the units.",
+        "role": "Analyst, Delta"
+       }
+      },
+      {
+       "heading": "Three labeled sections",
+       "text": "A prompt is easiest to structure in three parts: data, task, constraints. This is what a prompt for the sales extract looks like, with made-up numbers instead of real ones. The column headers are yours; the numbers are invented. The model needs the structure. From two rows it can see the delimiter, the date format and that stock is a separate column, and it also infers the types: nobody declares them in an extract, and the only way to tell that “03.03.2026” is a date, “1 234,56” a number and “RV-01” text is from how the value is written. So write your made-up numbers in the same format as the real ones: a foreign date format in the sample means a foreign parser in the report. You change the task line to suit your question and leave the constraints as they are.\n\nThe “<data>…</data>” boundary separates the sample from the instructions: between those lines the model sees only data. This is Anthropic's own recommendation for prompts where instructions and data sit together, and other models understand it too.",
+       "code_text": "DATA (first, before everything else)\n<data>\ndate; weekday; week; city; store; item; sales; delivery; stock\n12.05.2026; Tuesday; 11; city A; ST-07; item 1; 120; 480; 340\n13.05.2026; Wednesday; 11; city A; ST-07; item 1; 0; 0; 0\n</data>\n\nTASK\nOne screen: how much in sales the stores lost because the product ran out before the next delivery.\n\nCONSTRAINTS\n· One file, everything inside, no external links.\n· Same units as in the sample; do not convert anything.\n· If data is missing, ask; do not fill in the gaps.",
+       "editable": true
+      },
+      {
+       "text": "Three labeled sections work better than one paragraph: the model does not confuse the conditions with the data, and it is easier for you to fix a single line later. Put the sample first: what comes at the start of a prompt gets lost less often than what sits in the middle.\n\nAnd a rule with no exceptions: real commercial and personal data is not sent to external models, the ones you open in a separate browser tab. Five made-up rows with your headers are enough for a sample: the structure matters, not the content.\n\nInside the platform it works differently. In the Explore section the calculation runs on the company's server, and the model receives only column names and types, not a single cell of data. So there you can ask about the real numbers.",
+       "note": "The line “if data is missing, ask” saves the most time: without it, whatever is missing will be silently made up."
+      }
+     ],
+     "checks": [
+      {
+       "kind": "rule",
+       "q": "The model needs to understand how the store sales extract is structured. What do you give it?",
+       "options": [
+        "A description in words of each column and its type",
+        "The header and two rows, written as in the file",
+        "The whole quarter's extract, so it makes no mistakes",
+        "The file name, the row count and a list of types"
+       ],
+       "answer": 1,
+       "why": "Types are not declared anywhere in an extract: neither a csv nor an Excel workbook states them. The model infers them from HOW a value is written: 03.03.2026 is a date in day-first format, 1 234,56 is a number with a space as the thousands separator and a comma as the decimal mark, RV-01 is text rather than a number, and an empty cell is not zero. So the made-up rows are written in exactly the same format as the real ones: a list of types in words is shorter but does not say how to read them."
+      },
+      {
+       "kind": "rule",
+       "q": "What from a sales extract may you paste into a prompt to an external model?",
+       "options": [
+        "Contact details of the store managers",
+        "The whole quarter's extract, for accuracy",
+        "Column headers and five made-up rows",
+        "Real sales for every store in the network"
+       ],
+       "answer": 2,
+       "why": "Only the structure goes to an external model: what the columns are called and how the values are written. Real numbers, store names and certainly people's contact details stay in your file; you open the finished report on them on your own side."
+      }
+     ]
+    },
+    {
+     "id": "p3l5",
+     "title": "Anonymize an extract in five minutes",
+     "minutes": 5,
+     "xp": 30,
+     "summary": "Anonymizer: a file with names and tax IDs becomes a safe sample",
+     "cards": [
+      {
+       "text": "The previous step asks you to show the model a SAMPLE record: the header and a couple of rows. But in a real extract those rows contain people's names, tax IDs, phone numbers and customer names. Inventing replacements by hand takes a long time and is error-prone: forget one column and it leaks.\n\nThe platform has a dedicated page for this: Anonymizer. It replaces values while keeping the shape of the record: length, format, separators. Below are six steps, one screen each.",
+       "note": "The buttons below are named exactly as they appear on screen."
+      },
+      {
+       "heading": "Practice on this file",
+       "text": "A training workbook: eight customers with names, tax IDs and phone numbers, a hidden sheet with a discount lookup table, a link to someone else's workbook and a colleague's comment. All of it is made up: it is a deliberately “bad file”, like most files in real life. Work through the steps on it.",
+       "file": "anon-demo.xlsx"
+      },
+      {
+       "heading": "Step 1. Open Anonymizer",
+       "text": "It is in the left-hand menu, between Explore and Quests.",
+       "image": "an-1-menu"
+      },
+      {
+       "heading": "Step 2. Drop in the file",
+       "text": "Drag the workbook into the frame, or click it and choose the file. .xlsx, .xls, .xlsb, .csv and .ods are accepted, up to 10 MB.",
+       "image": "an-2-drop",
+       "note": "The file is not sent anywhere: the page is locked down so that it physically cannot make a network request. Parsing and replacement happen in your browser; the workbook goes neither to us nor anywhere else."
+      },
+      {
+       "heading": "Step 3. Read what else is in the workbook",
+       "text": "The first thing the page shows is a list of what would travel with the file besides the visible tables. These are not errors but a reminder: almost nobody remembers what is in their workbook.",
+       "image": "an-3-audit",
+       "list": [
+        "hidden sheets, and “very hidden” ones that do not even appear in the sheet menu;",
+        "named ranges, which are usually a lookup table;",
+        "links to other files: the path alone reveals the project and the drive;",
+        "formulas, comments, and hidden rows and columns;",
+        "the author's name in the workbook properties."
+       ],
+       "note": "The page removes none of this: only you know what is superfluous here. Delete what you do not need in Excel and run the file through again."
+      },
+      {
+       "heading": "Step 4. Check the columns",
+       "text": "Next comes the column table: what was found, what it will be replaced with, and a “Mask” checkbox. Ticked are the columns that look like personal data (tax ID, phone, full name, email) and text where almost every value is unique. Numbers and dates are left alone; otherwise the file would no longer add up.\n\nTick by hand anything the tool treats as a harmless category but which, in your case, is customers: in the screenshot, exactly those columns were left unticked. The “Replace with” column says what to replace with: keep as is, full name, tax ID, city, code.",
+       "image": "an-4-columns",
+       "note": "Codes like ST-01 remain codes of the same shape, and the same value is replaced identically across the whole workbook; otherwise two sheets would no longer join."
+      },
+      {
+       "heading": "Step 5. Press the button",
+       "text": "“Generate masked file”, and the browser saves a file next to the original with the same name and a __masked suffix. That is your safe copy.",
+       "image": "an-5-run"
+      },
+      {
+       "heading": "Step 6. Take the sample and read the self-check",
+       "text": "A summary appears below the table. It contains two things.\n\nThe first is a ready-made sample for the prompt: the header and three already anonymized rows, with a “Copy sample” button. That is what goes into the data block, not the whole file.\n\nThe second is the self-check: which columns still hold real values. If customers or store addresses are among them, go back to step 4, tick them and press the button again.",
+       "image": "an-6-result"
+      },
+      {
+       "heading": "What anonymization does not do",
+       "text": "It does not make the file public. The numbers and dates are still real, and a rare combination of them can sometimes identify a person even without a name; the self-check warns about such columns separately.",
+       "list": [
+        "what goes into the conversation with the model is a three-row SAMPLE, not the whole file;",
+        "an anonymized file is no reason to share it publicly;",
+        "if a rule depends on real values, it belongs in a setting inside the report, not in the prompt."
+       ],
+       "note": "The reverse is also true: an anonymized file remains usable. Links between sheets are preserved, numbers and dates are untouched, and it produces the same totals as the original."
+      }
+     ],
+     "takeaways": [
+      "A sample for the model is made with a tool, not by hand: a forgotten column is a leak.",
+      "Anonymizer runs in the browser; the file goes nowhere, including to us.",
+      "Before sending, check what else is in the workbook: a hidden sheet or an external link travels with it."
+     ],
+     "checks": [
+      {
+       "kind": "rule",
+       "q": "Anonymizer found a hidden sheet with a lookup table in the workbook. What will it do with it?",
+       "options": [
+        "Remove it from the anonymized file",
+        "Nothing: it will only warn you about it",
+        "Replace the values on that sheet too",
+        "Refuse to process such a workbook"
+       ],
+       "answer": 1,
+       "why": "Only the file's author knows which findings are superfluous: a hidden sheet may be junk or a lookup table that is needed. So the page names the findings, and the person removes them, in Excel, before the next run."
+      },
+      {
+       "kind": "taste",
+       "q": "You have anonymized an extract. What do you send to the model?",
+       "options": [
+        "The whole anonymized file, since it is safe",
+        "The original file: the anonymized one adds up worse",
+        "Nothing: the model needs no data at all",
+        "The three sample rows from the summary panel"
+       ],
+       "answer": 3,
+       "why": "The model needs the shape of a record, not the data: how many columns, in what order, what a date and the decimal separator look like. That is exactly the three rows from the summary panel. There is no reason to send the file itself, even anonymized."
+      }
+     ]
+    },
+    {
+     "id": "p3l3",
+     "title": "Check the answer in a minute",
+     "minutes": 3,
+     "xp": 25,
+     "summary": "Three checks that catch almost any mistake",
+     "cards": [
+      {
+       "text": "The supply planning manager brings his own shipments report: for two cities his volume is twelve times higher than in the analyst's report. Both files are tidy, and both are internally consistent.\n\nThe answer is not in the arithmetic: two of the three cities keep records in packs of 12 bottles, the third in bottles. The extract has one column with one name, but different counting rules. Nobody made a mistake.\n\nThe model said nothing, because a model makes mistakes in an even voice: a made-up number sounds just as calm as a correct one. So checking is not distrust; it is a normal part of the work.",
+       "cast": {
+        "who": "planner",
+        "say": "My shipments are twelve times higher. What units are you using?",
+        "role": "Supply Planning Manager, Delta"
+       }
+      },
+      {
+       "heading": "Each check takes twenty seconds",
+       "text": "Three actions in a row, and none of them requires recalculating the whole report.",
+       "list": [
+        "Check three numbers against the table: the total, the largest and the smallest. A mistake is usually visible straight away.",
+        "Ask to see the intermediate calculation: what was added, what was divided, which rows were dropped and why.",
+        "Ask the same question from the other side: after “where were the biggest losses”, ask where they were smallest. The answers should agree."
+       ]
+      },
+      {
+       "text": "Found a discrepancy? Do not ask “are you sure?”: you will get polite agreement and learn nothing. Say which number is wrong and what it should be, and ask for the file to be rebuilt.\n\nTwo or three short rounds of “here it is, fix this” are more reliable than one very long prompt: in each round you see the result and fix one thing. And write the units right into the report: then the next argument about packs versus bottles ends before it starts.",
+       "note": "A matching total proves nothing yet: errors often cancel each other out. A total that does not match means there is definitely an error, and you need to find it."
+      }
+     ],
+     "checks": [
+      {
+       "kind": "rule",
+       "q": "The store report is ready, and the numbers look plausible. What do you do first?",
+       "options": [
+        "Ask the model whether it is sure of its calculation",
+        "Check the total and the two extreme values",
+        "Show the report to a colleague and wait for comments",
+        "Publish it and fix it if anyone notices"
+       ],
+       "answer": 1,
+       "why": "Asking “are you sure?” checks nothing: the model confirms right and wrong with equal calm. Reconciling with the source takes half a minute and catches both silent rounding and lost rows."
+      },
+      {
+       "kind": "taste",
+       "q": "Why ask the model for the intermediate calculation?",
+       "options": [
+        "To make the report look more detailed to the reader",
+        "To make the model work more slowly and carefully",
+        "To have an answer ready for any question asked",
+        "To see what was added up and what was dropped"
+       ],
+       "answer": 3,
+       "why": "The mistake is almost never in the arithmetic but in which rows went into the calculation and which fell out. Seeing the intermediate steps, you find that spot in seconds instead of recalculating the whole report."
+      }
+     ]
+    },
+    {
+     "id": "p3l4",
+     "title": "Your name is on the report",
+     "minutes": 2,
+     "xp": 20,
+     "summary": "A person, not the model, is accountable for the numbers",
+     "cards": [
+      {
+       "text": "The weekly team meeting. The store report is on screen, and the manager asks about one of the top rows: where do the lost sales at this store come from, if it sells less than its neighbors?\n\nThe question is put to the analyst, not the model. “That's what the model calculated” is not an answer; it is the same as “that's what came out of the spreadsheet”: the tool is named, but there is no explanation. Answering that question is precisely the work the report was made for.",
+       "cast": {
+        "who": "head",
+        "say": "I'm asking you, not the model.",
+        "role": "Head of Sales, Delta"
+       }
+      },
+      {
+       "heading": "Your figure differs from someone else's report",
+       "text": "The packs story will repeat itself many times, and it is always resolved the same way. Someone else's report is almost never wrong; it is about something else: a different period, a different set of stores or different units.",
+       "list": [
+        "Do not argue about who is right: first find where the counting rules diverge.",
+        "Check three things: the period, the set of rows (who was included) and the units.",
+        "Add a line to the report stating what was counted and for what period."
+       ]
+      },
+      {
+       "text": "It is worth saying plainly that the file was built with the help of a model, and adding that you checked the numbers against the source. This is not an admission of weakness: the reader needs to know that a check was done and whom to contact if they still find a mistake.\n\nA report with nobody behind it gets skimmed; a report someone is accountable for gets opened every week. One line at the end heads off half of all future questions.",
+       "cast": {
+        "who": "analyst",
+        "say": "The model built the file. I checked the numbers.",
+        "role": "Analyst, Delta"
+       }
+      },
+      {
+       "heading": "Where to learn more",
+       "text": "This unit adapts Anthropic's openly available materials to our task. The original sources are free.",
+       "list": [
+        "AI Fluency: Framework & Foundations: a course on four skills: what to delegate, how to describe the task, how to evaluate the answer and what you are accountable for. anthropic.com/ai-fluency",
+        "Prompting best practices: a reference of prompting techniques: examples, sections, ordering of parts. platform.claude.com/docs",
+        "anthropics/courses on GitHub: the same techniques with exercises, if you want practice."
+       ]
+      }
+     ],
+     "checks": [
+      {
+       "kind": "rule",
+       "q": "Your report and the warehouse's report show different shipment volumes. Where do you start?",
+       "options": [
+        "Write that they have an error and attach the file",
+        "Check the period, the set of rows and the units",
+        "Rebuild the report from scratch and compare",
+        "Ask the model which of the reports is correct"
+       ],
+       "answer": 1,
+       "why": "Different numbers almost always mean different counting rules, not someone's mistake: a different period, a different set of rows or different units. Until the rules have been compared, arguing about who is right leads nowhere."
+      },
+      {
+       "kind": "rule",
+       "q": "A mistake has been found in a report the model built. Who is accountable?",
+       "options": [
+        "The model: it did the calculation, not you",
+        "Nobody: it is a draft that everyone looks at",
+        "You: it is published under your name",
+        "The platform: it accepted a file with an error"
+       ],
+       "answer": 2,
+       "why": "Here the model is a tool, just like a formula in a spreadsheet, and the report carries your name. So you are the one who acknowledges and fixes the mistake, and quickly: the longer a wrong number stays up, the more decisions get made on it."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "p4",
+   "title": "See it through to an answer",
+   "subtitle": "Check the data, fix the report, reconcile the numbers and turn them into a decision",
+   "image": "prep4",
+   "lessons": [
+    {
+     "id": "p4l1",
+     "title": "Read your own report",
+     "minutes": 4,
+     "xp": 25,
+     "summary": "What the first version shows, and why it is too early to trust it",
+     "cards": [
+      {
+       "text": "The report is published, the link has gone out, the manager has opened it and asked exactly the question everything started with.\n\nThe report does not answer it by itself. It shows numbers; the answer has to be read off them and put into words. This is the step people skip most often: the file is ready, so the job is done. The job is not done until there is one sentence you can say at the team meeting.",
+       "cast": {
+        "who": "head",
+        "role": "Head of Sales, Delta",
+        "say": "I've seen the report. So what do I do with it?"
+       }
+      },
+      {
+       "heading": "Four numbers, all from your report",
+       "text": "Open your report and write down four numbers. Do not paraphrase; actually write them down: “there are a lot of losses” will not survive the first question, “how much?”.",
+       "list": [
+        "how many bottles in sales were lost over 12 weeks: the big number at the top;",
+        "what share of actual sales that is: next to it, as a percentage;",
+        "at how many stores the product ran out before delivery;",
+        "the store with the largest shortage and its sales RANK: the “sales rank” column;",
+        "and the line under the table: how many of these stores are among the 20 worst by sales."
+       ],
+       "note": "The fourth number is the key one. If the store with the largest shortage sits mid-table by sales, then judged by sales it is easy to mistake for a weak store. The whole course was built around this trap."
+      },
+      {
+       "heading": "If these numbers are not in the report",
+       "code_title": "Add this to the same conversation with the model",
+       "text": "This happens to most people, and it is not your oversight: the report calculates exactly what you asked for in the TASK block. If sales rank or the share is missing, the task was phrased more broadly, and the report needs extending.\n\nThis is not a rebuild from scratch and no reason to abandon the lesson: one request in the same conversation with the model, a new file, and the numbers will appear.",
+       "code_text": "Add four numbers at the top: how many bottles were lost\nover the period, what share of actual sales this represents,\nat how many stores the product ran out before delivery, and which\nstore lost the most.\n\nBelow, a table of ALL such stores, sorted by lost sales, descending,\nwith a “sales rank” column (the store's position in the list\nsorted by sales). Do not truncate the table.\n\nUnder the table, in one line: how many of these stores are among\nthe 20 worst by sales.\n\nCalculate lost sales like this: take the days when sales are zero\nand stock is zero, and multiply them by that store's usual daily\nrate for that item.",
+       "editable": true,
+       "note": "This will be your first revision of the report. How to publish the corrected file without losing the address and access is covered later, in the lesson “The first version is always wrong”; for now it is enough to open the new file with a double click and drag the extract into it."
+      },
+      {
+       "heading": "Write down the first version's numbers",
+       "text": "The field is saved in your browser and is not sent anywhere.\n\nWrite them down, and do not trust them yet. The report calculated exactly what you asked for, from whatever was in the file, and nobody has checked the file yet. The next lesson is data acceptance, then revising the report, and only after that reconciliation. That is when you will see how far the first version's numbers were from the real ones.",
+       "code_text": "FIRST VERSION OF THE REPORT\nLost sales over 12 weeks: ............ btl\nShare of actual sales: ............ %\nStores where the product ran out before delivery: ............\nLargest shortage: ............, rank ...... of 60 by sales\n\n(you will come back here after data acceptance and revisions)",
+       "editable": true,
+       "code_title": "First version: write it down for comparison"
+      }
+     ],
+     "checks": [
+      {
+       "kind": "rule",
+       "q": "The report shows lost sales of 10.2%. What does this number mean?",
+       "options": [
+        "Exactly how much the company lost over the period",
+        "How many stores were left without stock before delivery",
+        "Losses are at least this share: it is a lower bound",
+        "How far actual sales diverged from the sales plan"
+       ],
+       "answer": 2,
+       "why": "Out-of-stock days are multiplied by the store's usual rate. The data knows nothing at all about how many people left without finding the product, so the honest wording is “at least”, not “exactly”."
+      },
+      {
+       "kind": "counterfactual",
+       "q": "The store with the largest shortage ranks 33rd of 60 by sales; the other thirteen stores with shortages rank even lower. The manager proposes taking volume from the 20 worst stores by sales and giving it to the leaders. What happens?",
+       "options": [
+        "Volume leaves stores where it sits unsold",
+        "Volume leaves stores that are already short of it",
+        "Sales grow: the product moves to the leaders",
+        "Nothing changes: the stores' shares stay the same"
+       ],
+       "answer": 1,
+       "why": "A store with no stock sells exactly what it was delivered: it is bound to sit at the bottom of the sales ranking, however much customers ask for the product. So “take from the worst by sales” hits exactly the shortages: almost all fourteen stores with shortages fall into that bottom twenty. Stores where product really sits unsold show up not in sales but in write-offs."
+      }
+     ],
+     "takeaways": [
+      "The report shows numbers; a person reads the answer off them.",
+      "It is too early to trust the first version's numbers: the file has not been checked yet.",
+      "A store's sales rank does not measure demand if the product ran out."
+     ]
+    },
+    {
+     "id": "p4l2",
+     "title": "Data acceptance: check the file yourself",
+     "minutes": 7,
+     "xp": 35,
+     "summary": "Five checks for any extract, and the nine numbers they produce",
+     "cards": [
+      {
+       "text": "From here on it is work, not reading. But before calculating anything from the file, you accept it: you ask the extract five questions, and none of them is specific to Delta. They are the same questions you would ask of any table that reaches you from someone else's system.\n\nThe numbers are deliberately not printed below. Get your own first, then answer the questions at the end of the lesson: that is where their meaning is explained. That way the findings are yours, not something you were told."
+      },
+      {
+       "heading": "Five questions for any extract",
+       "text": "This is data acceptance. It takes ten minutes, saves you rebuilding an entire report, and is done BEFORE the calculations, not after a number fails to match.",
+       "list": [
+        "completeness: are there as many rows as there should be? Multiply what the table is made of: stores × items × days;",
+        "uniqueness: each row has a key, a set of columns that does not repeat. Here it is date + store + item. Compare the row count with the number of unique keys: if they differ, the data is duplicated or the wrong key was chosen;",
+        "gaps: where are the blanks, and what does a blank mean: zero, or “the event did not happen”? These are different things, and confusing them is the costliest mistake;",
+        "units: are all rows in the same units of measure, and is there anything to check that against: a second sheet, another report, warehouse shipments;",
+        "outliers: is there a period, store or item that stands out from the rest by a multiple?"
+       ],
+       "note": "On the platform this happens automatically: a report generator declares its checks in the manifest (key uniqueness, non-empty columns, ranges), and the Data Quality section shows the findings after every run. While the report is built by hand, these five questions are your job."
+      },
+      {
+       "heading": "If you do not have the extract to hand",
+       "text": "Get it here: it is the same file this whole lesson is about. Next to it are the warehouse shipments (you will need them in step 5 to understand the units story) and the sample report: it reads this extract and calculates the same things, if you would rather not wrestle with formulas.",
+       "file": [
+        "delta-sales.xlsx",
+        "delta-sales.csv",
+        "delta-stock.csv",
+        "delta-report.html"
+       ],
+       "note": "Columns: A date · B weekday · C week · D city · E channel · F store · G item · H sales · I delivery · J write-off · K stock. The formulas below are written for these letters."
+      },
+      {
+       "heading": "Nine steps in Excel",
+       "code_title": "Checklist: go in order, paste formulas into an empty cell",
+       "text": "This is NOT a prompt for the model: you carry out these nine points by hand in your own Excel. Paste the formula from the relevant point into any empty cell next to the data (for example N1) and see what it shows; points 2 and 3 are not formulas but two menu actions.\n\nThe order follows the five acceptance questions: steps 1–4 cover completeness, uniqueness and gaps, 5–6 units, 7–9 the substantive calculation and outliers. Calculating the substance before acceptance is the most expensive way to save time.",
+       "code_text": "1. Total number of rows\n   =COUNTA(A:A)-1\n\n2. Key uniqueness: is any row present twice?\n   Data → Remove Duplicates, tick ONLY “date”,\n   “store”, “item”: that is the row key in this file.\n   Excel will tell you how many it removed and how many remain;\n   if it removed anything at all, find out why before\n   calculating further.\n   (Make a copy of the sheet first: removal cannot be undone.)\n\n3. What the file should consist of: in a pivot table, drag\n   “store” into rows (how many?), then “item”, then “date”.\n   Multiply the three numbers and compare with point 1.\n\n4. Blank sales cells are not zeros\n   =COUNTBLANK(H2:H21841)\n\n5. Sales “as is”, with no processing at all\n   =SUM(H:H)\n   And by city:  =SUMIF(D:D,\"Riverton\",H:H)\n   and the same for “Northfield” and “Lakeside”\n\n6. Align the units. New column L, first row:\n   =IF(OR(D2=\"Northfield\",D2=\"Lakeside\"),H2*12,H2)\n   fill down, then =SUM(L:L) again\n\n7. Days when there was nothing to sell\n   =COUNTIFS(H:H,0,K:K,0)\n   and how many stores that is: a pivot by “store” filtered on “sales = 0”\n\n8. Write-offs where there was stock\n   =SUMIFS(J:J,K:K,\">0\")   (and on column L, if you aligned the units)\n\n9. Weekly profile: pivot “week” → sum of column L",
+       "editable": true,
+       "note": "The Copy button takes the whole checklist: handy to keep it alongside, in a text editor or a second sheet. A single formula is easier to select with the mouse right here. And yes, each point will give you a number: write it down, as the reconciliation will be based on them."
+      },
+      {
+       "heading": "The same with queries on the platform",
+       "code_title": "Copy one query at a time, from the “-- Query N” line to the “;”",
+       "text": "If you would rather not open Excel, the platform gives you the same numbers. Explore → “Folder with files…” (a folder of .xlsx workbooks; .csv files are not read from there, so save as .xlsx) → “Refresh index from folder”. The platform recognizes a folder from a report's catalog by itself, and takes an ordinary folder as is: each table is named after its file, so delta-sales.xlsx becomes the table delta_sales. The table names are shown in the line under the button; if yours is different, replace it in the queries.\n\nRun the queries ONE AT A TIME: take everything from the “-- Query N” line up to and including the semicolon. Half a query or a single line of one will not run: the engine accepts only a complete query starting with SELECT or WITH.",
+       "code_text": "-- Query 2. Key uniqueness: the two numbers should match.\nSELECT count(*) AS total,\n       count(DISTINCT (\"date\", store, item)) AS unique_keys\nFROM delta_sales;\n\n-- Query 3. What the file consists of.\nWITH u AS (SELECT * FROM delta_sales\n           QUALIFY row_number() OVER (PARTITION BY \"date\", store, item) = 1)\nSELECT count(DISTINCT store) AS stores,\n       count(DISTINCT item) AS items,\n       count(DISTINCT \"date\") AS days\nFROM u;\n\n-- Query 5-6. Sales as is and after aligning the units.\nWITH u AS (SELECT * FROM delta_sales\n           QUALIFY row_number() OVER (PARTITION BY \"date\", store, item) = 1)\nSELECT city,\n       sum(sales) AS as_is,\n       sum(sales * CASE WHEN city IN ('Northfield','Lakeside') THEN 12 ELSE 1 END) AS bottles\nFROM u GROUP BY city ORDER BY city;\n\n-- Query 7. Out-of-stock days and the stores where they occurred.\nWITH u AS (SELECT * FROM delta_sales\n           QUALIFY row_number() OVER (PARTITION BY \"date\", store, item) = 1)\nSELECT count(*) AS days, count(DISTINCT store) AS stores\nFROM u WHERE sales = 0 AND stock = 0;\n\n-- Query 8. Write-offs with stock on hand.\nWITH u AS (SELECT * FROM delta_sales\n           QUALIFY row_number() OVER (PARTITION BY \"date\", store, item) = 1)\nSELECT count(DISTINCT store) AS stores,\n       sum(\"write-off\" * CASE WHEN city IN ('Northfield','Lakeside') THEN 12 ELSE 1 END) AS bottles\nFROM u WHERE \"write-off\" > 0 AND stock > 0;\n\n-- Query 9. Weekly profile: one week should stand out.\nWITH u AS (SELECT * FROM delta_sales\n           QUALIFY row_number() OVER (PARTITION BY \"date\", store, item) = 1)\nSELECT week,\n       sum(sales * CASE WHEN city IN ('Northfield','Lakeside') THEN 12 ELSE 1 END) AS bottles\nFROM u GROUP BY week ORDER BY week;",
+       "editable": true,
+       "note": "Duplicates are removed right in the query, by the WITH u AS (…) block; in Excel you removed them in step 2. Without it the numbers will not match the reference: you would get 1,979 out-of-stock days instead of 1,826. The folder will have no metrics or Ask suggestions: metrics are declared by a report's author, and a folder has no author."
+      },
+      {
+       "heading": "How to tell whether you got it right",
+       "text": "Below are six questions, one per finding. Each describes what you should have seen with your own eyes; your job is to say what it means.\n\nIf a number did not match, do not guess: the lesson “Reconcile and find where it broke” is entirely about finding the point where your calculation diverged from the file."
+      }
+     ],
+     "takeaways": [
+      "Nine actions on the file, and you arrive at the six findings yourself.",
+      "Check the file's integrity BEFORE calculating anything important from it.",
+      "Units are aligned before the calculation, not after: otherwise packs get added to bottles."
+     ],
+     "checks": [
+      {
+       "kind": "analysis",
+       "q": "Removing duplicates on “date + store + item” removed 1,680 rows out of 21,840. The file has 60 stores, 4 items and 84 days. What do these numbers tell you?",
+       "options": [
+        "The file is incomplete: some days were not exported",
+        "One entire week got into the file twice",
+        "Some stores have no sales for one of the items",
+        "The repeats are random; extracts always have a few"
+       ],
+       "answer": 1,
+       "why": "60 × 4 × 84 = 20,160: that is how many rows a complete grid has, and exactly that many remained. And 1,680 = 60 × 4 × 7: an entire week, with all stores and items. Random repeats do not look like that."
+      },
+      {
+       "kind": "spot-the-bug",
+       "q": "COUNTBLANK on the sales column returns 20 out of 21,840 rows. How should you read this?",
+       "options": [
+        "Twenty rows got corrupted during the export",
+        "Sales were zero on twenty occasions",
+        "One store was closed for five days",
+        "Twenty stores forgot to report for a day"
+       ],
+       "answer": 2,
+       "why": "20 = 5 days × 4 items: one store was closed for refurbishment. Blank and zero are different events: blank means “not trading”, zero means “trading, but no product”. Counting blanks as zero adds a fifteenth store with shortages that does not exist."
+      },
+      {
+       "kind": "estimate",
+       "q": "The sales column totals 584,977, while over the same period the warehouse shipped 1,817,738 bottles. Sales are a third of shipments. Why?",
+       "options": [
+        "Two thirds of the product piled up in store stockrooms",
+        "Some of the sales did not make it into the extract",
+        "The warehouse ships with a margin to cover losses",
+        "Two cities record packs rather than bottles"
+       ],
+       "answer": 3,
+       "why": "By city it is plain to see: 492,808 for Riverton against 48,999 and 43,170 for the other two, with equal shipments. 48,999 × 12 = 587,988, which matches. The conversion factor is not in the extract itself; it comes from an independent source, and the report states it explicitly."
+      },
+      {
+       "kind": "analysis",
+       "q": "The condition “sales = 0 and stock = 0” yields 1,826 days across 14 stores. What are these stores?",
+       "options": [
+        "Stores that ran out before the next delivery",
+        "Stores with the weakest demand in the network",
+        "Stores whose tills were down on those days",
+        "Stores closed for refurbishment or holidays"
+       ],
+       "answer": 0,
+       "why": "Zero sales with zero stock does not mean “nobody bought” but “there was nothing to sell”. Such a store's sales equal what was delivered, so its demand is entirely invisible in the extract: it will stay at the bottom of the sales ranking forever."
+      },
+      {
+       "kind": "counterfactual",
+       "q": "Weekly pivot: one week shows 230,400 btl, the other eleven range from 122,204 to 124,869. What do you do with the outlier?",
+       "options": [
+        "Keep it in sales, but do not use it as the norm",
+        "Remove it from the report as an outlier",
+        "Split it in half: it looks like repeated rows",
+        "Base the norm on it: it is the most complete"
+       ],
+       "answer": 0,
+       "why": "This is a promotion week: the sales are real, and they are not removed from actuals. But they are not the usual rate: if you take them as the norm, you inflate both the norm and the shortage estimate by about 7%."
+      },
+      {
+       "kind": "design",
+       "q": "Write-offs with stock on hand total 201,151 btl across 46 stores, and none of them is among the 14 stores with shortages. What conclusion follows?",
+       "options": [
+        "We need to buy more: there is not enough product",
+        "Write-offs are unavoidable; it is normal spoilage",
+        "The volume exists but sits where it is not needed",
+        "The data is contradictory: this cannot happen"
+       ],
+       "answer": 2,
+       "why": "Two problems at different stores with no overlap at all: that is the signature of a distribution error, not of purchase volume. 201,151 btl of write-offs against 163,548 btl of shortage: the source of volume lies within the same purchase."
+      }
+     ]
+    },
+    {
+     "id": "p4l3",
+     "title": "The first version is always wrong",
+     "minutes": 6,
+     "xp": 35,
+     "summary": "Build in the acceptance findings and publish a version, not a new report",
+     "cards": [
+      {
+       "text": "The question is asked in front of everyone, and there is nothing to say: the report really does show that. And yet you already know the answer; you found it during acceptance: Northfield keeps its records in packs of 12 bottles, and the report added packs to bottles.\n\nThis is the normal course of events. The first version of a report is almost always wrong, not because you did a poor job, but because data reveals its quirks only once you check it. What is not normal is abandoning that version and publishing a new report next to it.",
+       "cast": {
+        "who": "head",
+        "role": "Head of Sales, Delta",
+        "say": "Why are Northfield's sales twelve times lower than Riverton's?"
+       }
+      },
+      {
+       "heading": "Fix it in the same conversation with the model",
+       "text": "The four revisions below are the four acceptance findings translated into a request. Do not describe the task again: add them to the same conversation in which the report was born.\n\nNote what they do not contain: a single value from your file. No city names, no store codes, no items. The model receives the RULE, and you fill in the specific values yourself, in the file, on your own machine.",
+       "code_text": "Units of measure differ by the value in the “city” column: some are\nunits, some are packs. Do not ask me which ones, and do not expect\nnames: put it in a setting at the top of the file:\n\n  // I will fill this in myself; it is not sent anywhere\n  var PACKS = { /* \"value from the city column\": units per pack */ };\n\nand convert sales to units using this table BEFORE any calculation.\n\nOne week in the file may be duplicated: its rows repeat.\nDrop repeats by the key date + store + item.\n\nDo not use a week that stands out from the rest by almost double as\nthe usual sales rate: exclude it from the norm calculation, but keep\nit in actual sales. Put the number of that week in a setting next to\nPACKS as well; I will fill it in myself.\n\nA blank sales cell means “the store was not trading”, not zero.\nDo not count such days as out-of-stock days.",
+       "editable": true,
+       "note": "The field is editable and saved in your browser. Replace the city and column names with your own when you fix a real report.",
+       "code_title": "Add this to the same conversation with the model"
+      },
+      {
+       "heading": "Why the revisions contain no names",
+       "text": "A course rule that, for the first time, starts to matter in money terms: what goes out is STRUCTURE and RULES, never values. Column names, the format of records, the calculation logic: yes. Customer names, store codes, tax IDs, people's names: no.\n\nIn the training file the “city” column holds harmless made-up names. In your real file it will hold customers, retail chains or people, and a conversation with an external model is not the place for them to appear. The report loses nothing: the rule “units differ; here is the setting” works exactly the same way.",
+       "list": [
+        "the rule goes into the prompt: “units in this column differ; convert to units”;",
+        "the values go into the file: a settings line you fill in on your own machine;",
+        "the check is by eye: open the finished file and make sure the model has not baked in a single one of your values."
+       ],
+       "note": "The sample report in this course is built the same way: the pack factors sit on a separate line at the top of the file, neither derived from the data nor obtained from the conversation."
+      },
+      {
+       "heading": "And if real values are unavoidable",
+       "text": "This is not a rare case but everyday work: half the rules in real data hinge on specific names of customers, chains or legal entities. Work down the list from the top: take the first option that covers your task.",
+       "table": {
+        "head": [
+         "What you need",
+         "What to do"
+        ],
+        "rows": [
+         [
+          "The value is needed only by the calculation (a factor, rate or threshold)",
+          "A setting at the top of the file: the model leaves an empty line, and you fill in the values on your own machine"
+         ],
+         [
+          "The model needs a sample record: what your rows look like",
+          "Run the extract through Anonymizer; the six illustrated steps are covered in the lesson “Anonymize an extract in five minutes”. It returns a file with the same record format and, at the bottom, a ready-made sample: the header and three anonymized rows, which are what goes into the prompt"
+         ],
+         [
+          "You need a mapping: code → name, customer → chain",
+          "A reference table on the platform: the report reads it itself at run time, and only the column name goes into the conversation"
+         ],
+         [
+          "You need to calculate something on the values themselves",
+          "The Explore tab: the question becomes SQL, calculated by your browser or the platform's server. The model receives table and column names, never cells"
+         ],
+         [
+          "You can neither anonymize nor calculate on your own side",
+          "This is not a task for an external model. Such tasks are rare, but they exist, and admitting it is cheaper than explaining yourself later"
+         ]
+        ]
+       },
+       "note": "Anonymizer itself finds names, tax IDs, social security numbers, passports, phone numbers and email addresses, and replaces them while keeping the shape of the record: length, format, separators. Codes like “RV-01” remain codes, the same value is masked identically across the whole workbook, and numbers and dates are left alone, so the anonymized file gives the same totals. Before it starts, it inspects the workbook and warns you about what would travel with it: hidden sheets, lookup tables in named ranges, links to other files, comments and the author's name in the properties. Afterwards it honestly lists the columns you left as they were. The page runs entirely in the browser and is locked down so that it physically cannot make a network request."
+      },
+      {
+       "heading": "Where to put the corrected file",
+       "text": "Open your report, expand the panel on the right and go to the Versions tab. At the top is the “New version” section: choose the corrected file and click “Upload new version”. The version number goes up; the address and access stay the same: the link you have already sent out will show the corrected report.\n\nFurther down the same tab is the history: every previous version has a “Restore” button.",
+       "image": "upd-2-versions",
+       "note": "Data is changed elsewhere, on the Data tab. The rule is simple: if the calculation or the look of the report has changed, it is a version; if a new extract has arrived, it is data."
+      },
+      {
+       "heading": "How many times to repeat this",
+       "text": "Usually two or three rounds. The sign that it is time to stop is not “it looks nice now” but “the numbers have stopped changing with revisions”: you fixed one more small thing, and the four headline numbers stayed the same. That means the answer is stable.\n\nThe opposite sign exists too: if every revision moves the headline number by tens of percent, you do not have an answer yet. You have a draft, and it is too early to show it.",
+       "note": "Versions are cheap and reversible: every previous one has a “Restore” button, and the restore itself becomes a new version too. Publishing is not risky; silently leaving a wrong version up is."
+      }
+     ],
+     "checks": [
+      {
+       "kind": "rule",
+       "q": "You have fixed the calculation in the report. Where do you put the new file?",
+       "options": [
+        "Versions tab, “New version” section",
+        "Data tab, “Upload slots” next to the file",
+        "The Upload page: upload the report again",
+        "Settings tab, the report title field"
+       ],
+       "answer": 0,
+       "why": "Data and the report itself live in different places. A new calculation is a version: the address and access are preserved, and the link you sent out immediately shows the corrected report."
+      },
+      {
+       "kind": "taste",
+       "q": "After the third revision the headline number moved by 0.3%. What does that tell you?",
+       "options": [
+        "The calculation is broken: numbers must match exactly",
+        "The revisions achieved nothing; a different approach is needed",
+        "Time to present: the answer is stable under revisions",
+        "Keep going until the number stops changing entirely"
+       ],
+       "answer": 2,
+       "why": "Stability under small revisions is precisely the sign of a finished answer. Waiting for the number to stop moving altogether is pointless: a lower-bound estimate does not need to be accurate to the bottle."
+      },
+      {
+       "kind": "design",
+       "q": "In your extract, units of measure depend on the customer's legal entity, and legal entity names must not be shared externally. What do you do?",
+       "options": [
+        "Give the model the entity names, or it won't understand",
+        "Drop the revision: the calculation is impossible without names",
+        "Ask for a setting in the file and fill in the names yourself",
+        "Replace names with numbers and explain them in the chat"
+       ],
+       "answer": 2,
+       "why": "The model needs the rule, not the values: “units depend on the value in this column; put the mapping table in a setting”. You fill in the names in the file on your own machine. Replacing them with numbers and decoding them in the conversation is the same leak, just in two steps."
+      }
+     ],
+     "task": {
+      "kind": "new_version",
+      "href": "/",
+      "text": "Publish the second version of your report: open it, go to the panel on the right, Versions tab → “Upload new version”.",
+      "hint": "I can't see a report that you own with a version above 1 yet. Upload the corrected file on the Versions tab and come back."
+     },
+     "takeaways": [
+      "The first version of a report is almost always wrong: data reveals itself only when checked.",
+      "Rules and structure go into the prompt; values stay in your file.",
+      "Data is changed on the Data tab, the report itself on the Versions tab."
+     ]
+    },
+    {
+     "id": "p4l4",
+     "title": "Reconcile and find where it broke",
+     "minutes": 6,
+     "xp": 30,
+     "summary": "The corrected report's numbers against the reference, and a ladder for when they don't match",
+     "cards": [
+      {
+       "text": "The file has been accepted, the findings built in, the report recalculated and published as version two: now a comparison makes sense. Before, there was nothing to compare: the first version worked from an unchecked file and could match the reference only by chance.",
+       "table": {
+        "head": [
+         "What we calculate",
+         "Reference"
+        ],
+        "rows": [
+         [
+          "Rows in the file · unique keys (date + store + item)",
+          "21,840 · 20,160"
+         ],
+         [
+          "Blank sales cells",
+          "20 (one store, five days)"
+         ],
+         [
+          "Sales as is · after aligning units",
+          "584,977 · 1,598,836 btl"
+         ],
+         [
+          "Out-of-stock days · at how many stores",
+          "1,826 · 14 of 60"
+         ],
+         [
+          "Write-offs with stock on hand",
+          "201,151 btl at 46 stores"
+         ],
+         [
+          "Record week · usual week",
+          "230,400 · 122,204–124,869"
+         ],
+         [
+          "Lost sales over 12 weeks",
+          "163,548 btl · 10.2% of sales"
+         ],
+         [
+          "Largest shortage",
+          "RV-02: 19,657 btl, rank 33 of 60 by sales"
+         ]
+        ]
+       }
+      },
+      {
+       "heading": "What changed after the revisions",
+       "code_title": "Copy the second version's numbers here",
+       "text": "Go back to the numbers you wrote down at the start of this unit and put the new ones next to them. The difference between the columns is the value of data acceptance, and it is worth seeing with your own eyes: it is usually tens of percent, and for sales it can be a multiple.",
+       "code_text": "                        first version   after revisions   reference\nLost sales, btl         ............    ............      163,548\nShare of sales, %       ............    ............      10.2\nStores with shortages   ............    ............      14\nActual sales            ............    ............      1,598,836",
+       "editable": true,
+       "note": "If the second column matches the third, excellent. If not, but all the acceptance control numbers matched, the difference lies in the assumptions, and the next lesson is about exactly that."
+      },
+      {
+       "heading": "Not matching is a working situation, not your failure",
+       "text": "An experienced analyst's first calculation does not match either. The only difference is that they do not start over or fudge the answer; they find the break point: they go through the control numbers from top to bottom until they hit the first mismatch. Reconciling beyond that is pointless: everything below was calculated on a broken foundation.\n\nThe next screen is exactly such a ladder: the control numbers in order, and next to each, what a mismatch means. Work down it strictly from the top.",
+       "note": "A calculation error is nothing to be ashamed of. What is shameful is presenting a number in a meeting without knowing where it came from."
+      },
+      {
+       "heading": "Where exactly it broke",
+       "text": "The first mismatch from the top is your break point. Fix it and recalculate: the other discrepancies usually disappear by themselves.",
+       "table": {
+        "head": [
+         "If this does not match",
+         "It means this"
+        ],
+        "rows": [
+         [
+          "Rows are not 21,840",
+          "The file was not read in full: Excel stopped at the first empty row, or a filter was left on"
+         ],
+         [
+          "No duplicates found",
+          "Duplicates were checked across the whole row instead of the three columns together, and then they are not repeats"
+         ],
+         [
+          "Stores are not 60, days not 84",
+          "Only one of the two sheets was read, or some rows were hidden by a filter"
+         ],
+         [
+          "Blank cells are not 20",
+          "Blanks were replaced with zeros on import: go back to the original file"
+         ],
+         [
+          "Sales are not 584,977",
+          "Numbers were read as text: a decimal comma and a space as the thousands separator"
+         ],
+         [
+          "After aligning, not 1,598,836",
+          "The factor of 12 was applied to the wrong cities, or applied twice"
+         ],
+         [
+          "Out-of-stock days are not 1,826",
+          "The condition kept only zero sales, without zero stock"
+         ],
+         [
+          "Shortage is far from 163,548",
+          "Check the assumptions: the promotion week and the duplicated week (the next lesson covers this)"
+         ]
+        ]
+       }
+      },
+      {
+       "heading": "A discrepancy within the assumptions is not an error",
+       "text": "If you got 9.4% instead of 10.2% and all eight control numbers matched, that is not an error but a different definition of a “usual day”. Three reasonable definitions give three different numbers, and all three are honest as long as the assumption is stated out loud.\n\nThat is why the conclusion reads “we are losing at least 10.2% under these assumptions” rather than “we are losing 10.2%”. The next lesson shows the full range.",
+       "note": "A simple rule: a discrepancy within 10–15% means different assumptions; a discrepancy by a multiple means a break, which you find using the ladder of control numbers."
+      },
+      {
+       "heading": "Why stores with shortages are invisible in sales",
+       "text": "One observation that made all this calculation worthwhile. The fourteen stores with shortages rank from 33rd to 60th by sales: none in the top half, eleven in the bottom twenty. The store with the largest shortage, RV-02, ranks 33rd: solidly mid-table.",
+       "list": [
+        "33, 39, 40, 43, 44, 46, 47, 48, 49, 52, 54, 57, 58, 60: the full list;",
+        "the decision to “take volume from the 20 worst by sales” would hit 11 of the 14;",
+        "whereas all twenty top stores by sales have write-offs."
+       ],
+       "note": "A store with no stock sells exactly what it was delivered, so it is bound to look weak, however much customers ask for the product. You can only see this through stock, and no sales ranking will ever show it."
+      },
+      {
+       "heading": "If it really did not work out",
+       "text": "It happens: the file would not open, the formulas produced nonsense, there is no time. That is no reason to abandon the course halfway: take the ready-made version and complete the rest with it.\n\nThe sample report reads the same extract and prints the four headline numbers itself: just drag the file into it. This is a legitimate path: your goal in this course is to learn to ask questions of data and defend the answer, not to compete on speed with formulas.",
+       "file": [
+        "delta-report.html",
+        "delta-sales.xlsx",
+        "delta-sales.csv"
+       ],
+       "note": "Still, come back to the nine steps when you have half an hour. The difference between “I was told” and “I saw it myself” is audible in a meeting straight away."
+      }
+     ],
+     "checks": [
+      {
+       "kind": "analysis",
+       "q": "You have 177,000 in lost sales at a share of 10.3%. The share is almost the same as the reference. What does this mean?",
+       "options": [
+        "No error: the share matches, so everything is right",
+        "A duplicated week inflated sales and the shortage",
+        "A different assumption about the store's usual rate",
+        "The file turned out to contain more than 60 stores"
+       ],
+       "answer": 1,
+       "why": "A copy of a week raises the numerator and the denominator at once, so the share looks healthy while the absolute number is off by almost 14,000 bottles. Reconciling percentages alone is not enough."
+      },
+      {
+       "kind": "taste",
+       "q": "Your number is 9.4%, the reference is 10.2%. What is the right course of action?",
+       "options": [
+        "Adjust the calculation to hit the reference 10.2%",
+        "Put both numbers in the report and not choose between them",
+        "State your assumption and keep your own answer",
+        "Round to 10%: the difference is immaterial"
+       ],
+       "answer": 2,
+       "why": "It is not the answers that differ but the assumptions about which days count as usual. A stated assumption makes the number defensible; fitting it to someone else's result robs you of understanding where it came from."
+      }
+     ],
+     "takeaways": [
+      "Reconcile from top to bottom and stop at the first mismatch: that is the break point.",
+      "A discrepancy within the assumptions is not an error; a discrepancy by a multiple is a broken foundation.",
+      "A store with no stock is bound to look weak in any sales ranking."
+     ]
+    },
+    {
+     "id": "p4l5",
+     "title": "The answer is a range, not a number",
+     "minutes": 5,
+     "xp": 30,
+     "summary": "Four assumptions, four numbers, and one that cannot be met",
+     "cards": [
+      {
+       "text": "Until now, the wording “we are losing at least 10.2% under these assumptions” has sounded like a polite caveat. Time to name those assumptions one by one: there are four, all about the same thing, namely what counts as a store's usual rate. And all four can be checked in ten minutes on the same extract."
+      },
+      {
+       "heading": "The same data, four answers",
+       "text": "Below are the results on our extract. There is no error in any row: only the definition of a “usual day” changes.",
+       "table": {
+        "head": [
+         "What counts as the usual rate",
+         "Answer"
+        ],
+        "rows": [
+         [
+          "Average over days with stock, promotion week excluded",
+          "163,548 btl · 10.2%"
+         ],
+         [
+          "The same, but with the promotion week included",
+          "175,010 btl · 10.9%"
+         ],
+         [
+          "Median instead of average",
+          "163,295 btl · 10.2%"
+         ],
+         [
+          "Only the days before delivery (Sat–Mon)",
+          "0"
+         ]
+        ]
+       }
+      },
+      {
+       "heading": "What each row means",
+       "text": "The first is our choice, and you need to be able to name it. The second is the cost of a single mistake: the promotion week is 1.85 times higher than usual, so it raises the norm and, with it, the shortage by 7%.\n\nThe third row is not an alternative answer but a check. The median is insensitive to outliers; if the answer barely changes with it (163,295 against 163,548, a difference of 0.2%), then the result does not hinge on a couple of odd days but reflects a stable pattern. Two minutes of work, and half the questions in the meeting are dealt with in advance.",
+       "note": "“I checked it with the median, and the conclusion holds” is a sentence after which people argue with the decision, not with your arithmetic. Those are different conversations, and the second is more useful."
+      },
+      {
+       "heading": "The fourth row is the most useful",
+       "text": "“Calculate the rate from the days before delivery; they are the most telling” sounds reasonable, yet the answer drops to zero. The reason is simple: a store that runs out has, by definition, no stock in the days before delivery; that is exactly when it stands empty. The assumption cannot be met on precisely the rows it was introduced for.\n\nHence a rule worth more than the case itself: an assumption is tested not on the whole table but on the rows you intend to apply it to.",
+       "cast": {
+        "who": "analyst",
+        "role": "Analyst",
+        "say": "It came out as zero not because there are no losses, but because there was nothing to calculate from."
+       }
+      }
+     ],
+     "takeaways": [
+      "An honest analysis has not one number but a range with stated assumptions.",
+      "Swapping the average for the median is a two-minute check of how robust the conclusion is.",
+      "An assumption is tested on the rows it was introduced for."
+     ],
+     "checks": [
+      {
+       "kind": "counterfactual",
+       "q": "Switching from the average to the median moved the answer by 0.2%. What does that tell you?",
+       "options": [
+        "The median is calculated incorrectly in this task",
+        "There is too little data to see a difference",
+        "The average and median always coincide here",
+        "The conclusion does not rest on a few odd days"
+       ],
+       "answer": 3,
+       "why": "The median is insensitive to outliers. Two estimates agreeing means the pattern is stable, and that is a strong argument to have before anyone asks for it."
+      },
+      {
+       "kind": "design",
+       "q": "The assumption “calculate the rate from the days before delivery” gives zero. What does that mean?",
+       "options": [
+        "There are no losses: the calculation shows it directly",
+        "No basis: stores with shortages have no such days",
+        "The extract is missing the days before delivery",
+        "Zero is an ordinary division error in the calculation"
+       ],
+       "answer": 1,
+       "why": "A store with a stockout has no stock in the days before delivery: that is when it stands empty. The assumption turned out to be impossible to meet exactly where it was meant to be applied."
+      }
+     ]
+    },
+    {
+     "id": "p4l6",
+     "title": "From a number to a recommendation",
+     "minutes": 3,
+     "xp": 25,
+     "summary": "What to write to your manager so that something changes on Monday",
+     "cards": [
+      {
+       "text": "163,548 bottles is not yet a recommendation. A recommendation answers the question “what do we do on Monday”, and it has an addressee.\n\nThe other half of the answer is in the same extract: at 46 stores product is written off while stock is on hand, 201,151 bottles over 12 weeks, 12.6% of sales. These 46 never overlap with the fourteen, and they include ALL TWENTY of the top stores by sales. The company has the volume; it sits at the strong stores and never reaches the ones that are short. There is no need to buy more; it needs to be moved."
+      },
+      {
+       "heading": "A five-line email",
+       "text": "Every line here is mandatory, and the order is deliberate: the decision, the facts, what the data does not contain, the proposal, the assumptions and how to prove yourself wrong. Remove any one of them, and the email turns into a progress report.",
+       "code_text": "Decision: how to allocate the weekly delivery across stores.\n\nWhat the data shows: 14 stores consistently run out of stock 2-3 days\n  before delivery; we are losing at least 163,548 btl, 10.2% of sales.\n  At the other 46 stores, 201,151 btl were written off over the same period.\n\nWhat the data does not show: demand. A store with no stock sells exactly\n  what it was delivered, so judged by sales it looks weak.\n\nProposal: move volume from stores with write-offs to stores with shortages,\n  starting with RV-02, and review the result after 4 weeks.\n\nAssumptions: the usual rate is based on days with stock; the promotion week\n  and the duplicated week are excluded; this is a lower-bound estimate.\n\nWhat would prove me wrong: if write-offs rise at the stores with shortages\n  after they receive more volume, the problem was not the shortage.",
+       "editable": true,
+       "code_title": "Email template: adapt it to your case"
+      },
+      {
+       "heading": "What the email must not contain",
+       "text": "Three phrases that destroy trust in an analysis faster than any arithmetic error.",
+       "list": [
+        "“Losses amounted to exactly 163,548 bottles”: it is a lower-bound estimate, so say so;",
+        "“Take volume from the stores with lower sales”: those are precisely the stores where the product runs out;",
+        "“Sales will grow by N%”: you have no demand data, so there is nothing to base a growth promise on."
+       ],
+       "note": "The last line of the email is not a courtesy. An analyst who states in advance what would prove them wrong gets a discussion of substance; an analyst who defends a number gets an argument about the number."
+      },
+      {
+       "text": "Notice how the conversation ended: not with praise for the report, but with a decision and the date of the next review. That is what an analyst's work produces: not a file, but a decision someone has made, and a way to find out a month later whether it was right.\n\nThe report has not gone anywhere: it sits at its address, is updated on Tuesdays, and a month from now will answer the same question with new numbers.",
+       "cast": {
+        "who": "head",
+        "role": "Head of Sales, Delta",
+        "say": "Fine. We'll start with RV-02, and in a month you'll show me the same report."
+       }
+      }
+     ],
+     "checks": [
+      {
+       "kind": "taste",
+       "q": "The analysis found 163,548 btl of lost sales, 10.2% of actuals; the store's usual rate is based on days with stock. Which sentence do you write to your manager?",
+       "options": [
+        "“Losses are 163,548 bottles; this is the exact figure”",
+        "“If we unload the weak stores, sales will grow”",
+        "“We lose at least 10.2%: rate based on days with stock”",
+        "“There is nothing to calculate without demand data”"
+       ],
+       "answer": 2,
+       "why": "Exactly two things are defensible: a number qualified with “at least” and the stated assumption it was derived from. The exact size of the losses is simply not in the data, since demand is not recorded there; nobody promised sales growth; and “unload the weak stores” is the very decision that would hit the stores with shortages."
+      },
+      {
+       "kind": "counterfactual",
+       "q": "A month has passed: the volume was moved, and write-offs rose at the stores that received more. What does this mean for your recommendation?",
+       "options": [
+        "The recommendation is confirmed: the product finally arrived",
+        "The disproof triggered: the problem was not the shortage",
+        "Write-offs and volume allocation are unrelated to each other",
+        "These stores need even more volume, and then we wait"
+       ],
+       "answer": 1,
+       "why": "This is exactly the signal you named in the email in advance: the product was delivered but not bought, so the demand was not there, and the shortage was not the cause. That is what the “what would prove me wrong” line is for: a month later it shows whether the decision worked, and there is no need to argue about it."
+      }
+     ],
+     "takeaways": [
+      "A number becomes a recommendation when the decision, the assumptions and a way to prove yourself wrong are stated.",
+      "A lower-bound estimate is written as exactly that: “at least”, not “exactly”.",
+      "An analyst's output is a decision taken and a review date, not a file."
+     ]
+    },
+    {
+     "id": "p2l6",
+     "title": "What next",
+     "minutes": 4,
+     "xp": 25,
+     "summary": "Where to go when you want more",
+     "cards": [
+      {
+       "heading": "What you can now do",
+       "text": "An hour ago you had someone else's complaint: “either the shelves are empty or we're writing stock off”. Now you have a number you can defend and a decision that can be checked in a month. Along the way you learned eight things, and none of them is about OnePage buttons:",
+       "list": [
+        "turning a complaint into a question that has a decision, a deadline and a constraint;",
+        "breaking a problem into branches that do not overlap, including the “the data is wrong” branch;",
+        "stating a hypothesis before opening the file, and saying in advance what would kill it;",
+        "seeing what the data does not contain: demand, units of measure, the reason for a blank cell;",
+        "catching six common extract failures: stockouts, write-offs, packs, duplicates, promotions, blanks;",
+        "testing a conclusion for robustness and honestly naming assumptions instead of one pretty number;",
+        "taking a report through to a second version rather than abandoning the first;",
+        "writing five lines that lead to someone making a decision."
+       ],
+       "note": "The eighth point is the only one the other seven exist for. A report nobody read and an analysis after which nothing changed are worth the same: nothing."
+      },
+      {
+       "text": "A month has passed. Every Tuesday by lunchtime, people at the company open the same report: first the manager, then the warehouse, then the area managers. Nobody asks for it to be sent; everyone knows the address.\n\nThat is the result: not a beautiful file, but a habit. You can build a report, check it, publish it, update it and keep it from getting lost. None of these steps was difficult on its own; the hard part was getting started.",
+       "cast": {
+        "who": "head",
+        "say": "It's Tuesday. Where's the report?",
+        "role": "Head of Sales, Delta"
+       }
+      },
+      {
+       "heading": "If you want to go further",
+       "text": "Three paths, and they all start here. None is mandatory: the Tuesday report works without them. Choose based on what is getting in your way right now.",
+       "list": [
+        "The core course, Working on the platform: how the platform works inside and why it is built that way.",
+        "Dev Guide: a short reference on prompts, formats and frequently asked questions.",
+        "Generators: for when the same report is needed every week and you are tired of building it by hand."
+       ]
+      },
+      {
+       "text": "And the most useful thing of all: show your first report to a colleague. Five minutes of feedback are worth two hours of polishing.\n\nA report that gets opened every week becomes a habit within a month; a report that has been forgotten cannot be saved by any amount of polish. A week from now, ask your colleague whether they opened your report: the answer will tell you more about it than any polishing.",
+       "note": "Your second report will come more easily: take the ready-made prompt from the course and change the same two lines in it."
+      }
+     ],
+     "checks": [
+      {
+       "kind": "rule",
+       "q": "The store report is needed every Tuesday on new data. What do you choose?",
+       "options": [
+        "Ask the model to rebuild it from scratch every week",
+        "Copy last week's report and edit the numbers",
+        "Build a generator: it will rebuild the report itself",
+        "Calculate in a spreadsheet and publish by hand"
+       ],
+       "answer": 2,
+       "why": "A generator means the calculation is described once and repeated at the click of a button on new files. The core course covers it; asking the model to redo everything every time produces a slightly different report each time."
+      }
+     ],
+     "takeaways": [
+      "The outcome of the course is not a file but a habit: question → data → assumptions → decision.",
+      "A report stays alive as long as people open it: an address, an update schedule and one owner.",
+      "Show your first report to a colleague: five minutes of feedback cost less than two hours of polishing."
+     ]
+    }
+   ]
+  }
+ ]
+}

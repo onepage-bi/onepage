@@ -1,0 +1,577 @@
+{% extends "base.html" %}
+{% block title %}OnePage — {{ _('Generators') }}{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'perf' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '/', false], [_('Admin'), '/admin', false], [_('Generators'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content fluid">
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow">{{ _('administration · report generators') }}</div>
+          <h1 class="page-title">{{ _('Generators') }}</h1>
+        </div>
+      </div>
+
+      <div class="tabbar">
+        <a class="tab" href="/admin">{{ _('Users') }}</a>
+        <a class="tab" href="/admin/audit">{{ _('Audit log') }}</a>
+        <a class="tab" href="/admin/perf">{{ _('Performance') }}</a>
+        <a class="tab" href="/admin/errors">{{ _('Errors') }}</a>
+        <a class="tab active" href="/admin/generators">{{ _('Generators') }}
+          {% if generators %}<span class="mono" style="color:var(--ink-faint);font-size:10px;margin-left:4px">{{ generators | length }}</span>{% endif %}
+        </a>
+        <a class="tab" href="/admin/employees">{{ _('Staff') }}</a>
+        <a class="tab" href="/admin/scopes">{{ _('Scopes') }}</a>
+        <a class="tab" href="/admin/quests">{{ _('Quests') }}</a>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;max-width:640px">
+        <div class="card-head"><span class="card-title">{{ _('Register generator') }}</span></div>
+        <div class="card-body">
+          <form id="form-register-generator" style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap">
+            <div class="field" style="flex:1;min-width:220px">
+              <label class="field-label">{{ _('Bundle (.zip)') }}</label>
+              <input type="file" id="register-generator-file" class="input sm" accept=".zip" required>
+            </div>
+            <button type="submit" class="btn sm primary">{{ _('Upload bundle') }}</button>
+          </form>
+          <p class="mono" style="font-size:11px;color:var(--ink-dim);margin:8px 0 0">
+            {{ _('bundle.zip with manifest.json at its root; the name comes from the manifest.') }}
+          </p>
+          <div id="register-generator-status" class="gen-up" hidden></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;max-width:820px">
+        <div class="card-head"><span class="card-title">{{ _('Glossary') }}</span></div>
+        <div class="card-body">
+          <p class="mono" style="font-size:11px;color:var(--ink-dim);margin:0 0 10px">
+            {{ _('operator terms (\'SL\', \'hub\', \'network\') — platform-wide (visible to all) or tied to one generator; appear in model hints for questions on /explore.') }}
+          </p>
+          <form id="form-glossary-add" style="display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+            <div class="field" style="min-width:160px">
+              <label class="field-label">{{ _('Term') }}</label>
+              <input type="text" id="glossary-term" class="input sm" maxlength="120" required>
+            </div>
+            <div class="field" style="flex:1;min-width:260px">
+              <label class="field-label">{{ _('Definition') }}</label>
+              <input type="text" id="glossary-definition" class="input sm" maxlength="500" required>
+            </div>
+            <div class="field" style="min-width:180px">
+              <label class="field-label">{{ _('Visibility') }}</label>
+              <select id="glossary-generator" class="input sm">
+                <option value="">{{ _('— entire platform —') }}</option>
+                {% for g in generators %}
+                <option value="{{ g.id }}">{{ g.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <button type="submit" class="btn sm primary">{{ _('Add') }}</button>
+          </form>
+          <div id="glossary-msg" class="mono" style="font-size:11px;color:var(--danger);margin-bottom:8px"></div>
+          <table class="tbl" id="glossary-table">
+            <thead>
+              <tr>
+                <th>{{ _('Term') }}</th>
+                <th>{{ _('Definition') }}</th>
+                <th style="width:180px">{{ _('Scope') }}</th>
+                <th style="width:110px"></th>
+              </tr>
+            </thead>
+            <tbody id="glossary-tbody">
+              {% for t in glossary_terms %}
+              <tr data-term-id="{{ t.id }}">
+                <td class="mono glossary-term-cell">{{ t.term }}</td>
+                <td class="glossary-definition-cell">{{ t.definition }}</td>
+                <td class="mono" style="font-size:11px">
+                  {% if t.generator_name %}{{ t.generator_name }}{% else %}<span class="badge solid">{{ _('entire platform') }}</span>{% endif %}
+                </td>
+                <td>
+                  <div class="row-actions" style="opacity:1;display:flex;gap:6px">
+                    <button type="button" class="btn xs ghost glossary-edit-btn" data-term-id="{{ t.id }}"
+                            data-term="{{ t.term }}" data-definition="{{ t.definition }}"
+                            data-generator-id="{{ t.generator_id or '' }}">{{ _('Edit') }}</button>
+                    <button type="button" class="btn xs ghost glossary-delete-btn" data-term-id="{{ t.id }}">{{ _('Delete') }}</button>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% if not glossary_terms %}
+          <div class="empty" id="glossary-empty">
+            <div class="ascii">{{ _('[ glossary empty ]') }}</div>
+            <p>{{ _('add first term using form above.') }}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <span style="font-size:11px;color:var(--ink-dim)">{{ _('registered generators · versions + run counts from generation_runs') }}</span>
+        <div class="grow"></div>
+      </div>
+
+      {% if generators %}
+      <div id="generators-table-status" class="gen-up" hidden></div>
+      <div class="dash-table-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>{{ _('Name') }}</th>
+              <th style="width:190px">{{ _('Current version') }}</th>
+              <th class="numeric" style="width:70px">{{ _('Versions') }}</th>
+              <th style="width:220px">{{ _('Runs') }}</th>
+              <th style="width:130px">{{ _('Created') }}</th>
+              <th style="width:220px">{{ _('Git') }}</th>
+              <th style="width:90px">{{ _('Status') }}</th>
+              <th style="width:160px"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for g in generators %}
+            <tr data-gen-id="{{ g.id }}">
+              <td class="mono">{{ g.name }}</td>
+              <td class="mono">
+                {% if g.current %}
+                  v{{ g.current.version_number }} · {{ g.current.source_type }}
+                  {% if g.current.source_type == 'git' and g.current.git_commit_sha %}
+                    <span style="color:var(--ink-dim)">· {{ g.current.git_commit_sha[:12] }}</span>
+                  {% endif %}
+                {% else %}—{% endif %}
+              </td>
+              <td class="mono numeric">{{ g.version_count }}</td>
+              <td class="mono" style="font-size:11px">
+                <span style="color:var(--success)">{{ _('{n} ok', n=g.runs.get('success', 0)) }}</span>
+                {% set failed = g.runs.get('error', 0) + g.runs.get('lost', 0) %}
+                {% if failed %}<span style="color:var(--danger);margin-left:8px">{{ _('{n} failed', n=failed) }}</span>{% endif %}
+                {% if g.runs.get('running') %}<span style="color:var(--ink-dim);margin-left:8px">{{ _('{n} running', n=g.runs.get('running')) }}</span>{% endif %}
+                {% if g.runs.get('canceled') %}<span style="color:var(--ink-dim);margin-left:8px">{{ _('{n} canceled', n=g.runs.get('canceled')) }}</span>{% endif %}
+              </td>
+              <td class="mono muted">{{ g.created_at.strftime('%Y-%m-%d %H:%M') if g.created_at else '—' }}</td>
+              <td class="mono" style="font-size:11px">
+                {% if g.git_repo %}
+                  {{ g.git_repo }}@{{ g.git_branch or 'main' }}
+                  {% if g.git_token_set %}<span class="badge solid">{{ _('token set') }}</span>{% endif %}
+                {% else %}—{% endif %}
+              </td>
+              <td>
+                {% if g.is_archived %}<span class="badge draft">{{ _('Archived') }}</span>
+                {% else %}<span class="mono muted" style="font-size:11px">{{ _('Active') }}</span>{% endif %}
+              </td>
+              <td>
+                <div class="row-actions" style="opacity:1;display:flex;gap:6px;align-items:center">
+                  <label class="btn xs ghost" style="cursor:pointer">
+                    {{ _('New version') }}
+                    <input type="file" accept=".zip" class="gen-version-input" data-gen-id="{{ g.id }}" hidden>
+                  </label>
+                  <!-- "Reference tables of this report": the list filtered to the
+                       dictionaries this generator declares (manifest input or
+                       semantics `reference` source). -->
+                  <a class="btn xs ghost" href="/reference?generator={{ g.name | urlencode }}">{{ _('Reference tables') }}</a>
+                  <button type="button" class="btn xs ghost gen-archive-btn"
+                          data-gen-id="{{ g.id }}" data-archived="{{ 'true' if g.is_archived else 'false' }}">
+                    {{ _('Unarchive') if g.is_archived else _('Archive') }}
+                  </button>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="dash-table-wrap">
+        <div class="empty">
+          <div class="ascii">{{ _('[ no generators registered yet ]') }}</div>
+          <p>{{ _('Upload a bundle above to register the first one.') }}</p>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="page-eyebrow" style="margin-top:24px">{{ _('failed runs (last 50)') }}</div>
+      {% if fails %}
+      <div class="dash-table-wrap">
+        <table class="dash-table">
+          <thead>
+            <tr>
+              <th style="width:130px">{{ _('When (UTC)') }}</th>
+              <th>{{ _('Dashboard') }}</th>
+              <th style="width:130px">{{ _('Owner') }}</th>
+              <th style="width:130px">{{ _('Started by') }}</th>
+              <th style="width:80px">{{ _('Version') }}</th>
+              <th style="width:80px">{{ _('Engine') }}</th>
+              <th style="width:80px">{{ _('Status') }}</th>
+              <th>{{ _('Error') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for f in fails %}
+            <tr>
+              <td class="mono" style="font-size:11px">{{ f.started_at.strftime('%Y-%m-%d %H:%M') if f.started_at else '—' }}</td>
+              <td><a href="/d/{{ f.dashboard_id }}" style="color:var(--ink)">{{ f.dashboard_title }}</a></td>
+              <td class="mono" style="font-size:11px">{{ f.owner }}</td>
+              <td class="mono" style="font-size:11px">{{ f.started_by }}</td>
+              <td class="mono" style="font-size:11px">{{ ('v' ~ f.version_number) if f.version_number else '—' }}</td>
+              <td class="mono" style="font-size:11px">{{ f.engine }}</td>
+              <td class="mono" style="font-size:11px;color:{% if f.status == 'lost' %}var(--ink-dim){% else %}var(--danger){% endif %}">{{ f.status }}</td>
+              <td class="mono" style="font-size:11px;color:var(--ink-dim);max-width:360px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
+                  title="{{ f.error_message }}">{{ f.error_message or '—' }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="dash-table-wrap">
+        <div class="empty">
+          <div class="ascii">{{ _('[ no failed runs in the last 50 ]') }}</div>
+          <p>{{ _('error/lost generation_runs will appear here with their dashboard, owner and generator version.') }}</p>
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </main>
+</div>
+
+{% include "components/palette.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/palette.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/hotkeys.js?v={{ asset_v }}" defer></script>
+<script defer>
+document.addEventListener('DOMContentLoaded', () => {
+
+  // Render an error `detail` (string | {"errors": [...]} | anything else)
+  // into `box` using DOM nodes only — never innerHTML with server/user text.
+  function renderDetail(box, detail) {
+    box.textContent = '';
+    if (detail == null) return;
+    if (typeof detail === 'string') {
+      box.textContent = detail;
+      return;
+    }
+    if (Array.isArray(detail.errors)) {
+      const list = document.createElement('ul');
+      list.style.margin = '0';
+      list.style.paddingLeft = '16px';
+      detail.errors.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = typeof item === 'string' ? item : JSON.stringify(item);
+        list.appendChild(li);
+      });
+      box.appendChild(list);
+      return;
+    }
+    box.textContent = JSON.stringify(detail);
+  }
+
+  async function errorDetailFrom(res, fallback) {
+    try {
+      const j = await res.json();
+      return (j && j.detail !== undefined) ? j.detail : fallback;
+    } catch {
+      return fallback;
+    }
+  }
+
+  // ── Bundle upload: one panel that tells the whole story ─────────────
+  // Before this the upload was a bare fetch: no progress, success = a 2.4 s
+  // toast erased by the reload that followed it, the error a small red line
+  // under the table. Colleagues could not tell «sent» from «checked» from
+  // «failed» (2026-09-08). Now: stage 1 the bytes go up (real progress from
+  // XMLHttpRequest), stage 2 the server validates (spinner, it can take a
+  // few seconds — PyPI is resolved off the event loop), then a result that
+  // STAYS: green with a version number until the page is refreshed, red
+  // with every validation error until dismissed. The refresh after success
+  // is delayed and announced, and the panel survives it via sessionStorage.
+  const T = {
+    sending: {{ _('Sending {name} ({size})…') | tojson }},
+    checking: {{ _('File received. The server is checking the manifest and dependencies…') | tojson }},
+    done: {{ _('Done: {name} version {n} is registered.') | tojson }},
+    refreshing: {{ _('The page refreshes in a moment to show it.') | tojson }},
+    failed: {{ _('Not registered: the server rejected the bundle ({status}).') | tojson }},
+    network: {{ _('Not registered: the connection dropped before the server answered.') | tojson }},
+    close: {{ _('Close') | tojson }},
+    refreshNow: {{ _('Refresh now') | tojson }},
+    hint: {{ _('Fix the bundle and upload it again — nothing was changed on the server.') | tojson }},
+    exists: {{ _('Generator «{name}» is already registered. Upload this bundle as a new version of it?') | tojson }},
+    existsBtn: {{ _('Upload as a new version') | tojson }},
+    existsHint: {{ _('The bundle is fine — this is simply a different place for it: a new version of an existing generator, not a new generator.') | tojson }},
+  };
+  const DONE_KEY = 'op-gen-upload-done';
+  const fmt = (tpl, vars) => tpl.replace(/\{(\w+)\}/g, (m, k) => (vars[k] != null ? String(vars[k]) : m));
+  const fmtSize = (b) => b >= 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB';
+
+  function panel(box, kind) {
+    box.textContent = '';
+    box.className = 'gen-up is-' + kind;
+    box.hidden = false;
+    return box;
+  }
+  function addLine(box, text, cls) {
+    const d = document.createElement('div');
+    d.className = 'gen-up-line' + (cls ? ' ' + cls : '');
+    d.textContent = text;
+    box.appendChild(d);
+    return d;
+  }
+  function addButton(box, label, onClick) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'btn xs ghost'; b.textContent = label;
+    b.addEventListener('click', onClick);
+    box.appendChild(b);
+    return b;
+  }
+
+  function showProgress(box, file, pct) {
+    panel(box, 'busy');
+    addLine(box, fmt(T.sending, { name: file.name, size: fmtSize(file.size) }), 'gen-up-title');
+    const bar = document.createElement('div'); bar.className = 'gen-up-bar';
+    const fill = document.createElement('div'); fill.className = 'gen-up-fill';
+    fill.style.width = Math.max(2, Math.round(pct)) + '%';
+    bar.appendChild(fill); box.appendChild(bar);
+    addLine(box, Math.round(pct) + '%', 'mono muted');
+  }
+  function showChecking(box, file) {
+    panel(box, 'busy');
+    const t = addLine(box, T.checking, 'gen-up-title');
+    const sp = document.createElement('span'); sp.className = 'gen-up-spin'; t.prepend(sp);
+    addLine(box, file.name + ' · ' + fmtSize(file.size), 'mono muted');
+  }
+  function showError(box, status, detail) {
+    panel(box, 'error');
+    addLine(box, status ? fmt(T.failed, { status: status }) : T.network, 'gen-up-title');
+    const d = document.createElement('div'); d.className = 'gen-up-detail mono';
+    renderDetail(d, detail); box.appendChild(d);
+    addLine(box, T.hint, 'muted');
+    addButton(box, T.close, () => { box.hidden = true; box.textContent = ''; });
+  }
+  function showDone(box, name, n, refresh) {
+    panel(box, 'ok');
+    addLine(box, fmt(T.done, { name: name, n: n }), 'gen-up-title');
+    if (refresh) {
+      addLine(box, T.refreshing, 'muted');
+      addButton(box, T.refreshNow, refresh);
+    } else {
+      addButton(box, T.close, () => { box.hidden = true; box.textContent = ''; });
+    }
+  }
+
+  // Upload with real progress; resolves {status, body} for any HTTP answer,
+  // rejects only when no answer came at all.
+  function uploadBundle(url, file, box) {
+    return new Promise((resolve, reject) => {
+      const fd = new FormData(); fd.append('bundle', file);
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', url);
+      xhr.upload.addEventListener('progress', (e) => {
+        if (e.lengthComputable) showProgress(box, file, e.loaded / e.total * 100);
+      });
+      xhr.upload.addEventListener('load', () => showChecking(box, file));
+      xhr.addEventListener('load', () => {
+        let body = null;
+        try { body = JSON.parse(xhr.responseText); } catch { body = null; }
+        resolve({ status: xhr.status, body: body });
+      });
+      xhr.addEventListener('error', () => reject(new Error('network')));
+      xhr.addEventListener('abort', () => reject(new Error('abort')));
+      showProgress(box, file, 0);
+      xhr.send(fd);
+    });
+  }
+
+  async function runUpload(url, file, box, lock) {
+    lock(true);
+    try {
+      const r = await uploadBundle(url, file, box);
+      if (r.status === 200 || r.status === 201) {
+        const name = (r.body && r.body.name) || '';
+        const n = (r.body && r.body.version_number) != null ? r.body.version_number : '';
+        const msg = fmt(T.done, { name: name, n: n });
+        try { sessionStorage.setItem(DONE_KEY, msg); } catch {}
+        const go = () => location.reload();
+        showDone(box, name, n, go);
+        setTimeout(go, 2500);
+        return;
+      }
+      // A generator with this name already exists. The server knows which one, —
+      // so there is no point sending the person to hunt for the row in the table: the same
+      // file goes to the versions endpoint on a button press, without picking it again.
+      const d409 = r.status === 409 && r.body && r.body.detail;
+      if (d409 && d409.error === 'generator_exists' && d409.generator_id) {
+        panel(box, 'error');
+        addLine(box, fmt(T.exists, { name: d409.name || '' }), 'gen-up-title');
+        addLine(box, T.existsHint, 'muted');
+        addButton(box, T.existsBtn, () => {
+          runUpload('/api/admin/generators/' + d409.generator_id + '/versions', file, box, lock);
+        });
+        addButton(box, T.close, () => { box.hidden = true; box.textContent = ''; });
+        return;
+      }
+      const detail = r.body && r.body.detail !== undefined ? r.body.detail : (xhrText(r) || ('HTTP ' + r.status));
+      showError(box, r.status, detail);
+    } catch {
+      showError(box, 0, null);
+    } finally {
+      lock(false);
+    }
+  }
+  function xhrText(r) { return r && r.body && typeof r.body === 'string' ? r.body : ''; }
+
+  // The green panel outlives the refresh: it is the only proof the upload
+  // happened once the page has reloaded with the new row in place.
+  try {
+    const done = sessionStorage.getItem(DONE_KEY);
+    if (done) {
+      sessionStorage.removeItem(DONE_KEY);
+      // At the top of the page: a reload lands there, and the table with the
+      // new row sits below the glossary, off-screen.
+      const box = document.getElementById('register-generator-status') || document.getElementById('generators-table-status');
+      if (box) { panel(box, 'ok'); addLine(box, done, 'gen-up-title'); addButton(box, T.close, () => { box.hidden = true; box.textContent = ''; }); }
+    }
+  } catch {}
+
+  // ── Register generator ──────────────────────────────────────────────
+  document.getElementById('form-register-generator')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const box = document.getElementById('register-generator-status');
+    const fileInput = document.getElementById('register-generator-file');
+    const file = fileInput?.files[0];
+    if (!file) { panel(box, 'error'); addLine(box, 'Choose a .zip bundle first', 'gen-up-title'); return; }
+    const btn = e.target.querySelector('button[type=submit]');
+    await runUpload('/api/admin/generators', file, box, (on) => { if (btn) btn.disabled = on; fileInput.disabled = on; });
+  });
+
+  // ── New version per generator row ───────────────────────────────────
+  document.querySelectorAll('.gen-version-input').forEach((inp) => {
+    inp.addEventListener('change', async () => {
+      const file = inp.files[0];
+      if (!file) return;
+      const genId = inp.dataset.genId;
+      const box = document.getElementById('generators-table-status');
+      const row = inp.closest('tr');
+      await runUpload(`/api/admin/generators/${genId}/versions`, file, box, (on) => {
+        document.querySelectorAll('.gen-version-input').forEach(i => { i.disabled = on; });
+        if (row) row.classList.toggle('is-uploading', on);
+      });
+      inp.value = '';
+    });
+  });
+
+  // ── Archive / unarchive ─────────────────────────────────────────────
+  document.querySelectorAll('.gen-archive-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const genId = btn.dataset.genId;
+      const archived = btn.dataset.archived === 'true';
+      const next = !archived;
+      if (next && !confirm('Archive this generator? Dashboards already generated from it keep working.')) return;
+
+      try {
+        const res = await fetch(`/api/admin/generators/${genId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ is_archived: next }),
+        });
+        if (res.ok) { location.reload(); return; }
+        window.OP_TOAST && window.OP_TOAST('Update failed', 'error');
+      } catch {
+        window.OP_TOAST && window.OP_TOAST('Network error', 'error');
+      }
+    });
+  });
+
+  // ── Glossary (H2) ───────────────────────────────────────────────────
+  (function () {
+    const form = document.getElementById('form-glossary-add');
+    if (!form) return;
+    const termInput = document.getElementById('glossary-term');
+    const defInput = document.getElementById('glossary-definition');
+    const genSelect = document.getElementById('glossary-generator');
+    const msg = document.getElementById('glossary-msg');
+    const tbody = document.getElementById('glossary-tbody');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    let editId = null;
+
+    function resetForm() {
+      editId = null;
+      form.reset();
+      submitBtn.textContent = t('Add');
+      const cancelBtn = document.getElementById('glossary-cancel-edit');
+      if (cancelBtn) cancelBtn.remove();
+    }
+
+    function startEdit(btn) {
+      editId = btn.dataset.termId;
+      termInput.value = btn.dataset.term || '';
+      defInput.value = btn.dataset.definition || '';
+      genSelect.value = btn.dataset.generatorId || '';
+      submitBtn.textContent = t('Save');
+      if (!document.getElementById('glossary-cancel-edit')) {
+        const cancel = document.createElement('button');
+        cancel.type = 'button';
+        cancel.id = 'glossary-cancel-edit';
+        cancel.className = 'btn sm ghost';
+        cancel.textContent = t('Cancel');
+        cancel.addEventListener('click', resetForm);
+        submitBtn.insertAdjacentElement('afterend', cancel);
+      }
+      termInput.focus();
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.textContent = '';
+      const body = {
+        term: termInput.value.trim(),
+        definition: defInput.value.trim(),
+        generator_id: genSelect.value ? parseInt(genSelect.value, 10) : null,
+      };
+      if (!body.term || !body.definition) { msg.textContent = t('Enter term and definition'); return; }
+      const url = editId ? `/api/admin/glossary/${editId}` : '/api/admin/glossary';
+      const method = editId ? 'PUT' : 'POST';
+      try {
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        if (res.ok) {
+          window.OP_TOAST && window.OP_TOAST(editId ? t('Term updated') : t('Term added'), 'success');
+          location.reload();
+          return;
+        }
+        renderDetail(msg, await errorDetailFrom(res, t('Failed to save ({p1})', {p1: res.status})));
+      } catch {
+        msg.textContent = 'Network error';
+      }
+    });
+
+    tbody?.addEventListener('click', async (e) => {
+      const editBtn = e.target.closest('.glossary-edit-btn');
+      if (editBtn) { startEdit(editBtn); return; }
+      const delBtn = e.target.closest('.glossary-delete-btn');
+      if (delBtn) {
+        if (!confirm(t('Delete this term?'))) return;
+        try {
+          const res = await fetch(`/api/admin/glossary/${delBtn.dataset.termId}`, { method: 'DELETE' });
+          if (res.ok) { location.reload(); return; }
+          window.OP_TOAST && window.OP_TOAST(t('Failed to delete'), 'error');
+        } catch {
+          window.OP_TOAST && window.OP_TOAST('Network error', 'error');
+        }
+      }
+    });
+  })();
+});
+</script>
+{% endblock %}

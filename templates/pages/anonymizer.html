@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}OnePage — {{ _('Anonymizer') }}{% endblock %}
+
+{% block head %}
+{# Hard guarantee: nothing on this page can make a network request with data.
+   connect-src 'none' blocks fetch/XHR/WebSocket/sendBeacon entirely.
+   Fonts (font-src/style-src) and scripts (script-src) are unaffected. #}
+<meta http-equiv="Content-Security-Policy" content="connect-src 'none'">
+<style>
+  .anon-note { display:flex; gap:10px; align-items:flex-start; }
+  .anon-note .ico { flex:none; margin-top:2px; color:var(--accent); }
+  #anon-audit { border-left:3px solid var(--warning); margin-bottom:18px; padding:14px 16px; }
+  .anon-audit-head { font-weight:600; font-size:13px; margin-bottom:8px; }
+  .anon-audit-list { margin:0 0 10px; padding-left:18px; font-size:13px; line-height:1.5; }
+  .anon-audit-list li { margin-bottom:6px; }
+  .anon-audit-items { font-family:var(--font-mono); font-size:11px; color:var(--ink-dim); }
+  #anon-result { border-left:3px solid var(--accent); margin-bottom:18px; padding:14px 16px; }
+  .anon-sample { font-family:var(--font-mono); font-size:11px; line-height:1.5; background:var(--surface-2);
+                 border-radius:6px; padding:10px 12px; margin:8px 0 10px; overflow-x:auto; white-space:pre; }
+  .anon-drop { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:160px; margin-bottom:20px; cursor:pointer; }
+  .anon-drop.dragging { border-color:var(--accent); background:color-mix(in oklab, var(--accent) 10%, transparent); }
+  .sheet-block { margin-bottom:18px; }
+  .sheet-block-title { font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-dim); padding:4px 0 8px; }
+  table.anon-cols { width:100%; border-collapse:collapse; font-size:13px; }
+  table.anon-cols th, table.anon-cols td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--border); vertical-align:middle; }
+  table.anon-cols th { font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-dim); font-weight:500; }
+  table.anon-cols td.col-name { font-weight:600; }
+  table.anon-cols td.col-sample { color:var(--ink-dim); font-family:var(--font-mono); font-size:11px; max-width:240px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .type-pill { font-family:var(--font-mono); font-size:10px; padding:2px 6px; border-radius:4px; background:var(--surface-2); color:var(--ink-muted); text-transform:none; }
+  .anon-actions { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:8px; }
+  .anon-actions .spacer { flex:1; }
+  #anon-summary { font-size:12px; color:var(--ink-dim); font-family:var(--font-mono); }
+  .quick-toggle { font-size:12px; color:var(--accent); cursor:pointer; background:none; border:none; padding:0; }
+  .pii-flag { color:var(--warning); font-family:var(--font-mono); font-size:10px; }
+  .tbl-head { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:6px 0; flex-wrap:wrap; }
+  .hdr-pick { font-size:11px; color:var(--ink-dim); display:flex; align-items:center; gap:6px; }
+  .hdr-pick .select { width:auto; max-width:320px; }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'anonymizer' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '/', false], [_('Anonymizer'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content">
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow">{{ _('workspace') }} · {{ _('tools') }}</div>
+          <h1 class="page-title">{{ _('Anonymizer') }}</h1>
+          <div class="page-subtitle">
+            {{ _('Replace real values in a spreadsheet with realistic fakes — same structure, safe to paste into an AI.') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-body anon-note">
+          <svg class="ico"><use href="#ic-lock"/></svg>
+          <div style="font-size:13px;color:var(--ink-muted);line-height:1.5">
+            <strong style="color:var(--ink)">{{ _('Your file never leaves this computer.') }}</strong>
+            {{ _('Everything runs in your browser — nothing is uploaded to the server or anywhere else.') }}
+            {{ _('Real values are swapped for fakes of the same type; columns, headers and formulas are kept.') }}
+            <br><span style="color:var(--ink-dim)">{{ _('Note: the mapping back to real data is not saved anywhere, so use the result for structure/method help, not per-record answers. Visual styling (fonts, colours) may be simplified on export.') }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Drop zone -->
+      <label for="anon-file-input" id="anon-drop" class="drop-zone anon-drop">
+        <svg class="ico-big"><use href="#ic-upload"/></svg>
+        <div class="title">{{ _('Drop a spreadsheet here, or click to browse') }}</div>
+        <div class="sub">.xlsx · .xls · .xlsb · .csv · .ods  ·  {{ _('max 10 MB') }}</div>
+        <input id="anon-file-input" type="file" accept=".xlsx,.xls,.xlsb,.csv,.ods,.xlsm" hidden />
+      </label>
+
+      <!-- Config (populated after parse) -->
+      {# The worker is loaded from a VERSIONED URL. Without `?v=` it is served as
+         ordinary static (max-age=300), and for up to five minutes after a deploy
+         people mask files with the old code — exactly how a fresh fix once failed
+         to arrive during a check. #}
+      {# Workbook audit findings: hidden sheets, lookup tables, external links,
+         comments, authorship. The panel is shown BEFORE masking and removes
+         nothing itself — the person decides what is superfluous. #}
+      <div id="anon-audit" class="card" hidden></div>
+
+      {# Masking result: a ready sample for the prompt, and the self-check. #}
+      <div id="anon-result" class="card" hidden></div>
+
+      <div id="anon-config" style="display:none"
+           data-worker="/static/js/anonymizer.worker.js?v={{ asset_v }}">
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">{{ _('Columns') }}</span>
+            <span id="anon-file-meta" class="mono" style="font-size:11px;color:var(--ink-dim)"></span>
+          </div>
+          <div class="card-body">
+            <div class="anon-actions" style="margin-top:0;margin-bottom:12px">
+              <button type="button" class="quick-toggle" id="btn-mask-all">{{ _('Mask all') }}</button>
+              <span style="color:var(--ink-dim)">·</span>
+              <button type="button" class="quick-toggle" id="btn-keep-all">{{ _('Keep all') }}</button>
+            </div>
+            <div id="anon-sheets"></div>
+          </div>
+        </div>
+
+        <div class="anon-actions">
+          <button type="button" class="btn sm" id="btn-anon-reset">{{ _('Choose another file') }}</button>
+          <div class="spacer"></div>
+          <span id="anon-summary"></span>
+          <button type="button" class="btn sm primary" id="btn-anon-run">{{ _('Generate masked file') }}</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+{% include "components/palette.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/palette.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/hotkeys.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/anonymizer.js?v={{ asset_v }}" defer></script>
+{% endblock %}

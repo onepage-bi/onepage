@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% block title %}OnePage — {{ table_title }}{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'reference' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '/', false], [_('Reference tables'), '/reference', false], [table_title, None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content fluid">
+
+      <div id="refd-root" data-slug="{{ table_slug }}" data-table="{{ data_json }}"></div>
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow"><span id="refd-slug-chip" class="mono"></span></div>
+          <h1 class="page-title" id="refd-title">{{ table_title }}</h1>
+          <div class="page-subtitle" id="refd-meta"></div>
+        </div>
+        <div class="page-actions">
+          <a class="btn sm" id="refd-export-btn" href="#">{{ _('Export to Excel') }}</a>
+          {% if data.can_write %}
+          <button type="button" class="btn sm" id="refd-import-btn">{{ _('Import from Excel') }}</button>
+          <button type="button" class="btn sm ghost" id="refd-settings-btn">{{ _('Settings') }}</button>
+          <button type="button" class="btn sm ghost danger" id="refd-delete-btn">{{ _('Delete') }}</button>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- A table created from a manifest has a shape but no rows yet; the
+           one useful action is "upload Excel", and the empty template with
+           the right header is one click away. -->
+      <div class="ref-sect" id="refd-empty-banner" hidden>
+        <div class="ref-note" id="refd-empty-text"></div>
+        <a class="btn sm" id="refd-template-btn" href="#">{{ _('Download template') }}</a>
+      </div>
+
+      <div class="ref-sect" id="refd-sect-consumers">
+        <h2 class="ref-sect-h">{{ _('Consumers') }}</h2>
+        <div id="refd-consumers"></div>
+      </div>
+
+      <div class="ref-sect" id="refd-sect-unmapped">
+        <h2 class="ref-sect-h">{{ _('Misses') }}</h2>
+        <div id="refd-unmapped"><div class="ref-note">{{ _('Loading…') }}</div></div>
+      </div>
+
+      <div class="ref-sect" id="refd-sect-data">
+        <h2 class="ref-sect-h">{{ _('Data') }}</h2>
+        <div class="ref-toolbar">
+          <div class="input-wrap" style="width:260px">
+            <svg class="ico ico-12 leading"><use href="#ic-search"/></svg>
+            <input id="refd-search" class="input sm" placeholder="{{ _('Search by key…') }}" />
+          </div>
+          <div id="refd-page-info" class="ref-note mono"></div>
+        </div>
+        <div class="ref-table-wrap">
+          <table class="tbl ref-table" id="refd-data-table">
+            <thead><tr id="refd-data-thead"></tr></thead>
+            <tbody id="refd-data-tbody"></tbody>
+          </table>
+        </div>
+        <div class="ref-pager">
+          <button type="button" class="btn xs" id="refd-page-prev">{{ _('Back') }}</button>
+          <button type="button" class="btn xs" id="refd-page-next">{{ _('Next') }}</button>
+        </div>
+      </div>
+
+      <div class="ref-sect" id="refd-sect-versions">
+        <h2 class="ref-sect-h">{{ _('Versions') }}</h2>
+        <div class="ref-table-wrap">
+          <table class="tbl ref-table">
+            <thead>
+              <tr>
+                <th class="numeric" style="width:6%">v</th>
+                <th class="numeric" style="width:8%">{{ _('Rows') }}</th>
+                <th style="width:20%">{{ _('Changes') }}</th>
+                <th style="width:14%">{{ _('Author') }}</th>
+                <th style="width:14%">{{ _('Date') }}</th>
+                <th>{{ _('Note') }}</th>
+                <th style="width:10%"></th>
+              </tr>
+            </thead>
+            <tbody id="refd-versions-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+{% if data.can_write %}
+<div id="refd-scrim" class="ref-scrim" hidden></div>
+<aside id="refd-drawer" class="ref-drawer" role="dialog" aria-modal="true" aria-labelledby="refd-drawer-title" hidden>
+  <header class="ref-drawer-head">
+    <h2 id="refd-drawer-title" class="mono"></h2>
+    <button type="button" class="btn xs ghost" id="refd-drawer-close" aria-label="{{ _('Close') }}">
+      <svg class="ico ico-12"><use href="#ic-x"/></svg>
+    </button>
+  </header>
+  <div class="ref-drawer-body">
+
+    <div id="refd-settings-form" class="ref-form" hidden>
+      <label class="ref-field-label" for="refd-s-title">{{ _('Title') }}</label>
+      <input id="refd-s-title" class="input sm" type="text" value="{{ data.title }}" />
+
+      <label class="ref-field-label" for="refd-s-desc">{{ _('Description') }}</label>
+      <textarea id="refd-s-desc" class="input sm" rows="2">{{ data.description or '' }}</textarea>
+
+      <label class="ref-field-label" for="refd-s-resp">{{ _('Owner (id or name)') }}</label>
+      <input id="refd-s-resp" class="input sm mono" type="text"
+             value="{{ data.responsible.id if data.responsible else '' }}"
+             placeholder="{{ _('Last name, first name or person_id…') }}" data-user-suggest />
+
+      <label class="ref-check-row">
+        <input id="refd-s-pin" type="checkbox" {% if data.allow_pin %}checked{% endif %} />
+        <span>{{ _('Allow pinning version on run') }}</span>
+      </label>
+
+      <button type="button" class="btn sm primary" id="refd-s-submit">{{ _('Save') }}</button>
+      <div id="refd-s-status" class="ref-status mono"></div>
+    </div>
+
+    <div id="refd-import-form" class="ref-form" hidden>
+      <label class="ref-field-label" for="refd-i-file">{{ _('File (.xlsx)') }}</label>
+      <input id="refd-i-file" type="file" accept=".xlsx" />
+
+      <label class="ref-check-row">
+        <input id="refd-i-delete" type="checkbox" />
+        <span>{{ _('Delete rows not in file') }}</span>
+      </label>
+
+      <label class="ref-field-label" for="refd-i-note">{{ _('Note') }}</label>
+      <input id="refd-i-note" class="input sm" type="text" />
+
+      <div id="refd-i-result" class="ref-import-result"></div>
+
+      <button type="button" class="btn sm" id="refd-i-check">{{ _('Check') }}</button>
+      <button type="button" class="btn sm primary" id="refd-i-apply" disabled>{{ _('Apply') }}</button>
+      <div id="refd-i-status" class="ref-status mono"></div>
+    </div>
+
+  </div>
+</aside>
+{% endif %}
+
+<style>
+  [hidden] { display: none !important; }
+</style>
+
+<script src="/static/js/user-suggest.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/reference.js?v={{ asset_v }}" defer></script>
+{% endblock %}

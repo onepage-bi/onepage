@@ -1,0 +1,157 @@
+services:
+  onepage:
+    # DEV PROFILE. Clone, `mkdir -p data`, `docker compose up --build`, open
+    # http://localhost:8000/dev-login. The production profile is a separate
+    # file, deploy/bundle/docker-compose.yml (port 8743, host networking,
+    # SAML strict) - do not copy settings between the two.
+    build:
+      context: .
+      args:
+        # No SAML package: the image builds without a compiler, noticeably faster.
+        INSTALL_SAML: "false"
+    # Own tag, not :latest: the production image lives next to it on the build
+    # machine, and a shared tag would make them overwrite each other (the dev image has no SAML).
+    image: onepage:dev
+
+    # Published port instead of network_mode: host - host networking does not
+    # work on Docker Desktop (Mac/Windows) at all. The price is real and
+    # measured (benchmark campaign C1): bridge networking costs +34% p50 /
+    # +41% p99 versus bare, because docker-proxy forwards published ports in
+    # userland, while host networking cost only +7%. Dev pays this knowingly:
+    # portability matters more than latency here. The production profile
+    # (deploy/bundle/docker-compose.yml) stays on host networking (Linux only)
+    # for exactly that reason - do not "unify" the two.
+    ports:
+      # Loopback only: the root profile is the DEVELOPER one, with passwordless
+      # dev sign-in enabled. Binding to 127.0.0.1 means an accidental
+      # `docker compose up` on a server does not expose an open stand to the network.
+      #
+      # The port is changed with ONE variable, and that matters: OriginGuard admits
+      # only the origin from OP_SAML_SP_BASE_URL, so changing just the left
+      # half of the mapping produced 403 "cross-origin request rejected" without
+      # a single hint. Now both values come from OP_PORT:
+      #     OP_PORT=8011 docker compose up
+      - "127.0.0.1:${OP_PORT:-8000}:${OP_PORT:-8000}"
+
+    volumes:
+      # SQLite DB + uploaded files (persistent on host)
+      - ./data:/data
+
+    environment:
+      OP_HOST: "0.0.0.0"
+      OP_PORT: "${OP_PORT:-8000}"
+      # uvicorn worker processes (>1 is safe: sessions in SQLite, perf logs per pid)
+      OP_WORKERS: "1"
+
+      # SQLite database and uploads directory (inside the /data volume)
+      OP_DB_PATH: "/data/onepage.db"
+      OP_UPLOADS_DIR: "/data/uploads"
+
+      # (No OP_SESSION_SECRET: sessions are opaque server-side rows keyed by
+      # secrets.token_hex(32) and are never signed, so the value this used to
+      # carry was read by no code. Removed rather than left implying signing.)
+
+      # ── SAML / SSO ────────────────────────────────────────────────────────
+      # Dev: SAML is off. The IdP settings stay EMPTY on purpose so that
+      # preflight does not demand the SAML package (not installed in this image).
+      OP_SAML_SP_BASE_URL: "http://localhost:${OP_PORT:-8000}"
+
+      OP_SAML_IDP_ENTITY_ID: ""
+      OP_SAML_IDP_SSO_URL: ""
+
+      # X.509 cert from ADFS (PEM body without BEGIN/END headers)
+      # Extract: curl https://adfs.example.com/FederationMetadata/2007-06/FederationMetadata.xml \
+      #           | grep -o '<X509Certificate>[^<]*</X509Certificate>' | head -1 | sed 's/<[^>]*>//g'
+      OP_SAML_IDP_CERT: ""
+
+      # Claim attribute that carries the person_id — confirm with ADFS admin
+      OP_SAML_CLAIM_PERSON_ID: "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"
+
+      # true = strict signature validation (production); false = debug only
+      OP_SAML_STRICT: "false"
+
+      # Require the IdP to sign the assertion. This — not OP_SAML_STRICT — is
+      # what authenticates a login: with it false the SP accepts an UNSIGNED
+      # assertion and anyone able to POST to /saml/acs signs in as any
+      # person_id. ADFS signs assertions by default. Startup preflight refuses
+      # to boot with STRICT on and this off.
+      OP_SAML_WANT_ASSERTIONS_SIGNED: "true"
+
+      # true if behind an HTTPS reverse proxy (nginx, traefik, etc.)
+      OP_SAML_HTTPS: "false"
+
+      # ── First administrator ───────────────────────────────────────────────
+      # person_id seeded into the DB on first start (idempotent)
+      OP_INITIAL_ADMIN: "admin"
+
+      # ── Dev bypass (development only!) ───────────────────────────────────
+      # Allows login without ADFS via /dev-login form.
+      # MUST be false in production.
+      OP_DEV_BYPASS_AUTH: "true"
+
+      # ── Optional features (all off by default) ───────────────────────────
+      # /explore and the report chat pane (a preview), and /quests
+      # (gamification). To try them:
+      #     OP_EXPLORE_ENABLED=true OP_QUESTS_ENABLED=true docker compose up
+      OP_EXPLORE_ENABLED: "${OP_EXPLORE_ENABLED:-false}"
+      OP_QUESTS_ENABLED: "${OP_QUESTS_ENABLED:-false}"
+
+      # ── Performance logging (exportable JSONL in the /data volume) ───────
+      OP_PERF_ENABLED: "false"
+      # OP_PERF_SAMPLE is the sampling CEILING; the adaptive control loop
+      # floats the effective probability in [floor, ceiling] steering the
+      # emit rate to OP_PERF_TARGET_RPS (benchmark C1: fixed 1.0 sampling
+      # stalls the event loop at ~2k rps — RTT p99 9.27 vs 0.73 ms).
+      OP_PERF_SAMPLE: "1.0"
+      OP_PERF_ADAPTIVE: "true"
+      OP_PERF_TARGET_RPS: "200"
+      OP_PERF_SAMPLE_FLOOR: "0.01"
+      OP_PERF_SQL: "false"
+      OP_PERF_CLIENT: "true"
+      OP_PERF_DIR: "/data/perflog"
+      OP_PERF_RETENTION_DAYS: "14"
+      OP_PREVIEW_MAX_BYTES: "1500000"
+      # ── Model provider for /explore (docs/LLM_PROVIDERS.md) ─────────────
+      # ollama = a model inside our network (nothing leaves it).
+      # deepseek = external OpenAI-compatible /chat/completions; what leaves
+      # is the question + metric names/definitions/cuts + the glossary,
+      # cell values NEVER.
+      OP_LLM_PROVIDER: "${OP_LLM_PROVIDER:-ollama}"
+      OP_LLM_ENDPOINT: "${OP_LLM_ENDPOINT:-}"
+      OP_LLM_MODEL: "${OP_LLM_MODEL:-qwen2.5-coder:7b}"
+      # Key FOR THE SERVER: needs egress from this host (production has none).
+      OP_LLM_API_KEY: "${OP_LLM_API_KEY:-}"
+      # Production path: the user's browser calls the model, the server only builds
+      # the prompt (/api/explore/intent/prepare) and checks the answer (…/validate).
+      OP_LLM_BROWSER: "${OP_LLM_BROWSER:-false}"
+      # Key the server hands out (with an audit record) to users
+      # who may run a generator. Empty = BYOK: the user enters the key
+      # themselves, and it lives only in their browser's localStorage.
+      OP_LLM_BROWSER_KEY: "${OP_LLM_BROWSER_KEY:-}"
+      OP_SNAPSHOT_EXTERNAL: "false"
+      OP_CACHE_ENCODED: "true"
+      OP_CACHE_WARM: "0"
+      # Render LRU byte budget (raw + compressed variants). One 26 MB giant
+      # costs ~30 MB - raise to 512 if the host has RAM to spare.
+      OP_CACHE_MAX_MB: "256"
+      OP_TEMPLATES_AUTO_RELOAD: "false"
+      # uvicorn's per-request access log, measured at 91-96 µs of RTT p50 on the
+      # warm render path (benchmark C6) — about 45% of the 0.208 ms that C2
+      # had filed under "stack thickness". The reverse proxy in front of this
+      # container keeps its own access log, so nothing is lost by turning it off.
+      OP_ACCESS_LOG: "false"
+
+    healthcheck:
+      test:
+        - "CMD"
+        - "python3"
+        - "-c"
+        # deep=1 proves the instance can SERVE (reads SQLite, writes uploads),
+        # not merely that something is bound to the port.
+        - "import urllib.request; urllib.request.urlopen('http://localhost:${OP_PORT:-8000}/health?deep=1')"
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+
+    restart: unless-stopped

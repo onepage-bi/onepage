@@ -1,0 +1,809 @@
+{% extends "base.html" %}
+{% import "partials/schema_diff.html" as sd %}
+{% block title %}OnePage — {{ _('Data Sources') }}{% endblock %}
+
+{% macro age(days) %}{% if days is none %}—{% elif days == 0 %}{{ _('today') }}{% elif days == 1 %}{{ _('yesterday') }}{% elif days < 30 %}{{ _('{n}d ago', n=days) }}{% else %}{{ _('{n}mo ago', n=((days / 30) | round | int)) }}{% endif %}{% endmacro %}
+{% macro mb(b) %}{% if not b %}—{% elif b >= 1073741824 %}{{ '%.1f'|format(b / 1073741824) }} GB{% else %}{{ '%.0f'|format(b / 1048576) }} MB{% endif %}{% endmacro %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'data-sources' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '#', false], [_('Data Sources'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content fluid">
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow">{{ _('workspace · where reports get their data') }}</div>
+          <h1 class="page-title">{{ _('Data Sources') }}</h1>
+        </div>
+      </div>
+
+      {% if not reports %}
+      <div class="dock-hint">{{ _('No generator-backed reports you can run.') }}</div>
+      {% else %}
+
+      <div id="ds-root" data-sources="{{ sources_json }}" data-report-titles="{{ report_titles_json }}"></div>
+
+      <div class="ds-toolbar">
+        <div class="input-wrap" style="width:260px">
+          <svg class="ico ico-12 leading"><use href="#ic-search"/></svg>
+          <input id="ds-search" class="input sm" placeholder="{{ _('Source, path, or report…') }}" />
+        </div>
+        <div class="ds-chips">
+          <button type="button" class="ds-facet active" data-ds-chip="all">{{ _('All') }}</button>
+          <button type="button" class="ds-facet" data-ds-chip="folder">{{ _('Folders') }}</button>
+          <button type="button" class="ds-facet" data-ds-chip="greenplum">GreenPlum</button>
+          <button type="button" class="ds-facet" data-ds-chip="table">{{ _('Reference tables') }}</button>
+          <button type="button" class="ds-facet" data-ds-chip="shared">{{ _('Shared') }}</button>
+          <button type="button" class="ds-facet" data-ds-chip="stale">{{ _('Stale') }}</button>
+          <button type="button" class="ds-facet" data-ds-chip="unclaimed">{{ _('Unclaimed') }}</button>
+        </div>
+      </div>
+
+      {# ── Signals. Volume and freshness first: "how much and how old" is what
+           a data catalogue is opened for. Counts come after. ──────────── #}
+      <div class="ds-tiles">
+        <div class="ds-tile">
+          <div class="ds-tile-k">{{ _('Under management') }}</div>
+          <div class="ds-tile-v">{{ mb(stats.bytes) }}</div>
+          <div class="ds-tile-s">{{ _('{files} files across {sources} source{s}', files=stats.files, sources=stats.sources, s=('s' if stats.sources != 1 else '')) }}</div>
+        </div>
+        <div class="ds-tile {% if stats.shared %}is-accent{% endif %}">
+          <div class="ds-tile-k">{{ _('Shared sources') }}</div>
+          <div class="ds-tile-v">{{ stats.shared }}</div>
+          <div class="ds-tile-s">{{ _('feed more than one report') }}</div>
+        </div>
+        <div class="ds-tile {% if stats.stale %}is-warn{% endif %}">
+          <div class="ds-tile-k">{{ _('Stale data') }}</div>
+          <div class="ds-tile-v">{{ stats.stale }}</div>
+          <div class="ds-tile-s">{{ _('newest file older than {days} days', days=stale_days) }}</div>
+        </div>
+        <div class="ds-tile {% if stats.failing %}is-danger{% endif %}">
+          <div class="ds-tile-k">{{ _('Failing reports') }}</div>
+          <div class="ds-tile-v">{{ stats.failing }}</div>
+          <div class="ds-tile-s">{{ _('last run ended in error') }}</div>
+        </div>
+        <div class="ds-tile">
+          <div class="ds-tile-k">{{ _('Reference tables') }}</div>
+          <div class="ds-tile-v">{{ stats.tables }}</div>
+          <div class="ds-tile-s">{{ _('platform reference tables') }}</div>
+        </div>
+        <div class="ds-tile {% if stats.unsourced %}is-warn{% endif %}">
+          <div class="ds-tile-k">{{ _('Unmapped') }}</div>
+          <div class="ds-tile-v">{{ stats.unsourced }}</div>
+          <div class="ds-tile-s">{{ _('no source recorded yet') }}</div>
+        </div>
+      </div>
+
+      {# ── Lineage. Six layers, because a folder does not feed a report: a
+           pattern inside it matches files, a sheet inside those files carries
+           the columns, and a generator is what reads them. ─────────────── #}
+      <div class="ds-section" id="lineage" tabindex="-1"
+           data-lineage-dev="{% if request.query_params.get('lineage') == 'sample' %}1{% else %}0{% endif %}">
+        <div class="ds-section-head">
+          <h2 class="ds-h2">{{ _('Lineage') }}</h2>
+          <span class="ds-hint">{{ _h('Click a card to trace it end to end · drag or scroll to pan · ⌘/Ctrl+scroll to zoom · +/&minus;/0 to zoom/fit') }}</span>
+          <div class="lin-tools">
+            <label class="lin-lbl" for="lin-detail">{{ _('Detail') }}</label>
+            <select id="lin-detail" class="input sm" data-lin-detail>
+              <option value="folders">{{ _('Folders') }}</option>
+              <option value="files">{{ _('Files') }}</option>
+              <option value="sheets" selected>{{ _('Sheets') }}</option>
+            </select>
+            <button type="button" class="btn xs" data-lin-act="fit" title="{{ _('Fit to screen (0)') }}">{{ _('Fit') }}</button>
+            <button type="button" class="btn xs ghost" data-lin-act="reset">{{ _('Reset') }}</button>
+            <div class="lin-zoom-grp" role="group" aria-label="{{ _('Zoom') }}">
+              <button type="button" class="btn xs ghost lin-zoom-btn" data-lin-zoom="out" title="{{ _('Zoom out (-)') }}" aria-label="{{ _('Zoom out') }}">&minus;</button>
+              <button type="button" class="btn xs ghost mono lin-zoom-pct" data-lin-zoom="100" data-lin-zoom-pct title="{{ _('Current zoom - click for 100%') }}" aria-label="{{ _('Current zoom, click to reset to 100%') }}">100%</button>
+              <button type="button" class="btn xs ghost lin-zoom-btn" data-lin-zoom="in" title="{{ _('Zoom in (+)') }}" aria-label="{{ _('Zoom in') }}">+</button>
+            </div>
+            {# Shown only while a focus is active - clearing it any other way
+               (background click, Escape) has no visible affordance otherwise. #}
+            <button type="button" class="btn xs ghost" data-lin-act="unfocus" hidden>{{ _('Clear focus') }}</button>
+            <select id="lin-export" class="input sm" data-lin-export
+                    title="{{ _('Markdown and Mermaid include column profiles (top values).') }}"
+                    aria-label="{{ _('Export lineage') }}">
+              <option value="" selected disabled>{{ _('Export…') }}</option>
+              <option value="json">JSON</option>
+              <option value="md">Markdown</option>
+              <option value="mermaid">Mermaid</option>
+              <option value="" disabled class="lin-export-note">{{ _('↳ MD/Mermaid include column profiles (top values)') }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="lin-stage">
+          <div class="lin-viewport" data-lin-viewport>
+            <div class="lin-world" data-lin-world>
+              <svg class="lin-edges" data-lin-edges></svg>
+              <div class="lin-cards" data-lin-cards></div>
+            </div>
+          </div>
+          {# Two veils over the same stage: the graph arrives from an endpoint,
+             so both waiting and failing have to be states of this box, not an
+             empty rectangle that never explains itself. #}
+          <div class="lin-veil" data-lin-skeleton>
+            <div class="lin-skel"><i></i><i></i><i></i><i></i></div>
+            <div class="ds-hint">{{ _('Reading lineage…') }}</div>
+          </div>
+          <div class="lin-veil" data-lin-error hidden>
+            <svg class="ico ico-14" style="color:var(--warning)"><use href="#ic-alert"/></svg>
+            <div class="ds-hint" data-lin-msg>{{ _('Could not load lineage.') }}</div>
+            <button type="button" class="btn xs" data-lin-act="retry">{{ _('Retry') }}</button>
+          </div>
+        </div>
+        <div class="ds-legend mono">
+          <span><i class="sw folder"></i>{{ _('folder') }}</span>
+          <span><i class="sw greenplum"></i>GreenPlum</span>
+          <span><i class="sw table"></i>{{ _('reference table') }}</span>
+          <span><i class="sw pattern"></i>{{ _('file pattern') }}</span>
+          <span><i class="sw sheet"></i>{{ _('sheet') }}</span>
+          <span><i class="sw generator"></i>{{ _('generator') }}</span>
+          <span><i class="sw output"></i>{{ _('output') }}</span>
+          <span><i class="sw report"></i>{{ _('report') }}</span>
+          <span class="ds-legend-sep"></span>
+          <span><i class="lin-col is-ok"><i class="dot"></i></i>{{ _('declared & observed') }}</span>
+          <span><i class="lin-col is-warn"><i class="dot"></i></i>{{ _('declared only') }}</span>
+          <span><i class="lin-col is-muted"><i class="dot"></i></i>{{ _('observed only') }}</span>
+          <span><svg class="ico ico-10"><use href="#ic-check"/></svg>{{ _('read by the generator') }}</span>
+          <span class="ds-legend-sep"></span>
+          <span><i class="sw dash"></i>{{ _('written back into a source') }}</span>
+        </div>
+      </div>
+
+      {# ── Honesty. Not a footnote: the folder half of this page rests on
+           basename matching, and a catalogue that hides that is worse than
+           no catalogue. ────────────────────────────────────────────────── #}
+      <div class="ds-caveat">
+        <svg class="ico ico-14"><use href="#ic-alert"/></svg>
+        <div>{{ _h('
+          {b}Folders read in the browser are matched by name, not verified.{b_}
+          The File System Access API gives the browser a folder\'s name, never its
+          path — so two reports appear to share a folder when the names match. On
+          one analyst\'s machine {s}Stock_RDC{s_} may be a network
+          share and on another a local copy. Treat a folder link as a lead to
+          confirm, not a fact. {b}A source read by the desktop app is different:{b_}
+          the app reports the full path of the folder and of every file it read,
+          and a fingerprint of that path (the root id), so you can see which exact
+          file was used. That path is what the app says about its own machine, not
+          something the platform has checked, and sources are still grouped by
+          folder name: two same-named folders at different paths show as one
+          source with the path from the latest run — compare the root id.
+          GreenPlum sources are exact: the connection name is a
+          server-side alias. Dates come from each file\'s modification time as the
+          analyst\'s own machine reported it.
+        ', b='<b>', b_='</b>', s='<span class="mono">', s_='</span>') }}</div>
+      </div>
+
+      {# ── Sources ─────────────────────────────────────────────────────── #}
+      <div class="ds-section">
+        <div class="ds-section-head">
+          <h2 class="ds-h2">{{ _('Sources') }}</h2>
+          <span class="ds-hint">{{ _('Widest reach first · hover a row to trace it above') }}</span>
+        </div>
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th style="width:26%">{{ _('Source') }}</th>
+              <th class="numeric" style="width:7%">{{ _('Reports') }}</th>
+              <th class="numeric" style="width:7%">{{ _('Files') }}</th>
+              <th class="numeric" style="width:8%">{{ _('Volume') }}</th>
+              <th style="width:12%">{{ _('Data changed') }}</th>
+              <th style="width:11%">{{ _('Last read') }}</th>
+              <th>{{ _('Feeds') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for s in sources %}
+            <tr data-src-row="{{ s.key }}">
+              <td>
+                <div class="ds-srcname">
+                  {% if s.kind == 'greenplum' %}
+                  <svg class="ico ico-12" style="color:var(--type-snapshot)"><use href="#ic-database"/></svg>
+                  {% elif s.kind == 'table' %}
+                  <svg class="ico ico-12" style="color:var(--accent)"><use href="#ic-database"/></svg>
+                  {% else %}
+                  <svg class="ico ico-12" style="color:var(--warning)"><use href="#ic-folder"/></svg>
+                  {% endif %}
+                  {% if s.kind == 'table' %}
+                  <a class="mono" style="color:var(--ink)" href="/reference/{{ s.name }}">{{ s.name }}</a>
+                  <span class="ds-chip">{{ _('reference table') }}</span>
+                  {% else %}
+                  <span class="mono" style="color:var(--ink)">{{ s.name }}</span>
+                  {% endif %}
+                  {% if not s.certain %}<span class="ds-chip">{{ _('by name') }}</span>{% elif s.root_id and not s.declared_path %}<span class="ds-chip" title="{{ _('The desktop app reported this folder\'s path; the platform does not verify it') }}">{{ _('path reported') }}</span>{% endif %}
+                  {% if s.excludes %}<span class="ds-chip is-rule" title="{{ s.excludes | join(', ') }}">{{ _n(s.excludes | length, '{n} rule|{n} rules') }}</span>{% endif %}
+                  <button type="button" class="ds-edit" data-src-edit="{{ s.key }}" title="{{ _('Manage this source') }}">
+                    <svg class="ico ico-12"><use href="#ic-settings"/></svg>
+                  </button>
+                </div>
+                {% if s.kind == 'table' %}
+                <div class="mono ds-sub">
+                  {% if s.table.exists %}
+                    {{ s.table.title }} · v{{ s.table.current_version }} · {{ s.table.row_count }} {{ _('rows') }}
+                    {% if s.table.responsible %} · {{ s.table.responsible }}{% endif %}
+                  {% else %}
+                    {{ _('not yet created') }}
+                  {% endif %}
+                </div>
+                {% if s.table.stale_reports %}<div class="mono ds-sub ds-warn">{{ _('needs recalculation:') }} {{ _n(s.table.stale_reports, '{n} report|{n} reports') }}</div>{% endif %}
+                {% endif %}
+                {% if s.declared_path %}<div class="mono ds-sub ds-path">{{ s.declared_path }}</div>{% endif %}
+                {% if s.root_path %}<div class="mono ds-sub ds-path" title="{{ _('Folder path reported by the desktop app') }}"><span class="ds-pathtext">{{ s.root_path }}</span> <button type="button" class="btn xs ghost ds-copy" data-copy-path="{{ s.root_path }}">{{ _('Copy path') }}</button></div>{% endif %}
+                {% if s.queries %}<div class="mono ds-sub">{{ s.queries | join(', ') }}</div>{% endif %}
+                {% if s.generators %}<div class="mono ds-sub">{{ _('via') }} {{ s.generators | join(', ') }}</div>{% endif %}
+              </td>
+              <td class="numeric mono">{% if s.shared %}<b style="color:var(--accent)">{{ s.report_count }}</b>{% else %}{{ s.report_count }}{% endif %}</td>
+              <td class="numeric mono">{{ s.files or '—' }}</td>
+              <td class="numeric mono">{{ mb(s.bytes) }}</td>
+              <td class="mono {% if s.stale %}ds-warn{% endif %}">
+                {% if s.stale and s.source_id %}<a href="/data-quality?source_id={{ s.source_id }}" class="ds-stale-link">{{ age(s.data_age_days) }}</a>{% else %}{{ age(s.data_age_days) }}{% endif %}
+              </td>
+              <td class="mono ds-sub" style="margin:0">{{ age(s.read_age_days) }}</td>
+              <td>
+                {% for rid in s.reports %}{% for r in reports if r.id == rid %}
+                <a class="ds-pill" href="/d/{{ r.id }}?dock=data">{{ r.title }}</a>
+                {% endfor %}{% endfor %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div id="ds-empty" class="dock-hint" hidden>{{ _('No source matches that filter.') }}</div>
+      </div>
+
+      {# ── Reports ─────────────────────────────────────────────────────── #}
+      <div class="ds-section">
+        <div class="ds-section-head">
+          <h2 class="ds-h2">{{ _('Reports') }}</h2>
+          <span class="ds-hint">{{ _('Observed on the most recent run that recorded inputs') }}</span>
+        </div>
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th style="width:24%">{{ _('Report') }}</th>
+              <th style="width:20%">{{ _('Reads from') }}</th>
+              <th class="numeric" style="width:8%">{{ _('Volume') }}</th>
+              <th>{{ _('Files') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in reports %}
+            <tr>
+              <td>
+                <a href="/d/{{ r.id }}?dock=data" style="color:var(--ink)">{{ r.title }}</a>
+                <div class="mono ds-sub">
+                  {{ r.generator }} · {{ r.engine }}
+                  {% if r.last_run_at %} · {{ r.last_run_at.strftime('%Y-%m-%d') }}{% endif %}
+                  {% if r.last_run_status == 'error' %}<span class="ds-danger"> · {{ _('last run failed') }}</span>{% endif %}
+                </div>
+              </td>
+              <td>
+                {% if r.dirs %}{% for d in r.dirs %}<div class="mono ds-mini">{{ d }}</div>{% endfor %}
+                {% elif r.sources %}{% for k in r.sources %}<div class="mono ds-mini">{{ k.split(':', 1)[1] }}</div>{% endfor %}
+                {% else %}<span class="ds-sub mono">{{ _('not recorded') }}</span>{% endif %}
+              </td>
+              <td class="numeric mono">{{ mb(r.bytes) }}</td>
+              <td>
+                {% if r.required_files %}<div class="mono ds-sub">{{ _('requires:') }} {{ r.required_files | join(', ') }}</div>{% endif %}
+                {% if r.aux_names %}<div class="mono ds-sub">{{ _('analyst input:') }} {{ r.aux_names | join(', ') }}</div>{% endif %}
+                {% if r.skipped %}<div class="mono ds-sub ds-warn">{{ _('{n} skipped on that run', n=r.skipped) }}</div>{% endif %}
+                {% if r.roots %}{% for rt in r.roots %}<div class="mono ds-sub ds-path"><span class="ds-pathtext">{{ rt.root_path }}</span> <button type="button" class="btn xs ghost ds-copy" data-copy-path="{{ rt.root_path }}">{{ _('Copy path') }}</button></div>{% endfor %}{% endif %}
+                {% if r.file_paths %}
+                <details class="ds-files">
+                  <summary class="mono">{{ _('Paths of the files read') }}</summary>
+                  {% for fp in r.file_paths %}<div class="mono ds-filelist ds-path"><span class="ds-pathtext">{{ fp }}</span> <button type="button" class="btn xs ghost ds-copy" data-copy-path="{{ fp }}">{{ _('Copy path') }}</button></div>{% endfor %}
+                </details>
+                {% endif %}
+                {% if r.files %}
+                <details class="ds-files">
+                  <summary class="mono">{{ _n(r.files_total, '{n} file|{n} files') }}</summary>
+                  <div class="mono ds-filelist">{{ r.files | join(', ') }}{% if r.files_total > r.files | length %} {{ _('… and {n} more', n=(r.files_total - r.files | length)) }}{% endif %}</div>
+                </details>
+                {% elif not r.required_files and not r.aux_names %}<span class="ds-sub mono">—</span>{% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      {% endif %}
+    </div>
+  </main>
+</div>
+
+<div id="ds-scrim" class="ds-scrim" hidden></div>
+<aside id="ds-drawer" class="ds-drawer" role="dialog" aria-modal="true" aria-labelledby="ds-drawer-title" hidden>
+  <header class="ds-drawer-head">
+    <h2 id="ds-drawer-title" class="mono" data-drawer-title></h2>
+    <button type="button" class="btn xs ghost" data-drawer-close aria-label="{{ _('Close') }}">
+      <svg class="ico ico-12"><use href="#ic-x"/></svg>
+    </button>
+  </header>
+  <div class="ds-drawer-body" data-drawer-body></div>
+  {# One pre-rendered schema_diff per (source, reader generator), cloned by
+     data-sources-edit.js into that generator's Overrides block — same
+     partial and CSS classes viewer.html uses for a report's own Data dock,
+     so a folder's schema story reads identically whichever door it is seen
+     through. The diff is per (source, generator): the latest observation of
+     that pair, NULL schemas resolved through older ones (datasources.build
+     -> lineage._collect_files). None until the pair has been observed, which
+     renders the same "not yet observed" fallback the Data dock shows. #}
+  {% for s in sources %}
+    {% for gname, ginputs in s.generator_inputs.items() %}
+    <template data-sd-template data-sd-source="{{ s.key }}" data-sd-gen="{{ gname }}">{{ sd.render_diff(s.generator_diffs.get(gname), ginputs, s.last_read.strftime('%Y-%m-%d') if (s.generator_diffs.get(gname) and s.last_read) else none, [s.declared_path] if s.declared_path else none) }}</template>
+    {% endfor %}
+  {% endfor %}
+</aside>
+
+<style>
+  /* ── Signal tiles ─────────────────────────────────────────────────── */
+  .ds-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+  .ds-tile {
+    background: var(--surface-1);
+    border-radius: var(--r-4);
+    box-shadow: 0 0 0 1px var(--border) inset;
+    padding: 12px 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  /* A 2px rail rather than a tinted card: the value stays on the normal
+     surface, so the colour reads as a flag, not as a mood. */
+  .ds-tile::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+    background: transparent;
+  }
+  .ds-tile.is-accent::before { background: var(--accent); }
+  .ds-tile.is-warn::before   { background: var(--warning); }
+  .ds-tile.is-danger::before { background: var(--danger); }
+  .ds-tile-k {
+    font-family: var(--font-mono); font-size: var(--fs-10);
+    letter-spacing: .06em; text-transform: uppercase; color: var(--ink-dim);
+  }
+  .ds-tile-v {
+    font-size: 25px; font-weight: 600; line-height: 1.25; margin-top: 2px;
+    font-variant-numeric: tabular-nums; letter-spacing: -.015em;
+  }
+  .ds-tile.is-accent .ds-tile-v { color: var(--accent); }
+  .ds-tile.is-warn   .ds-tile-v { color: var(--warning); }
+  .ds-tile.is-danger .ds-tile-v { color: var(--danger); }
+  .ds-tile-s { font-size: var(--fs-11); color: var(--ink-dim); }
+
+  /* ── Section chrome ───────────────────────────────────────────────── */
+  .ds-section { margin-bottom: var(--space-5); }
+  .ds-section-head {
+    display: flex; align-items: baseline; gap: 10px;
+    margin-bottom: var(--space-2); flex-wrap: wrap;
+  }
+  .ds-h2 { margin: 0; font-size: 15px; font-weight: 600; }
+  .ds-hint { font-size: var(--fs-11); color: var(--ink-dim); }
+
+  /* ── Lineage stage ────────────────────────────────────────────────── */
+  /* A fixed-height stage with its own zoom/pan instead of a page-wide scroll:
+     six layers of a real workspace are wider than any screen, and a graph you
+     navigate by the page scrollbar cannot be read at all. */
+  .lin-tools {
+    display: flex; align-items: center; gap: 6px; margin-left: auto;
+  }
+  .lin-lbl {
+    font-family: var(--font-mono); font-size: var(--fs-10);
+    letter-spacing: .06em; text-transform: uppercase; color: var(--ink-dim);
+  }
+  .lin-tools .input { width: 104px; }
+  #lin-export { width: 88px; }
+  .lin-zoom-grp { display: flex; align-items: center; gap: 2px; }
+  .lin-zoom-pct { min-width: 3.6em; color: var(--ink-dim); font-variant-numeric: tabular-nums; }
+  .lin-zoom-btn { width: 22px; padding: 0; text-align: center; font-weight: 600; }
+  .lin-zoom {
+    font-size: var(--fs-10); color: var(--ink-dim);
+    min-width: 38px; text-align: right; font-variant-numeric: tabular-nums;
+  }
+  .lin-stage {
+    position: relative;
+    background: var(--surface-1);
+    border-radius: var(--r-4);
+    box-shadow: 0 0 0 1px var(--border) inset;
+    overflow: hidden;
+  }
+  .lin-viewport {
+    position: relative; height: 520px; overflow: hidden;
+    cursor: grab; touch-action: none;
+  }
+  .lin-viewport.is-panning { cursor: grabbing; }
+  .lin-world { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+  .lin-edges { position: absolute; top: 0; left: 0; overflow: visible; pointer-events: none; }
+  .lin-cards { position: absolute; top: 0; left: 0; }
+
+  .lin-veil {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 10px; background: var(--surface-1);
+  }
+  /* An author `display` beats the UA's [hidden] rule, so without this the
+     error veil sits over a perfectly drawn graph with its placeholder text —
+     "Could not load lineage." on a page that loaded fine — and the drawer,
+     which also sets display, opened as an empty panel. main.css has no global
+     [hidden] rule; this page owns the one it needs. */
+  [hidden] { display: none !important; }
+  .lin-skel { display: flex; gap: 12px; align-items: center; }
+  .lin-skel i {
+    display: block; width: 96px; height: 34px; border-radius: var(--r-3);
+    background: var(--surface-2); animation: lin-pulse 1.1s var(--ease) infinite;
+  }
+  .lin-skel i:nth-child(2) { animation-delay: .12s; }
+  .lin-skel i:nth-child(3) { animation-delay: .24s; }
+  .lin-skel i:nth-child(4) { animation-delay: .36s; }
+  @keyframes lin-pulse { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
+
+  .lin-edge {
+    fill: none; stroke: var(--border-strong); stroke-width: 1.25;
+    transition: stroke .13s var(--ease), stroke-width .13s var(--ease);
+  }
+  /* An edge that stands for a folded-away node is drawn thinner: it is a real
+     dependency, but the reader is not being shown what it passes through. */
+  .lin-edge.is-via { stroke: var(--border); stroke-dasharray: 1 3; }
+  .lin-edge.kind-writes_back {
+    stroke: var(--warning); stroke-dasharray: 5 4; color: var(--warning);
+  }
+  /* file -> stage, "read here, in this order" (P4.1) - dashed like is-via,
+     but on a real edge, not a contracted one, so it keeps its own steady
+     color instead of the fainter border-subtle contraction gets. */
+  .lin-edge.kind-read_order { stroke-dasharray: 3 3; }
+  .lin-edge.hot { stroke: var(--accent); stroke-width: 2; }
+  #lineage.is-focus .lin-edge:not(.hot) { stroke: var(--border-subtle); }
+  #lineage.is-filtered .lin-edge.out { stroke: var(--border-subtle); opacity: .35; }
+
+  .lin-card {
+    position: absolute; top: 0; left: 0;
+    box-sizing: border-box;
+    min-width: 168px; max-width: 268px; width: max-content;
+    padding: 7px 10px 7px 12px;
+    border-radius: var(--r-4);
+    background: var(--surface-2);
+    box-shadow: 0 0 0 1px var(--border) inset;
+    text-decoration: none;
+    display: flex; flex-direction: column; gap: 3px;
+    transition: box-shadow .13s var(--ease), opacity .13s var(--ease),
+                background .13s var(--ease);
+    cursor: pointer;
+  }
+  /* A stage is a step inside one generator's run, not a peer of the six main
+     layers - smaller footprint says "detail", not "another column". */
+  .lin-card.k-stage { min-width: 128px; padding: 5px 8px 5px 10px; }
+  /* Kind is carried by a left rail, the same device as the tiles, so six layers
+     stay one visual family instead of six palettes. */
+  .lin-card::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    border-radius: var(--r-4) 0 0 var(--r-4);
+  }
+  .lin-card.k-folder::before     { background: var(--warning); }
+  .lin-card.k-greenplum::before  { background: var(--type-snapshot); }
+  .lin-card.k-table::before      { background: var(--accent); }
+  .lin-card.k-pattern::before    { background: color-mix(in oklab, var(--warning) 55%, var(--accent)); }
+  .lin-card.k-sheet::before      { background: var(--ink-faint); }
+  .lin-card.k-stage::before      { background: color-mix(in oklab, var(--ink-faint) 45%, var(--accent)); }
+  .lin-card.k-generator::before  { background: var(--accent); }
+  .lin-card.k-output::before     { background: color-mix(in oklab, var(--accent) 45%, transparent); }
+  .lin-card.k-write_back::before { background: var(--warning); }
+  .lin-card.k-report::before     { background: var(--ink-muted); }
+
+  .lin-card-head { display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .lin-card-ico { color: var(--ink-dim); flex: none; }
+  .lin-card-title {
+    font-size: var(--fs-12); font-weight: 500; color: var(--ink);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .lin-card-meta {
+    font-size: var(--fs-10); color: var(--ink-dim);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .lin-card-meta.is-fold { color: var(--ink-faint); }
+  .lin-card-path {
+    font-size: var(--fs-10); color: var(--ink-faint);
+    max-width: 244px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .lin-twisty {
+    border: 0; background: none; padding: 0; margin-left: -4px;
+    color: var(--ink-faint); cursor: pointer; line-height: 0; flex: none;
+  }
+  .lin-twisty:hover { color: var(--ink); }
+  .lin-chip {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: .05em; text-transform: uppercase;
+    border-radius: 3px; padding: 1px 5px; white-space: nowrap; flex: none;
+  }
+  .lin-chip.is-accent { color: var(--accent); box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 40%, transparent) inset; }
+  .lin-chip.is-warn   { color: var(--warning); box-shadow: 0 0 0 1px color-mix(in oklab, var(--warning) 40%, transparent) inset; }
+  .lin-chip.is-danger { color: var(--danger); box-shadow: 0 0 0 1px color-mix(in oklab, var(--danger) 45%, transparent) inset; }
+  .lin-chip.is-muted  { color: var(--ink-faint); box-shadow: 0 0 0 1px var(--border) inset; }
+
+  /* Column chips. The dot is the whole diff: what was declared, what the
+     workbook actually had, and whether the generator touched it. */
+  .lin-cols { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 2px; max-width: 244px; }
+  .lin-col {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: var(--font-mono); font-size: var(--fs-10); color: var(--ink-muted);
+    background: var(--surface-1); border-radius: 3px; padding: 1px 5px;
+    box-shadow: 0 0 0 1px var(--border-subtle) inset;
+  }
+  .lin-col .dot { width: 5px; height: 5px; border-radius: 50%; flex: none; }
+  .lin-col.is-ok    .dot { background: var(--accent); }
+  .lin-col.is-warn  .dot { background: var(--warning); }
+  .lin-col.is-muted .dot { background: var(--ink-faint); }
+  .lin-col.is-warn  { color: var(--warning); }
+  .lin-col.is-muted { color: var(--ink-dim); }
+  .lin-col.is-more  { color: var(--ink-faint); box-shadow: none; }
+  .lin-col .tick { color: var(--accent); flex: none; }
+  /* A stage's columns (P4.1) are a plain name list - no declared/observed/
+     consumed state to show a dot for. */
+  .lin-col.is-plain { color: var(--ink-muted); }
+
+  .lin-card.is-shared  { box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 45%, transparent) inset; }
+  .lin-card.is-stale   { box-shadow: 0 0 0 1px color-mix(in oklab, var(--warning) 50%, transparent) inset; }
+  .lin-card.is-unread  { opacity: .82; }
+  .lin-card.is-failing { box-shadow: 0 0 0 1px color-mix(in oklab, var(--danger) 55%, transparent) inset; }
+  .lin-card:hover, .lin-card.hot { background: var(--surface-3); }
+  .lin-card.hot { box-shadow: 0 0 0 1px var(--accent) inset; }
+  .lin-card:focus-visible { box-shadow: var(--ring); outline: none; }
+  #lineage.is-focus .lin-card:not(.hot) { opacity: .28; }
+  #lineage.is-filtered .lin-card.out { opacity: .12; pointer-events: none; }
+
+  .ds-legend {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 14px;
+    margin-top: 8px; font-size: var(--fs-10); color: var(--ink-dim);
+  }
+  .ds-legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .ds-legend .sw { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+  .ds-legend .sw.folder    { background: var(--warning); }
+  .ds-legend .sw.greenplum { background: var(--type-snapshot); }
+  .ds-legend .sw.table     { background: var(--accent); }
+  .ds-legend .sw.pattern   { background: color-mix(in oklab, var(--warning) 55%, var(--accent)); }
+  .ds-legend .sw.sheet     { background: var(--ink-faint); }
+  .ds-legend .sw.generator { background: var(--accent); }
+  .ds-legend .sw.output    { background: color-mix(in oklab, var(--accent) 45%, transparent); }
+  .ds-legend .sw.report    { background: var(--ink-muted); }
+  .ds-legend .sw.dash {
+    width: 18px; height: 0; border-radius: 0;
+    border-top: 1.5px dashed var(--warning);
+  }
+  .ds-legend .lin-col { padding: 1px 3px; }
+  .ds-legend-sep { width: 1px; height: 11px; background: var(--border); }
+
+  /* ── Caveat ───────────────────────────────────────────────────────── */
+  .ds-caveat {
+    display: flex; gap: 10px; align-items: flex-start;
+    background: var(--warning-soft);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--warning) 30%, transparent) inset;
+    border-radius: var(--r-4);
+    padding: 11px 13px; margin-bottom: var(--space-5);
+    font-size: var(--fs-12); line-height: 1.55; color: var(--ink-muted);
+  }
+  .ds-caveat .ico { color: var(--warning); flex: none; margin-top: 1px; }
+  .ds-caveat b { color: var(--ink); font-weight: 600; }
+
+  /* ── Tables ───────────────────────────────────────────────────────── */
+  /* .tbl pins tbody td to --row-h; these rows carry sub-lines and a details
+     disclosure, so they need to grow instead. */
+  /* nowrap/overflow:hidden as well — the Feeds column wraps a pill per report
+     and would otherwise be clipped to one line. */
+  .ds-section .tbl tbody td {
+    height: auto; padding-top: 9px; padding-bottom: 9px; vertical-align: top;
+    white-space: normal; overflow: visible; text-overflow: clip;
+  }
+  .ds-section .tbl thead th { cursor: default; }
+  .ds-srcname { display: flex; align-items: center; gap: 7px; }
+  .ds-chip {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: .05em; text-transform: uppercase; color: var(--warning);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--warning) 40%, transparent) inset;
+    border-radius: 3px; padding: 1px 5px; white-space: nowrap;
+  }
+  .ds-sub { font-size: var(--fs-11); color: var(--ink-dim); margin-top: 2px; }
+  .ds-mini { font-size: var(--fs-11); }
+  .ds-warn { color: var(--warning); }
+  /* WHY: Make the stale-age cell clickable but visually discoverable. Link inherits
+     ds-warn color and gets underline + hover state. */
+  .ds-stale-link { text-decoration: underline; cursor: pointer; }
+  .ds-stale-link:hover { opacity: 0.8; }
+  .ds-danger { color: var(--danger); }
+  .ds-pill {
+    display: inline-block; font-size: var(--fs-11); color: var(--ink-muted);
+    background: var(--surface-2); border-radius: 3px;
+    padding: 1px 7px; margin: 2px 3px 2px 0; text-decoration: none;
+  }
+  .ds-pill:hover { color: var(--ink); background: var(--surface-3); }
+  .ds-files summary { font-size: var(--fs-11); color: var(--ink-dim); cursor: default; }
+  .ds-filelist {
+    font-size: var(--fs-11); color: var(--ink-dim); margin-top: 4px;
+    max-height: 120px; overflow-y: auto; line-height: 1.6;
+  }
+
+  /* ── Toolbar ──────────────────────────────────────────────────────── */
+  .ds-toolbar {
+    display: flex; align-items: center; gap: var(--space-3);
+    flex-wrap: wrap; margin-bottom: var(--space-4);
+  }
+  .ds-chips { display: flex; gap: 4px; flex-wrap: wrap; }
+  .ds-facet {
+    height: 24px; padding: 0 10px; border: 0; cursor: pointer;
+    background: var(--surface-2); color: var(--ink-dim);
+    border-radius: 999px; font-family: inherit; font-size: var(--fs-11);
+    box-shadow: 0 0 0 1px var(--border) inset;
+    transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
+  }
+  .ds-facet:hover { color: var(--ink); }
+  .ds-facet.active {
+    background: color-mix(in oklab, var(--accent) 16%, transparent);
+    color: var(--accent);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 45%, transparent) inset;
+  }
+
+  .ds-edit {
+    border: 0; background: none; padding: 2px; cursor: pointer;
+    color: var(--ink-faint); border-radius: 3px; line-height: 0;
+    opacity: 0; transition: opacity var(--dur) var(--ease), color var(--dur) var(--ease);
+  }
+  tr:hover .ds-edit, .ds-edit:focus-visible { opacity: 1; }
+  .ds-edit:hover { color: var(--ink); background: var(--surface-2); }
+  .ds-chip.is-rule {
+    color: var(--accent);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 40%, transparent) inset;
+  }
+  .ds-path { color: var(--ink-faint); word-break: break-all; }
+  /* The path is selected with one click: if the clipboard is unavailable, this is the only way to copy it */
+  .ds-pathtext { user-select: all; }
+  .ds-pathrow { display: flex; align-items: flex-start; gap: 8px; margin: 2px 0; }
+  .ds-pathrow .ds-pathtext { flex: 1; min-width: 0; word-break: break-all; font-size: var(--fs-11); }
+  .ds-copy { margin-left: 6px; padding: 0 6px; height: 18px; font-size: var(--fs-10, 10px); vertical-align: baseline; }
+  .ds-pathrow .ds-copy { margin-left: 0; flex: none; }
+
+  /* ── Drawer ───────────────────────────────────────────────────────── */
+  .ds-scrim {
+    position: fixed; inset: 0; z-index: 40;
+    background: color-mix(in oklab, var(--bg-base) 62%, transparent);
+  }
+  .ds-drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; z-index: 41;
+    width: min(460px, 100vw);
+    display: flex; flex-direction: column;
+    background: var(--surface-1);
+    box-shadow: -1px 0 0 0 var(--border) inset, var(--elev-3);
+  }
+  .ds-drawer-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 14px 16px; border-bottom: 1px solid var(--border-subtle); flex: none;
+  }
+  .ds-drawer-head h2 {
+    margin: 0; font-size: var(--fs-12); font-weight: 600; color: var(--ink);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .ds-drawer-body { padding: 16px; overflow-y: auto; flex: 1; }
+  .ds-drawer-sect { margin-top: var(--space-5); }
+  .ds-drawer-sect h3 {
+    margin: 0 0 8px; font-size: var(--fs-10); font-weight: 500;
+    font-family: var(--font-mono); letter-spacing: .06em;
+    text-transform: uppercase; color: var(--ink-dim);
+  }
+  .ds-dl {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+    gap: 1px; background: var(--border-subtle);
+    box-shadow: 0 0 0 1px var(--border-subtle); border-radius: var(--r-4);
+    overflow: hidden;
+  }
+  .ds-dl > div { background: var(--surface-1); padding: 8px 10px; }
+  .ds-dl dt {
+    margin: 0 0 2px; font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: .06em; text-transform: uppercase; color: var(--ink-dim);
+  }
+  .ds-dl dd { margin: 0; font-size: var(--fs-12); color: var(--ink); }
+  .ds-lbl {
+    display: block; font-size: var(--fs-11); color: var(--ink-dim);
+    margin: 10px 0 4px;
+  }
+  .ds-drawer .input { width: 100%; }
+  .ds-note { font-size: var(--fs-11); color: var(--ink-dim); line-height: 1.5; margin-top: 6px; }
+  .ds-pillwrap { display: flex; flex-wrap: wrap; gap: 2px; }
+
+  .ds-rules { display: flex; flex-direction: column; gap: 4px; }
+  .ds-rule {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-2); border-radius: var(--r-3); padding: 4px 4px 4px 9px;
+  }
+  .ds-rule code { flex: 1; font-size: var(--fs-11); color: var(--ink); }
+  .ds-rule-n { font-size: var(--fs-10); color: var(--accent); }
+  .ds-rule-n.is-idle { color: var(--ink-faint); }
+  .ds-addrow { display: flex; gap: 6px; margin-top: 8px; }
+  .ds-addrow .input { flex: 1; }
+
+  .ds-preview {
+    margin-top: 10px; padding: 9px 11px;
+    background: var(--surface-inset, var(--surface-2)); border-radius: var(--r-4);
+    box-shadow: 0 0 0 1px var(--border-subtle) inset;
+  }
+  .ds-preview-head { font-size: var(--fs-11); color: var(--ink-dim); }
+  .ds-preview-head b { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .ds-preview-head b.ds-warn { color: var(--warning); }
+  .ds-preview-list { margin-top: 6px; max-height: 180px; overflow-y: auto; }
+  .ds-dropped {
+    font-size: var(--fs-11); color: var(--ink-dim);
+    text-decoration: line-through; text-decoration-color: var(--warning);
+    line-height: 1.7;
+  }
+  .ds-drawer-foot {
+    display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+    margin-top: var(--space-5); padding-top: 12px;
+    border-top: 1px solid var(--border-subtle);
+  }
+  .ds-status { font-size: var(--fs-11); color: var(--ink-dim); }
+
+  /* ── Overrides (generator × source exclude rules) ───────────────────
+     Replaces the old folder-level rules editor: one block per generator
+     that has actually observed this source, each with its own rule list,
+     live match preview and Save — the same shape input_overrides has in
+     the database, so the editor cannot claim a rule for a generator that
+     never reads this folder. */
+  .ds-ovr-gen { margin-top: 10px; padding: 8px 10px; background: var(--surface-2); border-radius: var(--r-4); }
+  .ds-ovr-gen + .ds-ovr-gen { margin-top: 8px; }
+  .ds-ovr-gen-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .ds-ovr-gen-name { font-size: var(--fs-11); font-weight: 600; color: var(--ink); }
+  .ds-ovr-gen-meta { font-size: var(--fs-10); font-family: var(--font-mono); color: var(--ink-faint); }
+  .ds-ovr-empty { font-size: var(--fs-11); color: var(--ink-dim); padding: 4px 0; }
+
+  /* Annotations (P3.6): one card per declared match/sheet, a labelled input
+     per sheet-level note or declared column — grouped visually like the
+     override blocks above, but read-write on a single flat form (one Save
+     for the whole source, since the API replaces the full set at once). */
+  .ds-ann-group { margin-top: 10px; padding: 8px 10px; background: var(--surface-2); border-radius: var(--r-4); }
+  .ds-ann-group + .ds-ann-group { margin-top: 8px; }
+  .ds-ann-head { font-size: var(--fs-11); font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+  .ds-ann-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+  .ds-ann-lbl { flex: 0 0 auto; min-width: 110px; max-width: 160px; font-size: var(--fs-11);
+                color: var(--ink-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ds-ann-row .input { flex: 1; }
+
+  /* Declared-vs-observed schema diff — identical classes/rules to
+     viewer.html so partials/schema_diff.html renders the same everywhere. */
+  .sd-diff { display: flex; flex-direction: column; gap: 6px; font-size: 11px; margin-top: 8px; }
+  .sd-note { color: var(--ink-dim); line-height: 1.5; }
+  .sd-patterns { display: flex; flex-direction: column; gap: 5px; }
+  .sd-pattern { padding: 5px 8px; background: var(--surface-1); border-radius: var(--r-3, 4px); }
+  .sd-pattern-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .sd-pattern-head code { color: var(--ink); }
+  .sd-role { color: var(--ink-dim); }
+  .sd-count { color: var(--ink-dim); margin-left: auto; }
+  .sd-badge {
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: .03em;
+    padding: 1px 5px; border-radius: 3px; text-transform: uppercase;
+  }
+  .sd-badge.sd-err { color: var(--danger); background: color-mix(in oklab, var(--danger) 16%, transparent); }
+  .sd-badge.sd-warn { color: var(--warning); background: color-mix(in oklab, var(--warning) 16%, transparent); }
+  .sd-badge.sd-info { color: var(--accent); background: color-mix(in oklab, var(--accent) 14%, transparent); }
+  .sd-sheet { margin-top: 4px; color: var(--ink-dim); }
+  .sd-chiprow { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 2px; }
+  .sd-chip { padding: 1px 6px; border-radius: 8px; font-size: 10px; }
+  .sd-chip-missing { color: var(--warning); background: color-mix(in oklab, var(--warning) 14%, transparent); }
+  .sd-chip-extra { color: var(--ink-dim); background: var(--surface-2); box-shadow: 0 0 0 1px var(--border-subtle) inset; }
+  .sd-info-line { color: var(--ink-dim); line-height: 1.5; }
+  .sd-asof { color: var(--ink-faint); opacity: .8; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lin-edge, .lin-card { transition: none; }
+    .lin-skel i { animation: none; }
+  }
+</style>
+
+<script src="/static/js/vendor/dagre.min.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/source-paths.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/lineage.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/data-sources-edit.js?v={{ asset_v }}" defer></script>
+{% endblock %}

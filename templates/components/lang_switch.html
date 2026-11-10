@@ -1,0 +1,22 @@
+{# Language switcher. Used twice — in the topbar and in the sidebar user chip —
+   so `place` ('topbar' | 'sidebar') only picks the trigger's look.
+
+   The menu lists endonyms: a language is always named in its own words, so
+   LANG_LABELS is never translated. The handler lives in static/js/main.js. #}
+{% set place = place | default('topbar') %}
+<div class="lang-switch" data-lang-switch data-place="{{ place }}">
+  <button type="button" class="btn icon sm ghost lang-trigger"
+          title="{{ _('Interface language') }}" aria-haspopup="true" aria-expanded="false">
+    <span class="lang-code">{{ LANG_SHORT[current_lang()] }}</span>
+  </button>
+  <div class="lang-menu" hidden role="menu">
+    {% for code in LANGS %}
+    <button type="button" role="menuitem"
+            class="lang-opt {% if code == current_lang() %}current{% endif %}"
+            data-lang="{{ code }}">
+      <span class="lang-name">{{ LANG_LABELS[code] }}</span>
+      <span class="lang-tag mono">{{ LANG_SHORT[code] }}</span>
+    </button>
+    {% endfor %}
+  </div>
+</div>

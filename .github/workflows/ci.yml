@@ -1,0 +1,226 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # 3.12 and 3.13 are supported, 3.14 breaks SQLAlchemy 2.0.36.
+  PYTHON_VERSION: "3.13"
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  # Wall-clock budgets are a property of the hardware, not of the code. This
+  # runner is two to three times slower than a developer laptop, and on the
+  # first real CI run three such checks went red without finding a single
+  # regression (0.83 s against 0.5, 381 ms against 200). A red build that
+  # means nothing teaches people to stop reading builds. The measurement is
+  # still printed in full, so growth stays visible.
+  OP_TEST_TIME_FACTOR: "3"
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      # The tools layer imports app code (i18n and learn checks), so the app
+      # requirements are installed next to ruff. SAML is NOT installed.
+      - name: Install dependencies
+        run: pip install -r requirements.txt -r requirements-dev.txt
+      # Settings come from pyproject.toml.
+      - name: ruff
+        run: ruff check .
+      - name: Repository tools (i18n, fixtures, JS syntax, leak gate)
+        run: python tests/run_all.py --only tools
+
+  python:
+    name: python (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-15]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+      # Deliberately NO requirements-saml.txt and NO libxmlsec1: a clean
+      # machine must be able to install the base requirements on its own.
+      # This step is the regression test for that promise.
+      # Node is NOT optional for this layer, despite the name: smoke_lineage_ui
+      # shells out to `node tests/lineage_dom.js`, and smoke_globmatch silently
+      # checks nothing without it. It works on GitHub images by accident —
+      # they preinstall node — and an undeclared dependency breaks the day the
+      # image changes or someone runs this on their own runner.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install base requirements (no SAML)
+        run: pip install -r requirements.txt
+      # Test-only reader: smoke_lineage_py, smoke_semantics and
+      # agent/tests/smoke_r2host import it, but requirements.txt does not
+      # carry it (the app does not need it at runtime).
+      - name: Install test-only dependencies
+        run: pip install python-calamine==0.9.0
+      - name: Python smokes
+        run: python tests/run_all.py --only python --junit junit-python.xml
+      - name: Upload JUnit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-python-${{ matrix.os }}
+          path: junit-python.xml
+          if-no-files-found: ignore
+
+  node:
+    name: node
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      # run_all.py itself is plain stdlib Python; smokes of this layer need
+      # no third-party packages.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: DOM harnesses and engine2 guard
+        run: python tests/run_all.py --only node,engine2 --junit junit-node.xml
+      - name: Upload JUnit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-node
+          path: junit-node.xml
+          if-no-files-found: ignore
+
+  saml:
+    name: saml
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-saml.txt
+      - name: System libraries for xmlsec
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxmlsec1-dev libxml2-dev pkg-config
+      - name: Install both requirement files
+        run: pip install -r requirements.txt -r requirements-saml.txt
+      - name: SAML support is importable
+        run: |
+          python - <<'PY'
+          from app.auth.saml import SAML_AVAILABLE
+          print("SAML_AVAILABLE =", SAML_AVAILABLE)
+          assert SAML_AVAILABLE is True, "python3-saml did not import"
+          PY
+      - name: SAML smokes
+        run: |
+          python tests/smoke_saml_replay.py
+          python tests/smoke_csrf_origin.py
+
+  gate:
+    name: gate (leak check)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      # Required for merge: configure this job as a required status check.
+      - name: public_sanitize
+        run: python3 tools/public_sanitize.py --check .
+
+  docker:
+    name: docker (cold start)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      OP_PORT: "8000"
+      # "localhost", not 127.0.0.1: OriginGuard accepts only the origin built
+      # from OP_SAML_SP_BASE_URL (http://localhost:$OP_PORT) and answers 403
+      # to a login POST that carries any other Origin.
+      BASE: http://localhost:8000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Host dependency of the seed script
+        run: pip install httpx==0.28.1
+      - name: Build and start (dev profile)
+        run: |
+          mkdir -p data
+          docker compose up --build -d
+      - name: Wait for /health?deep=1
+        run: |
+          for i in $(seq 1 60); do
+            if curl -fsS --max-time 3 "$BASE/health?deep=1" | tee /tmp/health.json | grep -q '"started_at"'; then
+              cat /tmp/health.json; echo; exit 0
+            fi
+            sleep 2
+          done
+          echo "OnePage did not become healthy within two minutes" >&2
+          docker compose ps
+          docker compose logs --tail 80 onepage
+          exit 1
+      - name: Seed demo data
+        # bash -e without pipefail takes the exit code of the LAST command in the
+        # pipeline, i.e. tee, which is always 0: a failed seed would go unnoticed.
+        shell: bash -euo pipefail {0}
+        run: python tools/seed_demo.py --url "$BASE" | tee /tmp/seed.txt
+      - name: Pages answer 200
+        run: |
+          set -e
+          REPORT_ID=$(grep -o '/d/[0-9a-f-]*' /tmp/seed.txt | head -n 1 | cut -d/ -f3)
+          test -n "$REPORT_ID" || { echo "seed output carries no /d/<id>" >&2; exit 1; }
+          curl -fsS -c /tmp/jar -o /dev/null -X POST -d person_id=admin \
+            -H "Origin: $BASE" "$BASE/dev-login"
+          fail=0
+          for p in / "/d/$REPORT_ID" /generators /docs; do
+            code=$(curl -s -b /tmp/jar -o /dev/null -w '%{http_code}' "$BASE$p")
+            echo "$code $p"
+            [ "$code" = "200" ] || fail=1
+          done
+          # Optional features are off out of the box.
+          for p in /explore /quests; do
+            code=$(curl -s -b /tmp/jar -o /dev/null -w '%{http_code}' "$BASE$p")
+            echo "$code $p (expected 404)"
+            [ "$code" = "404" ] || fail=1
+          done
+          exit $fail
+      - name: Container logs on failure
+        if: failure()
+        run: docker compose logs --tail 200 onepage
+      - name: Stop
+        if: always()
+        run: docker compose down -v

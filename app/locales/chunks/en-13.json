@@ -1,0 +1,467 @@
+{
+  "_meta": {
+    "chunk": "13",
+    "count": 150,
+    "lang": "en",
+    "source_files": [
+      "templates/pages/data_sources.html",
+      "templates/pages/diploma.html",
+      "templates/pages/docs.html"
+    ]
+  },
+  "strings": {
+    "A PDF is split into pages automatically — each becomes its own slide.": {
+      "ref": "templates/pages/docs.html:211"
+    },
+    "A demonstration report: every value on the screenshot is invented.": {
+      "ref": "templates/pages/docs.html:191"
+    },
+    "A file from a model, or a generator that computes in the browser": {
+      "ref": "templates/pages/docs.html:43"
+    },
+    "A generator is a trusted Python package that the platform runs not on itself but on the analyst's machine: the browser starts Python in WebAssembly, reads the chosen folder through the system file access and sends up only the result — a finished HTML and its data files. The source Excel workbooks never leave the computer.": {
+      "ref": "templates/pages/docs.html:233"
+    },
+    "A presentation is a list of slides, and a slide can be a live report, a picture, a PDF or an HTML page. In show mode the arrows page through the slides and a report opens for real rather than as a screenshot — the numbers in the meeting are fresh.": {
+      "ref": "templates/pages/docs.html:205"
+    },
+    "A published file": {
+      "ref": "templates/pages/docs.html:496"
+    },
+    "A published report as its reader sees it": {
+      "ref": "templates/pages/docs.html:190"
+    },
+    "A real screen of the platform. Screenshots in this guide are taken automatically (tools/docs_shots.py), so they never drift away from the interface.": {
+      "ref": "templates/pages/docs.html:98"
+    },
+    "A report in an hour": {
+      "ref": "templates/pages/docs.html:128"
+    },
+    "A report that rebuilds itself": {
+      "ref": "templates/pages/docs.html:225"
+    },
+    "A report where the origin of every number is visible": {
+      "ref": "templates/pages/docs.html:23"
+    },
+    "A single file": {
+      "ref": "templates/pages/docs.html:492"
+    },
+    "A title and a description help colleagues find the report; publishing can wait until you have looked at the draft.": {
+      "ref": "templates/pages/docs.html:175"
+    },
+    "Addresses and storage": {
+      "ref": "templates/pages/docs.html:503"
+    },
+    "An Excel import goes through a preview with a diff: what exactly will change is visible before a version is written.": {
+      "ref": "templates/pages/docs.html:352"
+    },
+    "An administrator uploads the bundle, the platform checks the manifest, the dependencies and the semantics — and only then does the version appear in the list. After that a report is created from the generator: a draft, a first run on a real folder, publication.": {
+      "ref": "templates/pages/docs.html:298"
+    },
+    "An optional file next to the manifest describes what the report means: canonical tables, views, metrics with their formula, rules and a glossary. The platform validates it against empty typed tables at registration time, so a typo in a column name is an error for the author, not an empty answer for the user.": {
+      "ref": "templates/pages/docs.html:362"
+    },
+    "An unknown top-level key is a registration error: a typo in a contract has to be visible at once, not a month later on somebody else's machine. Declared inputs are not documentation: the engine reads exactly the files that match, and the platform builds the lineage map out of them.": {
+      "ref": "templates/pages/docs.html:270"
+    },
+    "Asking a report questions in plain language": {
+      "ref": "templates/pages/docs.html:368"
+    },
+    "Assemble a show out of reports": {
+      "ref": "templates/pages/docs.html:204"
+    },
+    "Back to the course": {
+      "ref": "templates/pages/diploma.html:22"
+    },
+    "Build": {
+      "ref": "templates/pages/docs.html:42"
+    },
+    "Bundle archive": {
+      "ref": "templates/pages/docs.html:495"
+    },
+    "Check the file before uploading — with a double click": {
+      "ref": "templates/pages/docs.html:154"
+    },
+    "Checks that travel with the calculation": {
+      "ref": "templates/pages/docs.html:329"
+    },
+    "Colours and charts: how to make a report re-colourable": {
+      "ref": "templates/pages/docs.html:458"
+    },
+    "Control": {
+      "ref": "templates/pages/docs.html:57"
+    },
+    "Copy": {
+      "ref": "templates/pages/docs.html:140"
+    },
+    "Customer codes, the mapping of outlets to territories — what used to live as a hard-coded dictionary inside the code. Declare a lookup table as an input in the manifest: the platform creates it for you, keeps its versions, shows who is responsible for it and which values found no match. Whoever is responsible updates it — with no new version of your bundle.": {
+      "ref": "templates/pages/docs.html:346"
+    },
+    "Data": {
+      "ref": "templates/pages/docs.html:37"
+    },
+    "Data and the model.": {
+      "ref": "templates/pages/docs.html:145"
+    },
+    "Describe the task to the model — together with a piece of the data": {
+      "ref": "templates/pages/docs.html:135"
+    },
+    "Diploma": {
+      "ref": "templates/pages/diploma.html:2"
+    },
+    "Download PDF": {
+      "ref": "templates/pages/diploma.html:25"
+    },
+    "Every run records which folders were connected, which files were read, which sheets and columns were opened — and how that differs from what the manifest declared. The result is a graph: folder → pattern → sheet → generator → output → report. This is the answer to «where does this number come from», a question that usually has none.": {
+      "ref": "templates/pages/docs.html:314"
+    },
+    "Files across the folders": {
+      "ref": "templates/pages/docs.html:490"
+    },
+    "Folder path reported by the desktop app": {
+      "ref": "templates/pages/data_sources.html:236"
+    },
+    "Folders": {
+      "ref": "templates/pages/data_sources.html:39"
+    },
+    "From here on the report needs no manual update. If the same table arrives every week, take the second road: a generator will assemble this very report by itself, and the platform will remember which files it came from.": {
+      "ref": "templates/pages/docs.html:218"
+    },
+    "From this moment the report is not a file in an inbox. It has an address, versions (the old one stays and can be downloaded), an access list, a link for outside viewing, comments laid over the page, and a colours tab where the owner re-paints the report right in the browser.": {
+      "ref": "templates/pages/docs.html:185"
+    },
+    "HTML budget: heavier than that, and the data moves into a separate file": {
+      "ref": "templates/pages/docs.html:72"
+    },
+    "I need a report": {
+      "ref": "templates/pages/docs.html:115"
+    },
+    "If the file works when opened from a folder, it will almost certainly work on the platform too. Check four things:": {
+      "ref": "templates/pages/docs.html:155"
+    },
+    "Injecting the data snapshot (snapshot)": {
+      "ref": "templates/pages/docs.html:421"
+    },
+    "It did not work after uploading": {
+      "ref": "templates/pages/docs.html:474"
+    },
+    "Last read": {
+      "ref": "templates/pages/data_sources.html:196"
+    },
+    "Limits of the browser engine": {
+      "ref": "templates/pages/docs.html:485"
+    },
+    "Lineage": {
+      "ref": "templates/pages/data_sources.html:89"
+    },
+    "Lineage, quality checks, shared lookup tables": {
+      "ref": "templates/pages/docs.html:58"
+    },
+    "Lineage: which folder the number came from": {
+      "ref": "templates/pages/docs.html:313"
+    },
+    "Lookup tables: one mapping for the whole platform": {
+      "ref": "templates/pages/docs.html:345"
+    },
+    "MB": {
+      "ref": "templates/pages/docs.html:71"
+    },
+    "Manage this source": {
+      "ref": "templates/pages/data_sources.html:220"
+    },
+    "Markdown and Mermaid include column profiles (top values).": {
+      "ref": "templates/pages/data_sources.html:109"
+    },
+    "Models (Claude, ChatGPT, Gemini) are good at writing a single self-contained HTML file: all the CSS and JavaScript inside, no external links. What matters is giving them the structure of the data rather than a description of it: paste 5–10 rows of your own extract straight into the request.": {
+      "ref": "templates/pages/docs.html:136"
+    },
+    "No generator-backed reports you can run.": {
+      "ref": "templates/pages/data_sources.html:27"
+    },
+    "No source matches that filter.": {
+      "ref": "templates/pages/data_sources.html:256"
+    },
+    "Not sure where to start — then don't start here: the {a}School{a_} takes the same ground step by step, with checks and tasks on the platform. This guide is the better companion once you already know what you are doing.": {
+      "ref": "templates/pages/docs.html:110"
+    },
+    "Observed on the most recent run that recorded inputs": {
+      "ref": "templates/pages/data_sources.html:263"
+    },
+    "One self-contained HTML with versions and access": {
+      "ref": "templates/pages/docs.html:48"
+    },
+    "OnePage is where a report lives after it has been made: people open it, ask it questions in plain language, rebuild it every week — and at any moment it is visible {b}which folder, which file and which sheet{b_} a number came from. The source data does not travel to the server on the way: the calculation runs in the analyst's browser.": {
+      "ref": "templates/pages/docs.html:25"
+    },
+    "Only names and descriptions travel into the request to the model — of tables, of columns, of metrics. Not one cell of your data crosses that boundary: the calculation runs in the browser or on the platform's own server, and the model works with definitions.": {
+      "ref": "templates/pages/docs.html:374"
+    },
+    "Paths of the files read": {
+      "ref": "templates/pages/data_sources.html:298"
+    },
+    "Presentations built from reports": {
+      "ref": "templates/pages/docs.html:210"
+    },
+    "Print": {
+      "ref": "templates/pages/diploma.html:24"
+    },
+    "Questions": {
+      "ref": "templates/pages/docs.html:52"
+    },
+    "Questions in plain language — the SQL is written by the engine, not by the model": {
+      "ref": "templates/pages/docs.html:53"
+    },
+    "Reading lineage…": {
+      "ref": "templates/pages/data_sources.html:131"
+    },
+    "Reads from": {
+      "ref": "templates/pages/data_sources.html:269"
+    },
+    "Reference table": {
+      "ref": "templates/pages/docs.html:383"
+    },
+    "Refreshing the data means a new version, not a new report.": {
+      "ref": "templates/pages/docs.html:195"
+    },
+    "Registration and the first run": {
+      "ref": "templates/pages/docs.html:297"
+    },
+    "Report": {
+      "ref": "templates/pages/data_sources.html:268"
+    },
+    "Reports": {
+      "ref": "templates/pages/data_sources.html:192"
+    },
+    "Reset": {
+      "ref": "templates/pages/data_sources.html:99"
+    },
+    "Retry": {
+      "ref": "templates/pages/data_sources.html:136"
+    },
+    "Shared": {
+      "ref": "templates/pages/data_sources.html:42"
+    },
+    "Shared sources": {
+      "ref": "templates/pages/data_sources.html:57"
+    },
+    "Sheets": {
+      "ref": "templates/pages/data_sources.html:96"
+    },
+    "Source, path, or report…": {
+      "ref": "templates/pages/data_sources.html:35"
+    },
+    "Sources": {
+      "ref": "templates/pages/data_sources.html:185"
+    },
+    "Stale": {
+      "ref": "templates/pages/data_sources.html:43"
+    },
+    "Stale data": {
+      "ref": "templates/pages/data_sources.html:62"
+    },
+    "Tab memory": {
+      "ref": "templates/pages/docs.html:493"
+    },
+    "The analyst presses Run, picks a folder and gets a new version of the report. Your work is one zip archive.": {
+      "ref": "templates/pages/docs.html:234"
+    },
+    "The analyst's machine": {
+      "ref": "templates/pages/docs.html:494"
+    },
+    "The boundary worth knowing by heart.": {
+      "ref": "templates/pages/docs.html:373"
+    },
+    "The contract: three functions and one rule about memory": {
+      "ref": "templates/pages/docs.html:248"
+    },
+    "The data is already in Excel. A model writes a single HTML file, you upload it to the platform and share the link. No programming required.": {
+      "ref": "templates/pages/docs.html:116"
+    },
+    "The data lineage graph": {
+      "ref": "templates/pages/docs.html:319"
+    },
+    "The data quality page": {
+      "ref": "templates/pages/docs.html:335"
+    },
+    "The desktop app reported this folder's path; the platform does not verify it": {
+      "ref": "templates/pages/data_sources.html:218"
+    },
+    "The diploma is built from your own progress and opens only for you. The number is reproducible: the same course gives the same number.": {
+      "ref": "templates/pages/diploma.html:80"
+    },
+    "The engine opens a session, hands over the files {b}one at a time{b_} and asks for the result. After add_file returns, only aggregates may remain of a file: collecting frames in a list and concatenating them in finish() is forbidden — on a year of data the naive version hit the tab's ceiling (~2.75 GB), while the disciplined one held 468 MB flat.": {
+      "ref": "templates/pages/docs.html:249"
+    },
+    "The file transfer protocol (interactive)": {
+      "ref": "templates/pages/docs.html:398"
+    },
+    "Unclaimed": {
+      "ref": "templates/pages/data_sources.html:44"
+    },
+    "Under management": {
+      "ref": "templates/pages/data_sources.html:52"
+    },
+    "Unmapped": {
+      "ref": "templates/pages/data_sources.html:77"
+    },
+    "Volume": {
+      "ref": "templates/pages/data_sources.html:194"
+    },
+    "Widest reach first · hover a row to trace it above": {
+      "ref": "templates/pages/data_sources.html:186"
+    },
+    "Zoom": {
+      "ref": "templates/pages/data_sources.html:100"
+    },
+    "Zoom in": {
+      "ref": "templates/pages/data_sources.html:103"
+    },
+    "Zoom in (+)": {
+      "ref": "templates/pages/data_sources.html:103"
+    },
+    "Zoom out": {
+      "ref": "templates/pages/data_sources.html:101"
+    },
+    "Zoom out (-)": {
+      "ref": "templates/pages/data_sources.html:101"
+    },
+    "analyst input:": {
+      "ref": "templates/pages/data_sources.html:293"
+    },
+    "by name": {
+      "ref": "templates/pages/data_sources.html:218"
+    },
+    "completed the course": {
+      "ref": "templates/pages/diploma.html:42"
+    },
+    "date": {
+      "ref": "templates/pages/diploma.html:44"
+    },
+    "declared & observed": {
+      "ref": "templates/pages/data_sources.html:149"
+    },
+    "declared only": {
+      "ref": "templates/pages/data_sources.html:150"
+    },
+    "feed more than one report": {
+      "ref": "templates/pages/data_sources.html:59"
+    },
+    "file pattern": {
+      "ref": "templates/pages/data_sources.html:143"
+    },
+    "folder": {
+      "ref": "templates/pages/data_sources.html:140"
+    },
+    "generator": {
+      "ref": "templates/pages/data_sources.html:145"
+    },
+    "last run ended in error": {
+      "ref": "templates/pages/data_sources.html:69"
+    },
+    "last run failed": {
+      "ref": "templates/pages/data_sources.html:282"
+    },
+    "lessons": {
+      "ref": "templates/pages/diploma.html:43"
+    },
+    "level": {
+      "ref": "templates/pages/diploma.html:43"
+    },
+    "needs recalculation:": {
+      "ref": "templates/pages/data_sources.html:233"
+    },
+    "newest file older than {days} days": {
+      "ref": "templates/pages/data_sources.html:64"
+    },
+    "no source recorded yet": {
+      "ref": "templates/pages/data_sources.html:79"
+    },
+    "not recorded": {
+      "ref": "templates/pages/data_sources.html:288"
+    },
+    "not yet created": {
+      "ref": "templates/pages/data_sources.html:230"
+    },
+    "number": {
+      "ref": "templates/pages/diploma.html:45"
+    },
+    "observed only": {
+      "ref": "templates/pages/data_sources.html:151"
+    },
+    "output": {
+      "ref": "templates/pages/data_sources.html:146"
+    },
+    "path reported": {
+      "ref": "templates/pages/data_sources.html:218"
+    },
+    "platform reference tables": {
+      "ref": "templates/pages/data_sources.html:74"
+    },
+    "read by the generator": {
+      "ref": "templates/pages/data_sources.html:152"
+    },
+    "reference table": {
+      "ref": "templates/pages/data_sources.html:142"
+    },
+    "report": {
+      "ref": "templates/pages/data_sources.html:147"
+    },
+    "requires:": {
+      "ref": "templates/pages/data_sources.html:292"
+    },
+    "rows": {
+      "ref": "templates/pages/data_sources.html:227"
+    },
+    "sheet": {
+      "ref": "templates/pages/data_sources.html:144"
+    },
+    "this certifies that": {
+      "ref": "templates/pages/diploma.html:41"
+    },
+    "today": {
+      "ref": "templates/pages/data_sources.html:5"
+    },
+    "via": {
+      "ref": "templates/pages/data_sources.html:238"
+    },
+    "workspace · where reports get their data": {
+      "ref": "templates/pages/data_sources.html:21"
+    },
+    "written back into a source": {
+      "ref": "templates/pages/data_sources.html:154"
+    },
+    "yesterday": {
+      "ref": "templates/pages/data_sources.html:5"
+    },
+    "{files} files across {sources} source{s}": {
+      "ref": "templates/pages/data_sources.html:54"
+    },
+    "{n} file|{n} files": {
+      "plural": true,
+      "ref": "templates/pages/data_sources.html:304"
+    },
+    "{n} report|{n} reports": {
+      "plural": true,
+      "ref": "templates/pages/data_sources.html:233"
+    },
+    "{n} rule|{n} rules": {
+      "plural": true,
+      "ref": "templates/pages/data_sources.html:219"
+    },
+    "{n} skipped on that run": {
+      "ref": "templates/pages/data_sources.html:294"
+    },
+    "{n}d ago": {
+      "ref": "templates/pages/data_sources.html:5"
+    },
+    "{n}mo ago": {
+      "ref": "templates/pages/data_sources.html:5"
+    },
+    "… and {n} more": {
+      "ref": "templates/pages/data_sources.html:305"
+    },
+    "↳ MD/Mermaid include column profiles (top values)": {
+      "ref": "templates/pages/data_sources.html:115"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{# Topbar — pass `crumbs` as list of [label, href_or_None, is_current] #}
+<header class="topbar">
+  <div id="crumbs" class="crumbs">
+    {% set crumbs = crumbs | default([[_('Workspace'), '/', false]]) %}
+    {% for crumb in crumbs %}
+      {% set label = crumb[0] %}
+      {% set href = crumb[1] %}
+      {% set is_current = crumb[2] %}
+      {% if href and not is_current %}
+        <a class="crumb" href="{{ href }}">{{ label }}</a>
+      {% else %}
+        <span class="crumb {% if is_current %}current{% endif %}">{{ label }}</span>
+      {% endif %}
+      {% if not loop.last %}<span class="sep">/</span>{% endif %}
+    {% endfor %}
+  </div>
+
+  <button id="cmdk-pill" class="cmdk-pill" title="{{ _('Open command palette  ⌘K') }}">
+    <svg class="ico ico-12"><use href="#ic-search"/></svg>
+    <span class="label">{{ _('Search or jump to…') }}</span>
+    <span class="kbd">⌘K</span>
+  </button>
+
+  <div class="topbar-actions">
+    {% include "components/lang_switch.html" %}
+    <a class="btn icon sm ghost" href="/data-quality" id="dq-bell" title="{{ _('Data Quality') }}">
+      <svg class="ico"><use href="#ic-alert"/></svg>
+      <span class="badge solid danger" data-dq-badge hidden></span>
+    </a>
+    <a class="btn icon sm ghost" href="/docs" title="{{ _('Help') }}">
+      <svg class="ico"><use href="#ic-book"/></svg>
+    </a>
+  </div>
+</header>

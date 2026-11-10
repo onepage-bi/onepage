@@ -1,0 +1,124 @@
+# OnePage: variant for a site with Traefik.
+#
+#   Use THIS file instead of docker-compose.yml if Traefik sits in front of the
+#   application:
+#       docker compose -f docker-compose.traefik.yml up -d
+#
+# ── How it differs from the main file and why ─────────────────────────────────
+#
+# The main variant uses network_mode: host. Here there is NONE, and that is not
+# a concession but the right choice for Traefik:
+#
+#   1. The metric that justified host networking does not apply to this
+#      topology. Campaign C1 measured +34% p50 / +41% p99 for the
+#      docker-bridge cell, but what it measured was the path through a PUBLISHED PORT, i.e.
+#      docker-proxy (userland forwarding). Traefik reaches the application over the
+#      Docker network, where docker-proxy is absent entirely. The cost of the veth/iptables
+#      container-to-container path has NOT BEEN MEASURED by us (campaign C3 went into networking and
+#      never got to it). It is almost certainly lower, since veth lives entirely
+#      in the kernel while docker-proxy is a userspace process.
+#   2. Host networking breaks Traefik's standard discovery: its Docker provider
+#      routes to the container's address on the shared network, and a host container
+#      has no such address.
+#   3. No port is published at all, so there is nothing to close with a firewall,
+#      unlike the host variant.
+#
+# If one day you want to know the real cost of this path, that is a cell on the stand,
+# not a matter for debate: see docs/PERF_DECISIONS.md, ADR-2.
+
+services:
+  onepage:
+    image: onepage:latest
+
+    # Neither ports: nor network_mode: host. Traefik reaches the application by
+    # service name inside the shared network; no docker-proxy in the path.
+    networks:
+      - traefik
+
+    volumes:
+      - ./data:/data
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${TRAEFIK_NETWORK:-traefik}"
+      - "traefik.http.routers.onepage.rule=Host(`${OP_HOSTNAME:?set OP_HOSTNAME in .env}`)"
+      - "traefik.http.routers.onepage.entrypoints=${TRAEFIK_ENTRYPOINT:-websecure}"
+      - "traefik.http.routers.onepage.tls=true"
+      - "traefik.http.routers.onepage.tls.certresolver=${TRAEFIK_CERTRESOLVER:-default}"
+      - "traefik.http.services.onepage.loadbalancer.server.port=8743"
+      # Large reports take longer than the default timeouts to render and compress.
+      - "traefik.http.services.onepage.loadbalancer.responseforwarding.flushinterval=1ms"
+
+    environment:
+      OP_HOST: "0.0.0.0"
+      OP_PORT: "8743"
+      OP_WORKERS: "1"
+
+      OP_DB_PATH: "/data/onepage.db"
+      OP_UPLOADS_DIR: "/data/uploads"
+
+      # MANDATORY for this topology. Traefik is a container on a Docker network,
+      # so uvicorn's immediate peer is its 172.x.x.x address, not
+      # 127.0.0.1 (the only one trusted by default). Without this line the
+      # perf and audit logs get Traefik's address instead of the client's.
+      # Specify the subnet of Traefik's Docker network; you can look it up like this:
+      #   docker network inspect ${TRAEFIK_NETWORK:-traefik} \
+      #     --format '{{(index .IPAM.Config 0).Subnet}}'
+      # Never "*": that would let any client forge its IP.
+      FORWARDED_ALLOW_IPS: "${FORWARDED_ALLOW_IPS:?set the Traefik subnet in .env}"
+
+      # ── Site ────────────────────────────────────────────────────────────────
+      OP_SAML_SP_BASE_URL: "https://${OP_HOSTNAME}"
+      OP_SAML_IDP_ENTITY_ID: "${OP_SAML_IDP_ENTITY_ID:-}"
+      OP_SAML_IDP_SSO_URL: "${OP_SAML_IDP_SSO_URL:-}"
+      OP_SAML_IDP_CERT: "${OP_SAML_IDP_CERT:-}"
+      OP_SAML_CLAIM_PERSON_ID: "${OP_SAML_CLAIM_PERSON_ID:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn}"
+      OP_INITIAL_ADMIN: "${OP_INITIAL_ADMIN:?set OP_INITIAL_ADMIN in .env}"
+
+      OP_SAML_STRICT: "${OP_SAML_STRICT:-true}"
+      # Traefik terminates TLS: https from outside, hence true.
+      OP_SAML_HTTPS: "true"
+      OP_SAML_WANT_ASSERTIONS_SIGNED: "true"
+      OP_DEV_BYPASS_AUTH: "false"
+
+      # ── Telemetry (values obtained by measurement, see PERF_DECISIONS.md) ──────
+      OP_PERF_ENABLED: "true"
+      OP_PERF_SAMPLE: "1.0"
+      OP_PERF_ADAPTIVE: "true"
+      OP_PERF_TARGET_RPS: "200"
+      OP_PERF_SAMPLE_FLOOR: "0.01"
+      OP_PERF_SQL: "false"
+      OP_PERF_CLIENT: "true"
+      OP_PERF_DIR: "/data/perflog"
+      OP_PERF_RETENTION_DAYS: "14"
+
+      # ── Render and cache ────────────────────────────────────────────────────
+      OP_PREVIEW_MAX_BYTES: "1500000"
+      OP_SNAPSHOT_EXTERNAL: "false"
+      OP_CACHE_ENCODED: "true"
+      OP_CACHE_WARM: "20"
+      OP_CACHE_MAX_MB: "256"
+      OP_TEMPLATES_AUTO_RELOAD: "false"
+      OP_ACCESS_LOG: "false"
+
+    healthcheck:
+      test:
+        - "CMD"
+        - "python3"
+        - "-c"
+        # Here localhost is the container itself (unlike the host variant, where
+        # the probe could hit someone else's process on the host). The check is honest.
+        - "import urllib.request; urllib.request.urlopen('http://localhost:8743/health?deep=1')"
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+
+    restart: unless-stopped
+
+networks:
+  # The network Traefik already lives in. No need to create it here: it is
+  # external. To see the name: docker network ls
+  traefik:
+    external: true
+    name: "${TRAEFIK_NETWORK:-traefik}"

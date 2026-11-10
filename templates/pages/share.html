@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}{{ dashboard.title }} — OnePage{% endblock %}
+{% block mode %}standalone{% endblock %}
+
+{% block head %}
+<style>
+  body { overflow: hidden; }
+  .share-shell { display: grid; grid-template-rows: var(--topbar-h) 1fr; height: 100vh; }
+  .share-content { overflow: auto; background: var(--surface-inset); padding: 16px; }
+  .share-iframe {
+    width: 100%; height: 100%;
+    border: none; border-radius: 6px;
+    background: #0c1218;
+    box-shadow: 0 0 0 1px var(--border) inset, 0 20px 40px -20px rgba(0,0,0,.5);
+    display: block;
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="share-shell">
+  <div class="share-bar">
+    <div class="brand">
+      <span class="mark">OP</span>
+      OnePage
+    </div>
+    <div class="vsep"></div>
+    <span class="title">{{ dashboard.title }}</span>
+    <span class="badge type-{{ dashboard.dash_type }}">{{ dashboard.dash_type }}</span>
+    <div class="meta">
+      <span class="pill"><svg class="ico ico-12"><use href="#ic-lock"/></svg>&nbsp;{{ _('read-only') }}</span>
+      {% if expires_in %}
+      <span class="pill"><span class="dot"></span>{{ _('expires in') }} {{ expires_in }}</span>
+      {% endif %}
+    </div>
+  </div>
+  <div class="share-content">
+    {% if dashboard.dash_type == 'page' %}
+    {# Navigator: the shell says what became of a link it could not open
+       (network folder, pop-up blocker). Silence is not an option: the person clicked. #}
+    <div id="page-open-note" class="page-open-note" hidden></div>
+    {% endif %}
+    <iframe class="share-iframe"
+            src="/share/{{ token }}/render/"
+            sandbox="allow-scripts allow-forms allow-downloads allow-popups allow-modals"
+            title="{{ dashboard.title }}"></iframe>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/page-links.js?v={{ asset_v }}" defer></script>
+<script>
+const _SHARE_TOKEN = {{ token | tojson }};
+const _SLOTS = {{ slots_json | safe }};
+const _IS_PAGE = {{ (dashboard.dash_type == 'page') | tojson }};
+(function() {
+  const frame = document.querySelector('.share-iframe');
+  window.addEventListener('message', async (e) => {
+    // Only our iframe speaks this protocol; a second window does not drive the shell.
+    if (frame && e.source !== frame.contentWindow) return;
+    const msg = e.data;
+    if (!msg || !msg.type) return;
+
+    {# The navigator asks to open a link. Decision and tab happen HERE, outside
+       the sandbox: a tab opened from inside would inherit it and get no
+       cookies — the Power BI white screen (29.10). Same rules as viewer.js
+       (page-links.js); standalone — an anonymous reader has no platform
+       session, so every link goes to a new tab. #}
+    if (msg.type === 'op_open') {
+      if (!_IS_PAGE || !window.OP_PAGE_LINKS) return;
+      window.OP_PAGE_LINKS.makeOpener({ standalone: true }).open(msg.url, msg.target);
+      return;
+    }
+
+    {# Deliver slot files to the iframe whenever any exist — both interactive
+       dashboards and snapshot dashboards that keep heavy data out of the HTML
+       (e.g. the SL report's sl_bc_data.bin.gz). The sandboxed iframe can't
+       fetch the API itself, so the parent fetches and postMessages the bytes in. #}
+    if (msg.type !== 'op_ready') return;
+    for (const slot of _SLOTS || []) {
+      try {
+        const res = await fetch(`/share/${_SHARE_TOKEN}/files/${slot.slot}`
+          + (slot.v ? `?v=${slot.v}` : ''));
+        if (!res.ok) continue;
+        const buf = await res.arrayBuffer();
+        frame.contentWindow.postMessage(
+          { type: 'op_file', slot: slot.slot, name: slot.name, data: buf },
+          '*', [buf]
+        );
+      } catch (err) {
+        console.error('slot load failed', slot.slot, err);
+      }
+    }
+  });
+})();
+</script>
+{% endblock %}

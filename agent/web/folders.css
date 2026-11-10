@@ -1,0 +1,90 @@
+/* The "Report folders" screen. No fonts or images of its own: the window is
+   opened by Edge --app on a machine without internet, and any external
+   resource there is an empty space instead of an interface. */
+:root {
+  --bg: #f7f7f8;
+  --card: #fff;
+  --ink: #1c1c1e;
+  --muted: #6b6b70;
+  --border: #e3e3e6;
+  --accent: #2f6fd0;
+  --warn-bg: #fff6e5;
+  --warn-ink: #6b4a00;
+  --err-bg: #fde8e4;
+  --err-ink: #5b1a10;
+  --ok: #1b7a46;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17171a; --card: #202024; --ink: #ececef; --muted: #9a9aa2;
+    --border: #33333a; --accent: #6ea4ef; --warn-bg: #3a2f14;
+    --warn-ink: #f0d79a; --err-bg: #3c1e18; --err-ink: #f3b7a9; --ok: #6cc294;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 15px/1.5 system-ui, "Segoe UI", sans-serif;
+}
+.wrap { max-width: 920px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { font-size: 24px; margin: 0 0 4px; }
+h2 { font-size: 17px; margin: 0; }
+h3 { font-size: 14px; margin: 16px 0 6px; color: var(--muted); font-weight: 600; }
+.sub { color: var(--muted); margin: 0 0 12px; }
+.path { color: var(--muted); font-size: 13px; word-break: break-all; margin: 0 0 16px; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.row.top { margin-bottom: 16px; }
+.btn {
+  font: inherit; padding: 7px 14px; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--card); color: var(--ink);
+}
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.link {
+  border: 0; background: none; color: var(--accent); padding: 2px 4px;
+  text-decoration: underline;
+}
+.btn[disabled] { opacity: .55; cursor: default; }
+input[type=text], input[type=password], input[type=number] {
+  font: inherit; padding: 7px 10px; border-radius: 8px; min-width: 0;
+  border: 1px solid var(--border); background: var(--card); color: var(--ink);
+}
+input.grow { flex: 1 1 320px; }
+/* A port is three or four digits: a full-width field next to the address
+   would read as a second host name. */
+input.narrow { flex: 0 0 110px; width: 110px; }
+label.check { display: flex; gap: 6px; align-items: center; }
+select { font: inherit; padding: 7px 8px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--card); color: var(--ink); }
+.notice {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 14px; margin: 0 0 12px;
+}
+.notice.warn { background: var(--warn-bg); color: var(--warn-ink); border: 0; }
+.notice.err { background: var(--err-bg); color: var(--err-ink); border: 0; }
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px; margin: 0 0 16px;
+}
+.card > header { display: flex; justify-content: space-between; gap: 12px;
+  align-items: baseline; flex-wrap: wrap; margin-bottom: 4px; }
+.meta { color: var(--muted); font-size: 13px; }
+.list { list-style: none; margin: 8px 0 0; padding: 0; }
+.list li {
+  display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap;
+  padding: 7px 0; border-top: 1px solid var(--border);
+}
+.kind { font-size: 12px; color: var(--muted); min-width: 48px; }
+.raw { font-family: ui-monospace, Consolas, monospace; font-size: 13px;
+  word-break: break-all; flex: 1 1 260px; }
+.tag { font-size: 12px; padding: 1px 7px; border-radius: 999px;
+  border: 1px solid var(--border); color: var(--muted); }
+.tag.ok { color: var(--ok); border-color: currentColor; }
+.tag.bad { color: var(--err-ink); background: var(--err-bg); border: 0; }
+.miss { font-size: 13px; color: var(--err-ink); background: var(--err-bg);
+  border-radius: 8px; padding: 8px 12px; margin: 8px 0 0; }
+.miss code { word-break: break-all; }
+.probe { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+.grid { display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  margin: 6px 0; }
+label { font-size: 13px; color: var(--muted); }

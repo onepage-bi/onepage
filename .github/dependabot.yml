@@ -1,0 +1,61 @@
+version: 2
+
+# Tuned to help, not to flood. On the very first day the previous
+# configuration opened ten PRs at once, one per dependency,
+# including the major jumps duckdb 1.5→2.0, pandas 3.0→3.1 and uvicorn 0.32→0.54.
+# Each ran the full CI, each was red, and the result was unreadable.
+#
+# What changed and why:
+#   * updates are GROUPED: one PR instead of ten;
+#   * major versions of the scientific stack (duckdb, pandas, numpy, openpyxl) are
+#     not proposed automatically: they change computed results, and such a
+#     move is made by a person running the equivalence gate
+#     (tools/engine_parity.py), not by a "merge" button;
+#   * monthly, not weekly: this is an internal platform, not a library
+#     with a thousand consumers.
+updates:
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 3
+    groups:
+      python-minor-and-patch:
+        update-types: ["minor", "patch"]
+    ignore:
+      # These change the numbers in reports. Upgrades are manual, with an engine cross-check.
+      - dependency-name: duckdb
+        update-types: ["version-update:semver-major"]
+      - dependency-name: pandas
+        update-types: ["version-update:semver-major"]
+      - dependency-name: numpy
+        update-types: ["version-update:semver-major"]
+      - dependency-name: openpyxl
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 2
+    groups:
+      actions:
+        patterns: ["*"]
+
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 2
+    groups:
+      npm:
+        patterns: ["*"]
+    ignore:
+      # apache-arrow in package.json MUST match the vendored tree:
+      # deploy/fetch-duckdb-wasm.py holds ARROW_VERSION and explicitly marks it
+      # "must match package.json's devDependency", and duckdb-browser.mjs is
+      # patched to relative paths inside static/arrow-esm. Bumping only the
+      # line in package.json would desync them SILENTLY: the Node tests would
+      # keep passing while the browser engine ran on a different Arrow
+      # version. The upgrade touches both files at once and is done by hand.
+      - dependency-name: apache-arrow

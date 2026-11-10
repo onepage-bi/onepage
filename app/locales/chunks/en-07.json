@@ -1,0 +1,476 @@
+{
+  "_meta": {
+    "chunk": "07",
+    "count": 150,
+    "lang": "en",
+    "source_files": [
+      "static/js/explore.js",
+      "static/js/explore2/cache.js",
+      "static/js/explore2/engine.js",
+      "static/js/explore2/guard.js",
+      "static/js/explore2/semantics.js",
+      "static/js/explore2/worker.js",
+      "static/js/folder-watch.js",
+      "static/js/gen-engine.js"
+    ]
+  },
+  "strings": {
+    " (lockdown enabled)": {
+      "ref": "static/js/explore2/engine.js:529"
+    },
+    "Agent busy with another run": {
+      "ref": "static/js/gen-engine.js:3318"
+    },
+    "Agent is newer (protocol {p1} vs {p2}). OnePage needs update — contact admin.": {
+      "ref": "static/js/gen-engine.js:3229"
+    },
+    "Agent is outdated (protocol {p1}, page needs {p2}). Update op-agent.": {
+      "ref": "static/js/gen-engine.js:3230"
+    },
+    "Agent op-agent not found at 127.0.0.1 (ports 47113–47115). Is it running?": {
+      "ref": "static/js/gen-engine.js:3222"
+    },
+    "Agent pairing failed.": {
+      "ref": "static/js/gen-engine.js:3240"
+    },
+    "Agent pairing failed. {p1}": {
+      "ref": "static/js/gen-engine.js:3240"
+    },
+    "Agent pairing required": {
+      "ref": "static/js/gen-engine.js:3316"
+    },
+    "Agent received bundle…": {
+      "ref": "static/js/gen-engine.js:3357"
+    },
+    "Agent rejected run": {
+      "ref": "static/js/gen-engine.js:3321"
+    },
+    "Agent run": {
+      "ref": "static/js/gen-engine.js:3391"
+    },
+    "Agent stream interrupted": {
+      "ref": "static/js/gen-engine.js:3329"
+    },
+    "Agent unavailable": {
+      "ref": "static/js/gen-engine.js:3312"
+    },
+    "All files": {
+      "ref": "static/js/gen-engine.js:1683"
+    },
+    "Another run is already in progress{p1}. Wait for it to finish.": {
+      "ref": "static/js/gen-engine.js:2267"
+    },
+    "Apply reference table «{p1}»{p2}": {
+      "ref": "static/js/gen-engine.js:815"
+    },
+    "Bad partition key": {
+      "ref": "static/js/explore2/cache.js:321"
+    },
+    "Building report…": {
+      "ref": "static/js/gen-engine.js:3364"
+    },
+    "Built {p1}. The platform does not have it yet.": {
+      "ref": "static/js/gen-engine.js:2181"
+    },
+    "Cache not written: {p1}": {
+      "ref": "static/js/explore2/cache.js:199"
+    },
+    "Cannot reach OnePage server.": {
+      "ref": "static/js/gen-engine.js:2262"
+    },
+    "Cannot sort by {p1}.": {
+      "ref": "static/js/explore2/semantics.js:353"
+    },
+    "Catch-up failed": {
+      "ref": "static/js/gen-engine.js:2206"
+    },
+    "Choice saved.": {
+      "ref": "static/js/gen-engine.js:1828"
+    },
+    "Column not found in selected table. Check name in Column list above builder.": {
+      "ref": "static/js/explore2/worker.js:285"
+    },
+    "Confirm run in op-agent icon near clock…": {
+      "ref": "static/js/gen-engine.js:3168"
+    },
+    "Confirmation not received in time.": {
+      "ref": "static/js/gen-engine.js:3177"
+    },
+    "Could not fetch data from GreenPlum: check the connection and the credentials in the agent.": {
+      "ref": "static/js/gen-engine.js:3063"
+    },
+    "Could not read the folder: {p1}": {
+      "ref": "static/js/gen-engine.js:1497"
+    },
+    "Could not save the choice for folder {p1}.": {
+      "ref": "static/js/gen-engine.js:1812"
+    },
+    "Could not save the choice — the server is unreachable.": {
+      "ref": "static/js/gen-engine.js:1798"
+    },
+    "DuckDB does not write to OPFS directly ({p1}); the cache is written via a buffer": {
+      "ref": "static/js/explore2/cache.js:125"
+    },
+    "DuckDB extension \"{p1}\" unavailable{p2}: {p3}": {
+      "ref": "static/js/explore2/engine.js:529"
+    },
+    "Empty query.": {
+      "ref": "static/js/explore2/guard.js:217"
+    },
+    "Engine not yet initialised — reconnect folder.": {
+      "ref": "static/js/explore2/worker.js:394"
+    },
+    "Failed to get bundle": {
+      "ref": "static/js/gen-engine.js:3293"
+    },
+    "Failed to load reference table «{p1}» — run not started. Try again or uncheck «Apply reference table».": {
+      "ref": "static/js/gen-engine.js:2432"
+    },
+    "Failed to unify column values across files. Try selecting columns explicitly or add partition filter.": {
+      "ref": "static/js/explore2/worker.js:281"
+    },
+    "Filter on {p1} with no value.": {
+      "ref": "static/js/explore2/semantics.js:323"
+    },
+    "Folder access is needed.": {
+      "ref": "static/js/gen-engine.js:1475"
+    },
+    "Folder access is needed: {p1}": {
+      "ref": "static/js/gen-engine.js:1482"
+    },
+    "Folder check only works with engine v1 — open /explore without ?engine=2.": {
+      "ref": "static/js/explore2/worker.js:529"
+    },
+    "Folder set": {
+      "ref": "static/js/gen-engine.js:1980"
+    },
+    "Folder set: {p1}": {
+      "ref": "static/js/gen-engine.js:2184"
+    },
+    "{what} file in the folder since the last run — run it?|{what} files in the folder since the last run — run it?": {
+      "plural": true,
+      "ref": "static/js/folder-watch.js:201"
+    },
+    "Folder «{p1}» selected, but report reads «{p2}». Choose the matching folder or add it via «+ Add folder…».": {
+      "ref": "static/js/gen-engine.js:361"
+    },
+    "Folders come from folders.ini on this computer and op-agent does the work. The browser tab's limits do not apply here.": {
+      "ref": "static/js/gen-engine.js:1929"
+    },
+    "Forbidden construct in SQL: {p1}. Explore can only read.": {
+      "ref": "static/js/explore2/guard.js:249"
+    },
+    "GreenPlum · {p1}: done, {p2} rows": {
+      "ref": "static/js/gen-engine.js:3375"
+    },
+    "GreenPlum · {p1}: {p2} rows · {p3} rows/s · {p4} MB/s": {
+      "ref": "static/js/gen-engine.js:3373"
+    },
+    "GreenPlum: running queries…": {
+      "ref": "static/js/gen-engine.js:3363"
+    },
+    "Hide": {
+      "ref": "static/js/folder-watch.js:214"
+    },
+    "IN filter on {p1} with no values.": {
+      "ref": "static/js/explore2/semantics.js:317"
+    },
+    "Intent missing generator_id.": {
+      "ref": "static/js/explore2/semantics.js:279"
+    },
+    "Intent must be an object.": {
+      "ref": "static/js/explore2/semantics.js:275"
+    },
+    "Invalid filter operator: {p1}.": {
+      "ref": "static/js/explore2/semantics.js:312"
+    },
+    "Invalid table name: {p1}": {
+      "ref": "static/js/explore2/guard.js:29"
+    },
+    "Loading bundle…": {
+      "ref": "static/js/gen-engine.js:3287"
+    },
+    "Loading query engine": {
+      "ref": "static/js/explore2/worker.js:159"
+    },
+    "Loading results from agent…": {
+      "ref": "static/js/gen-engine.js:2291"
+    },
+    "Looking for agent…": {
+      "ref": "static/js/gen-engine.js:3220"
+    },
+    "Metric «{p1}» cannot slice by {p2}; available: {p3}.": {
+      "ref": "static/js/explore2/semantics.js:294"
+    },
+    "Metric «{p1}» not ready: its tables not indexed in this folder.": {
+      "ref": "static/js/explore2/semantics.js:288"
+    },
+    "Much data in memory — exclude some partitions.": {
+      "ref": "static/js/explore2/worker.js:426"
+    },
+    "No file matched the pattern {p1}.": {
+      "ref": "static/js/gen-engine.js:1719"
+    },
+    "No file matched the required pattern {p1} — the run will not start.": {
+      "ref": "static/js/gen-engine.js:1718"
+    },
+    "No new or changed files in folder since last run.": {
+      "ref": "static/js/folder-watch.js:198"
+    },
+    "No partition {p1} in the cache": {
+      "ref": "static/js/explore2/cache.js:213"
+    },
+    "Not a single file was found in these folders — the run was not started.": {
+      "ref": "static/js/gen-engine.js:2042"
+    },
+    "Not now": {
+      "ref": "static/js/gen-engine.js:2208"
+    },
+    "Not started — a required input file is missing.": {
+      "ref": "static/js/gen-engine.js:2063"
+    },
+    "Not started — duplicate file names across folders.": {
+      "ref": "static/js/gen-engine.js:2051"
+    },
+    "Not started — no files.": {
+      "ref": "static/js/gen-engine.js:2044"
+    },
+    "Nothing is selected — the run would read no file at all.": {
+      "ref": "static/js/gen-engine.js:1698"
+    },
+    "OPFS unavailable: {p1}": {
+      "ref": "static/js/explore2/cache.js:84"
+    },
+    "One column has mixed data types across files (e.g. time and datetime). Re-index folder; if it persists, contact admin.": {
+      "ref": "static/js/explore2/worker.js:279"
+    },
+    "One file matched no pattern — it may have been renamed: assign it an input in the list.|{n} files matched no pattern — they may have been renamed: assign them inputs in the list.": {
+      "plural": true,
+      "ref": "static/js/gen-engine.js:1724"
+    },
+    "Only SELECT and WITH queries are allowed. This looks like a fragment — copy the whole statement, from SELECT or WITH through to the «;».": {
+      "ref": "static/js/explore2/guard.js:244"
+    },
+    "Only one query allowed — remove «;» and everything after.": {
+      "ref": "static/js/explore2/guard.js:226"
+    },
+    "Open Data Quality": {
+      "ref": "static/js/gen-engine.js:679"
+    },
+    "Pairing code printed in agent window (op-agent). Enter it:": {
+      "ref": "static/js/gen-engine.js:3183"
+    },
+    "Pairing with the agent is needed — press Run again and approve the request.": {
+      "ref": "static/js/gen-engine.js:1883"
+    },
+    "Partition cache disabled": {
+      "ref": "static/js/explore2/cache.js:320"
+    },
+    "Partition cache disabled: {p1}": {
+      "ref": "static/js/explore2/cache.js:106"
+    },
+    "Partition not written: {p1}": {
+      "ref": "static/js/explore2/cache.js:344"
+    },
+    "Partition rejected: {p1}": {
+      "ref": "static/js/explore2/cache.js:335"
+    },
+    "Publish failed": {
+      "ref": "static/js/gen-engine.js:3433"
+    },
+    "Publish to the platform": {
+      "ref": "static/js/gen-engine.js:2204"
+    },
+    "Published ✓": {
+      "ref": "static/js/gen-engine.js:2340"
+    },
+    "Publishing…": {
+      "ref": "static/js/gen-engine.js:2198"
+    },
+    "Query longer than {p1} characters — shorten it.": {
+      "ref": "static/js/explore2/guard.js:220"
+    },
+    "Query ran out of browser memory. Narrow results: partition filter, fewer columns, smaller LIMIT.": {
+      "ref": "static/js/explore2/worker.js:289"
+    },
+    "Query references missing name in data. Check column and table names.": {
+      "ref": "static/js/explore2/worker.js:291"
+    },
+    "Query stopped: over {p1} s. Add filter or restrict partitions.": {
+      "ref": "static/js/explore2/worker.js:255"
+    },
+    "Reconnect folder": {
+      "ref": "static/js/folder-watch.js:226"
+    },
+    "Result {ctx:2}": {
+      "ref": "static/js/explore2/worker.js:538"
+    },
+    "Run": {
+      "ref": "static/js/folder-watch.js:212"
+    },
+    "SQL syntax error. Check query near the location below.": {
+      "ref": "static/js/explore2/worker.js:287"
+    },
+    "Semantic layer unavailable: {p1}": {
+      "ref": "static/js/explore2/semantics.js:147"
+    },
+    "Showing first {p1} rows — result truncated.": {
+      "ref": "static/js/explore2/worker.js:539"
+    },
+    "Table name reserved by the engine: {p1}": {
+      "ref": "static/js/explore2/guard.js:31"
+    },
+    "Table or column not found. Check name (case-sensitive, quoted if needed).": {
+      "ref": "static/js/explore2/worker.js:283"
+    },
+    "This is not Parquet — partition rejected": {
+      "ref": "static/js/explore2/cache.js:324"
+    },
+    "Unclosed comment /* in SQL.": {
+      "ref": "static/js/explore2/guard.js:175"
+    },
+    "Unclosed quote in SQL.": {
+      "ref": "static/js/explore2/guard.js:144"
+    },
+    "Unclosed string $...$ in SQL.": {
+      "ref": "static/js/explore2/guard.js:159"
+    },
+    "Unknown metric: {p1}.": {
+      "ref": "static/js/explore2/semantics.js:285"
+    },
+    "file not linked to catalogue table": {
+      "ref": "static/js/explore2/worker.js:333"
+    },
+    "info": {
+      "ref": "static/js/explore.js:4145"
+    },
+    "issue": {
+      "ref": "static/js/explore.js:4178"
+    },
+    "issues": {
+      "ref": "static/js/explore.js:4178"
+    },
+    "largest first": {
+      "ref": "static/js/explore.js:1079"
+    },
+    "load {p1}": {
+      "ref": "static/js/explore.js:789"
+    },
+    "metrics {p1}": {
+      "ref": "static/js/explore.js:791"
+    },
+    "no period": {
+      "ref": "static/js/explore.js:3557"
+    },
+    "no semantics": {
+      "ref": "static/js/explore.js:841"
+    },
+    "parse {p1}": {
+      "ref": "static/js/explore.js:788"
+    },
+    "partition failed to download": {
+      "ref": "static/js/explore.js:1619"
+    },
+    "partition rejected": {
+      "ref": "static/js/explore.js:1626"
+    },
+    "previous period: {p1}": {
+      "ref": "static/js/explore.js:3390"
+    },
+    "provider": {
+      "ref": "static/js/explore.js:2787"
+    },
+    "read {p1}": {
+      "ref": "static/js/explore.js:787"
+    },
+    "reference table {p1} v{p2}": {
+      "ref": "static/js/explore.js:836"
+    },
+    "semantics available — indexing needed": {
+      "ref": "static/js/explore.js:841"
+    },
+    "smallest first": {
+      "ref": "static/js/explore.js:1079"
+    },
+    "the metric has no cut by “{p1}”, so that filter was not applied and the result is computed without it; cuts of the metric: {p2}": {
+      "ref": "static/js/explore2/semantics.js:307"
+    },
+    "the query may not answer the question": {
+      "ref": "static/js/explore.js:3108"
+    },
+    "total": {
+      "ref": "static/js/explore.js:3286"
+    },
+    "total across the whole metric": {
+      "ref": "static/js/explore.js:3706"
+    },
+    "unknown": {
+      "ref": "static/js/explore.js:663"
+    },
+    "warning": {
+      "ref": "static/js/explore.js:4145"
+    },
+    "{n} changed|{n} changed": {
+      "plural": true,
+      "ref": "static/js/folder-watch.js:197"
+    },
+    "{n} file not in catalogue: {list}|{n} files not in catalogue: {list}": {
+      "plural": true,
+      "ref": "static/js/explore.js:1830"
+    },
+    "{n} new|{n} new": {
+      "plural": true,
+      "ref": "static/js/folder-watch.js:196"
+    },
+    "{n} row|{n} rows {ctx:2}": {
+      "plural": true,
+      "ref": "static/js/explore.js:2280"
+    },
+    "{n} table|{n} tables": {
+      "plural": true,
+      "ref": "static/js/explore.js:765"
+    },
+    "{p1} GB": {
+      "ref": "static/js/explore.js:1274"
+    },
+    "{p1} items": {
+      "ref": "static/js/explore.js:2337"
+    },
+    "{p1} ms": {
+      "ref": "static/js/explore.js:2288"
+    },
+    "{p1} of {p2} {ctx:2}": {
+      "ref": "static/js/explore.js:2275"
+    },
+    "{p1} replied {p2}. {p3}": {
+      "ref": "static/js/explore.js:2837"
+    },
+    "{p1} returned an empty response.": {
+      "ref": "static/js/explore.js:2844"
+    },
+    "{p1} · question: {p2}": {
+      "ref": "static/js/explore.js:3807"
+    },
+    "{p1} — calculating… {p2} s": {
+      "ref": "static/js/explore.js:2466"
+    },
+    "{p1} — failed": {
+      "ref": "static/js/explore.js:2518"
+    },
+    "{p1}: name in use by another table": {
+      "ref": "static/js/explore2/semantics.js:162"
+    },
+    "{p1}target: {p2}": {
+      "ref": "static/js/explore.js:2416"
+    },
+    "{shown} of {total}": {
+      "ref": "static/js/explore.js:2279"
+    },
+    "— all —": {
+      "ref": "static/js/explore.js:1068"
+    },
+    "— column —": {
+      "ref": "static/js/explore.js:2003"
+    }
+  }
+}

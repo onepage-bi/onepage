@@ -1,0 +1,115 @@
+/* Season opening: an overlay with the story on first entry. Tokens come from main.css,
+   both themes. The video is vertical (shot "on a phone"), so the frame is tall and
+   bounded by the window height, not its width. */
+#op-season-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+#op-season-intro.is-on { display: flex; opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  #op-season-intro { transition: none; }
+}
+
+#op-season-intro .si-dim {
+  position: absolute;
+  inset: 0;
+  background: rgba(14, 18, 24, .72);
+  backdrop-filter: blur(3px);
+}
+
+#op-season-intro .si-box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  max-height: 92vh;
+  padding: 0 16px;
+}
+
+#op-season-intro .si-frame {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .55);
+  background: #0c0f14;
+  line-height: 0;
+}
+/* `:not([hidden])` is mandatory here: the `hidden` attribute does NOT hide an element
+   that CSS gave a `display` — and the poster stayed in the flow under the video as a
+   blue strip (the owner saw it on the very first opening). The same trap already
+   existed in the Practicum code block; keep it closed explicitly. */
+#op-season-intro .si-video:not([hidden]),
+#op-season-intro .si-poster:not([hidden]) {
+  display: block;
+  max-height: 74vh;
+  width: auto;
+  height: auto;
+  max-width: min(92vw, 420px);
+  object-fit: contain;
+}
+#op-season-intro [hidden] { display: none; }
+
+#op-season-intro .si-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Caption: who the author is. Small but readable, and always under the frame. */
+#op-season-intro .si-credit {
+  max-width: min(92vw, 420px);
+  color: rgba(255, 255, 255, .72);
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: center;
+}
+#op-season-intro .si-credit a { color: rgba(255, 255, 255, .92); }
+
+#op-season-intro .si-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+#op-season-intro .si-btn {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, .28);
+  background: rgba(255, 255, 255, .10);
+  color: #fff;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+#op-season-intro .si-btn:hover { background: rgba(255, 255, 255, .18); }
+#op-season-intro .si-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+@media (max-width: 560px) {
+  #op-season-intro .si-video,
+  #op-season-intro .si-poster { max-height: 64vh; }
+}
+
+/* Sakura petals over the dimmer: the video fades into an almost black frame, and without
+   them the finale falls into a dark rectangle (owner, 05.10: "too
+   black an ending"). Clicks pass through — this is decoration, not a layer. */
+#op-season-intro .si-petals {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+/* Farewell: the video card leaves, the petals keep flying for a couple of seconds and soften
+   the transition from the dark frame to the light page. */
+#op-season-intro.is-fading .si-box { opacity: 0; transition: opacity .45s ease; }
+#op-season-intro.is-fading .si-dim { opacity: 0; transition: opacity 1.6s ease; }

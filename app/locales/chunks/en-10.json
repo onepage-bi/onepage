@@ -1,0 +1,478 @@
+{
+  "_meta": {
+    "chunk": "10",
+    "count": 150,
+    "lang": "en",
+    "source_files": [
+      "static/js/quests-page.js",
+      "static/js/quests.js",
+      "static/js/reference.js",
+      "static/js/season-intro.js",
+      "static/js/sept3.js",
+      "static/js/source-paths.js",
+      "static/js/upload.js",
+      "static/js/viewer.js",
+      "templates/base.html",
+      "templates/components/lang_switch.html",
+      "templates/components/palette.html",
+      "templates/components/sidebar.html",
+      "templates/components/topbar.html",
+      "templates/pages/access_denied.html",
+      "templates/pages/account.html",
+      "templates/pages/admin.html"
+    ]
+  },
+  "strings": {
+    " surprise": {
+      "ref": "static/js/quests.js:379"
+    },
+    " surprises": {
+      "ref": "static/js/quests.js:379"
+    },
+    "#bootstrap-snapshot present": {
+      "ref": "static/js/upload.js:90"
+    },
+    "<canvas></canvas><div class=\"stage\"><div class=\"cal\"><div class=\"rings\"><div class=\"ring\"></div><div class=\"ring\"></div></div><div class=\"cap\"></div><div class=\"pages\"></div></div><div class=\"quote\" role=\"status\"><div class=\"ln\">Flip the calendar over —</div><div class=\"ln\">and it is the third of September again ♪</div></div></div><button class=\"op-hide\" type=\"button\">Hide ✕</button>": {
+      "ref": "static/js/sept3.js:114"
+    },
+    "<div class=\"ro-line\"><span class=\"k\">⚠</span><span class=\"v warning\">Heavy dashboard ({p1} MB): the page will load slowly for viewers and preview in grid will show placeholder. Move data to slot file — see /docs</span></div>": {
+      "ref": "static/js/upload.js:66"
+    },
+    "A key only reads your reports — it cannot change or publish anything. Revoke it at any time and the app stops updating.": {
+      "ref": "templates/pages/account.html:58"
+    },
+    "Access denied": {
+      "ref": "templates/pages/access_denied.html:6"
+    },
+    "Active": {
+      "ref": "templates/pages/admin.html:109"
+    },
+    "Active users": {
+      "ref": "templates/pages/admin.html:32"
+    },
+    "Add user": {
+      "ref": "templates/pages/admin.html:24"
+    },
+    "Address not understood: {p1}": {
+      "ref": "static/js/viewer.js:1063"
+    },
+    "Admin": {
+      "ref": "templates/components/sidebar.html:82"
+    },
+    "All reference tables": {
+      "ref": "static/js/reference.js:133"
+    },
+    "Anonymizer": {
+      "ref": "templates/components/sidebar.html:63"
+    },
+    "Applies immediately, no restart needed, and persists across restart. Keys stored on server and not returned. Env vars remain at defaults.": {
+      "ref": "templates/pages/admin.html:213"
+    },
+    "Applying…": {
+      "ref": "static/js/reference.js:739"
+    },
+    "At least 2 columns are needed.": {
+      "ref": "static/js/reference.js:309"
+    },
+    "Audit events": {
+      "ref": "templates/pages/admin.html:47"
+    },
+    "Audit log": {
+      "ref": "templates/components/sidebar.html:91"
+    },
+    "Browser mode — model called by user page (needed when server has no internet access)": {
+      "ref": "templates/pages/admin.html:192"
+    },
+    "Browsers never open a network folder. The path:": {
+      "ref": "static/js/viewer.js:1091"
+    },
+    "Building the file with data…": {
+      "ref": "static/js/viewer.js:1574"
+    },
+    "Catalogue": {
+      "ref": "templates/components/sidebar.html:55"
+    },
+    "Check the file first.": {
+      "ref": "static/js/reference.js:738"
+    },
+    "Collapse sidebar  [": {
+      "ref": "templates/components/sidebar.html:8"
+    },
+    "Copy the path:": {
+      "ref": "static/js/viewer.js:1087"
+    },
+    "Couldn't delete: {p1}": {
+      "ref": "static/js/reference.js:443"
+    },
+    "Couldn't load mismatches.": {
+      "ref": "static/js/reference.js:534"
+    },
+    "Couldn't load the data page": {
+      "ref": "static/js/reference.js:582"
+    },
+    "Couldn't reach the server": {
+      "ref": "static/js/reference.js:621"
+    },
+    "Couldn't restore the version": {
+      "ref": "static/js/reference.js:622"
+    },
+    "Create user {b}before their first login{b_} so role is assigned in advance. Those who logged in via SSO — listed above, role changed there. DeepSeek access — in model card below.": {
+      "ref": "templates/pages/admin.html:151"
+    },
+    "Created from manifest {p1} · ": {
+      "ref": "static/js/reference.js:426"
+    },
+    "Dashboards": {
+      "ref": "templates/components/sidebar.html:4"
+    },
+    "Data Quality": {
+      "ref": "templates/components/sidebar.html:51"
+    },
+    "Data Sources": {
+      "ref": "templates/components/sidebar.html:43"
+    },
+    "Data file (optional) — slot 0": {
+      "ref": "static/js/upload.js:119"
+    },
+    "DeepSeek access": {
+      "ref": "templates/pages/admin.html:217"
+    },
+    "DeepSeek key for browser": {
+      "ref": "templates/pages/admin.html:195"
+    },
+    "DeepSeek key for server": {
+      "ref": "templates/pages/admin.html:199"
+    },
+    "Delete": {
+      "ref": "templates/pages/admin.html:137"
+    },
+    "Delete the reference table “{p1}” along with its whole version history? This can't be undone.": {
+      "ref": "static/js/reference.js:437"
+    },
+    "Desktop app keys": {
+      "ref": "templates/pages/account.html:54"
+    },
+    "Detection complete": {
+      "ref": "static/js/upload.js:84"
+    },
+    "Detection failed: {msg}": {
+      "ref": "static/js/upload.js:79"
+    },
+    "Detection in progress…": {
+      "ref": "static/js/upload.js:69"
+    },
+    "Dev Guide": {
+      "ref": "templates/components/sidebar.html:77"
+    },
+    "Did not work: error {p1}.": {
+      "ref": "static/js/viewer.js:1314"
+    },
+    "Display name": {
+      "ref": "templates/pages/admin.html:79"
+    },
+    "Done: the report and its data in one file": {
+      "ref": "static/js/viewer.js:1588"
+    },
+    "Duplicate keys: {p1}": {
+      "ref": "static/js/reference.js:709"
+    },
+    "Enter a name.": {
+      "ref": "static/js/reference.js:285"
+    },
+    "Enter a slug.": {
+      "ref": "static/js/reference.js:284"
+    },
+    "Errors": {
+      "ref": "templates/pages/admin.html:58"
+    },
+    "Expand sidebar  [": {
+      "ref": "templates/components/sidebar.html:9"
+    },
+    "Explore": {
+      "ref": "templates/components/sidebar.html:59"
+    },
+    "Export failed": {
+      "ref": "static/js/viewer.js:1590"
+    },
+    "Generators": {
+      "ref": "templates/components/sidebar.html:39"
+    },
+    "Help": {
+      "ref": "templates/components/topbar.html:30"
+    },
+    "Interface language": {
+      "ref": "templates/components/lang_switch.html:9"
+    },
+    "Issue a key": {
+      "ref": "templates/pages/account.html:66"
+    },
+    "Large out-of-HTML dataset (binary / JSON). Delivered to the dashboard at view time.": {
+      "ref": "static/js/upload.js:122"
+    },
+    "Later": {
+      "ref": "static/js/quests.js:383"
+    },
+    "Loading…": {
+      "ref": "templates/pages/account.html:61"
+    },
+    "Make version {p1} current? This will create a new version with the same data.": {
+      "ref": "static/js/reference.js:616"
+    },
+    "My account": {
+      "ref": "templates/components/sidebar.html:113"
+    },
+    "My account — OnePage": {
+      "ref": "templates/pages/account.html:2"
+    },
+    "My reports": {
+      "ref": "templates/pages/account.html:40"
+    },
+    "Navigators": {
+      "ref": "templates/components/sidebar.html:34"
+    },
+    "No consumers yet.": {
+      "ref": "static/js/reference.js:452"
+    },
+    "Open command palette  ⌘K": {
+      "ref": "templates/components/topbar.html:18"
+    },
+    "Performance": {
+      "ref": "templates/components/sidebar.html:95"
+    },
+    "Practicum": {
+      "ref": "templates/components/sidebar.html:73"
+    },
+    "Presentations": {
+      "ref": "templates/components/sidebar.html:29"
+    },
+    "Quests": {
+      "ref": "templates/components/sidebar.html:68"
+    },
+    "Ready to apply.": {
+      "ref": "static/js/reference.js:733"
+    },
+    "Reason": {
+      "ref": "static/js/reference.js:694"
+    },
+    "Reference table created": {
+      "ref": "static/js/reference.js:330"
+    },
+    "Reference tables": {
+      "ref": "templates/components/sidebar.html:47"
+    },
+    "Request access": {
+      "ref": "templates/pages/access_denied.html:27"
+    },
+    "Restore": {
+      "ref": "static/js/reference.js:614"
+    },
+    "Restore version v{n}? It lands as a new version on top of the current one; the data stays today's.": {
+      "ref": "static/js/viewer.js:1606"
+    },
+    "Restored from v{from} — now v{to}": {
+      "ref": "static/js/viewer.js:1619"
+    },
+    "Row": {
+      "ref": "static/js/reference.js:694"
+    },
+    "Search dashboards, users, actions…": {
+      "ref": "templates/components/palette.html:6"
+    },
+    "Search or jump to…": {
+      "ref": "templates/components/topbar.html:20"
+    },
+    "Select a file.": {
+      "ref": "static/js/reference.js:715"
+    },
+    "Select a generator.": {
+      "ref": "static/js/reference.js:303"
+    },
+    "September {ctx:2}": {
+      "ref": "static/js/sept3.js:435"
+    },
+    "Sign in as different user": {
+      "ref": "templates/pages/access_denied.html:31"
+    },
+    "Sign out": {
+      "ref": "templates/components/sidebar.html:117"
+    },
+    "Skip": {
+      "ref": "templates/base.html:81"
+    },
+    "Slot {i} — initial data file": {
+      "ref": "static/js/upload.js:106"
+    },
+    "Sound off": {
+      "ref": "static/js/season-intro.js:189"
+    },
+    "Sound on": {
+      "ref": "templates/base.html:80"
+    },
+    "That did not work — select the path and copy it by hand": {
+      "ref": "static/js/source-paths.js:40"
+    },
+    "That slug is already taken.": {
+      "ref": "static/js/reference.js:321"
+    },
+    "The browser blocked the tab — allow pop-ups for this page.": {
+      "ref": "static/js/viewer.js:1073"
+    },
+    "The desktop app keeps copies of your reports on your computer so you can open them while the platform is unavailable. It needs a key to sign in without a browser.": {
+      "ref": "templates/pages/account.html:56"
+    },
+    "The password must be at least 8 characters.": {
+      "ref": "static/js/viewer.js:1304"
+    },
+    "The platform does not open links like this.": {
+      "ref": "static/js/viewer.js:1067"
+    },
+    "The reference table has changed, check it again": {
+      "ref": "static/js/reference.js:752"
+    },
+    "The reference table has changed, check it again.": {
+      "ref": "static/js/reference.js:753"
+    },
+    "There are errors — fix the file and check again.": {
+      "ref": "static/js/reference.js:733"
+    },
+    "There are no open mismatches.": {
+      "ref": "static/js/reference.js:511"
+    },
+    "Today's surprise is waiting in Quests": {
+      "ref": "static/js/quests.js:144"
+    },
+    "Turn the mode off? The report will open without a password again, and links and single-file export become available.": {
+      "ref": "static/js/viewer.js:1319"
+    },
+    "Upload": {
+      "ref": "templates/components/sidebar.html:24"
+    },
+    "Used": {
+      "ref": "static/js/reference.js:457"
+    },
+    "Users": {
+      "ref": "templates/components/sidebar.html:86"
+    },
+    "Validation error ({p1}).": {
+      "ref": "static/js/reference.js:728"
+    },
+    "Version {p1} created": {
+      "ref": "static/js/reference.js:624"
+    },
+    "Watch": {
+      "ref": "templates/base.html:76"
+    },
+    "Which machine is this — for example, work laptop": {
+      "ref": "templates/pages/account.html:65"
+    },
+    "Workspace": {
+      "ref": "templates/components/sidebar.html:14"
+    },
+    "You don't have permission to create a reference table.": {
+      "ref": "static/js/reference.js:322"
+    },
+    "Your account is authenticated, but not authorized for OnePage.": {
+      "ref": "templates/pages/access_denied.html:19"
+    },
+    "added: {p1}": {
+      "ref": "static/js/reference.js:684"
+    },
+    "changed: {p1}": {
+      "ref": "static/js/reference.js:685"
+    },
+    "column name": {
+      "ref": "static/js/reference.js:227"
+    },
+    "deleted: {p1}": {
+      "ref": "static/js/reference.js:686"
+    },
+    "hasn't run yet": {
+      "ref": "static/js/reference.js:483"
+    },
+    "in chat": {
+      "ref": "static/js/reference.js:473"
+    },
+    "navigate": {
+      "ref": "templates/components/palette.html:11"
+    },
+    "none — will be served as-is": {
+      "ref": "static/js/upload.js:91"
+    },
+    "number {ctx:2}": {
+      "ref": "static/js/reference.js:50"
+    },
+    "open": {
+      "ref": "templates/components/palette.html:12"
+    },
+    "open in new tab": {
+      "ref": "templates/components/palette.html:13"
+    },
+    "reads in chat": {
+      "ref": "static/js/reference.js:481"
+    },
+    "recalculation needed": {
+      "ref": "static/js/reference.js:489"
+    },
+    "rows 0 — load Excel": {
+      "ref": "static/js/reference.js:427"
+    },
+    "rows {p1}–{p2} of {p3}": {
+      "ref": "static/js/reference.js:567"
+    },
+    "tap to open": {
+      "ref": "static/js/quests.js:154"
+    },
+    "template": {
+      "ref": "static/js/reference.js:193"
+    },
+    "text": {
+      "ref": "static/js/reference.js:50"
+    },
+    "tomorrow": {
+      "ref": "static/js/quests-page.js:138"
+    },
+    "top {p1}%": {
+      "ref": "static/js/quests-page.js:380"
+    },
+    "unchanged: {p1}": {
+      "ref": "static/js/reference.js:687"
+    },
+    "used v{p1}": {
+      "ref": "static/js/reference.js:487"
+    },
+    "versus": {
+      "ref": "static/js/quests-page.js:1237"
+    },
+    "v{p1} · {p2} rows · updated {p3} · owner {p4}": {
+      "ref": "static/js/reference.js:402"
+    },
+    "{n} found": {
+      "ref": "static/js/upload.js:89"
+    },
+    "{n} point|{n} points": {
+      "plural": true,
+      "ref": "static/js/quests-page.js:321"
+    },
+    "{p1} of 3, +{p2} points": {
+      "ref": "static/js/quests-page.js:360"
+    },
+    "{p1} of {p2} on page (search)": {
+      "ref": "static/js/reference.js:566"
+    },
+    "{p1} of {p2} · season over": {
+      "ref": "static/js/quests-page.js:507"
+    },
+    "{p1} points, company median {p2}": {
+      "ref": "static/js/quests-page.js:381"
+    },
+    "{p1} — no reference tables available": {
+      "ref": "static/js/reference.js:141"
+    },
+    "· resolved by SAML · not present in users table": {
+      "ref": "templates/pages/access_denied.html:22"
+    },
+    "×2 rare": {
+      "ref": "static/js/quests-page.js:79"
+    }
+  }
+}

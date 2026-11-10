@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OnePage Portable</title>
+<link rel="icon" href="/library/icon.svg">
+<link rel="stylesheet" href="/library/mirror.css">
+</head>
+<body>
+<main class="wrap">
+  <h1 class="page-title" id="title"></h1>
+  <p class="page-subtitle" id="subtitle"></p>
+
+  <!-- Status panel: the same place and the same role as the panel above the
+       report list on the platform. The calm state lives here as a line, the
+       alarm expands into the #alert bar below: yellow and red need room for
+       an explanation, while "just updated" does not. -->
+  <div class="toolbar">
+    <span class="msg" id="status-msg" role="status" aria-live="polite"></span>
+    <span class="grow"></span>
+    <span class="count mono" id="count"></span>
+    <span class="vsep" id="count-sep"></span>
+    <!-- View switch — the same `.seg` as on "Dashboards": a table for
+         scanning names by eye, tiles for recognizing a report by sight. The
+         choice is remembered on this machine. -->
+    <span class="seg" id="view-seg">
+      <button type="button" data-view="table" class="active"></button>
+      <button type="button" data-view="grid"></button>
+    </span>
+    <span class="vsep"></span>
+    <span class="acts" id="status-actions"></span>
+  </div>
+  <div class="bar" id="bar" hidden><i id="bar-fill"></i></div>
+
+  <div class="notice" id="alert" hidden><span id="alert-msg"></span><span class="alert-acts" id="alert-actions"></span></div>
+  <div class="notice warn" id="rights" hidden></div>
+
+  <section id="copies"></section>
+  <section id="skipped-wrap" hidden>
+    <div class="toolbar"><span class="msg" id="skipped-head"></span></div>
+    <div class="tbl-wrap"><table class="tbl"><tbody id="skipped"></tbody></table></div>
+  </section>
+</main>
+<dialog id="key-dialog">
+  <p id="kh-where"></p><p id="kh-once"></p><p id="kh-scope"></p>
+  <form method="dialog" id="key-form">
+    <input id="key-input" type="password" autocomplete="off" spellcheck="false">
+    <div class="row"><button class="btn" value="cancel" type="button" id="key-cancel">&times;</button>
+    <button class="btn primary" id="key-save" type="submit"></button></div>
+  </form>
+</dialog>
+<script src="/library/common.js"></script>
+<script src="/library/library.js"></script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}{{ _('OnePage — Admin · Scopes') }}{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'admin' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '/', false], [_('Admin'), '/admin', false], [_('Scopes'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content fluid">
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow">{{ _('administration') }} · {{ _('row-level security') }}</div>
+          <h1 class="page-title">{{ _('Scopes') }}</h1>
+        </div>
+      </div>
+
+      <div class="tabbar">
+        <a class="tab" href="/admin">{{ _('Users') }}</a>
+        <a class="tab" href="/admin/audit">{{ _('Audit log') }}</a>
+        <a class="tab" href="/admin/perf">{{ _('Performance') }}</a>
+        <a class="tab" href="/admin/errors">{{ _('Errors') }}</a>
+        <a class="tab" href="/admin/generators">{{ _('Generators') }}</a>
+        <a class="tab" href="/admin/employees">{{ _('Staff') }}</a>
+        <a class="tab active" href="/admin/scopes">{{ _('Scopes') }}</a>
+        <a class="tab" href="/admin/quests">{{ _('Quests') }}</a>
+      </div>
+
+      <div class="stat-grid" style="margin-top:16px">
+        <div class="stat-card">
+          <div class="label">{{ _('Persons in export') }}</div>
+          <div class="value tabular">{{ last_sync.persons if last_sync else '—' }}</div>
+          <div class="delta">{{ _('recognised {ok} / not found {miss}', ok=(last_sync.resolved if last_sync else 0), miss=(last_sync.unresolved if last_sync else 0)) }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">{{ _('Hierarchy nodes') }}</div>
+          <div class="value tabular">{{ last_sync.nodes if last_sync else '—' }}</div>
+          <div class="delta">HOU / RM / CM / TMR</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">{{ _('Last refresh') }}</div>
+          <div class="value tabular" style="font-size:16px">{{ last_sync.created_at.strftime('%d.%m.%Y %H:%M') if last_sync else '—' }}</div>
+          <div class="delta">{{ last_actor or '' }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">{{ _('Full access (TMD)') }}</div>
+          <div class="value tabular">{{ see_all_count }}</div>
+          <div class="delta">{{ _('see_all users') }}</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:24px;max-width:640px">
+        <div class="card-head"><span class="card-title">{{ _('Import scopes') }}</span></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:12px">
+          <p style="font-size:12px;color:var(--ink-muted);margin:0">
+            {{ _('Upload an export') }} <code class="mono" style="font-size:11px">v_positions</code>
+            {{ _('(wide format HOU/RM/CM/TMR) or manual file in long format (columns person/role/node/parent). «Verify» will not save anything — only show how many rows were recognised. «Import» fully replaces the previous export (manual grants are not affected).') }}
+          </p>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="file" id="sc-file" accept=".csv,text/csv" class="input sm" style="flex:1" />
+          </div>
+          <div style="display:flex;gap:8px">
+            <button id="sc-check-btn" class="btn sm" disabled>{{ _('Check') }}</button>
+            <button id="sc-import-btn" class="btn sm primary" disabled>
+              <svg class="ico ico-12"><use href="#ic-database"/></svg>
+              {{ _('Import') }}
+            </button>
+          </div>
+          <div id="sc-import-status" class="mono" style="font-size:12px;color:var(--ink-dim)" hidden></div>
+          <div id="sc-unresolved" style="font-size:12px;color:var(--ink-muted)" hidden></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:24px;max-width:640px">
+        <div class="card-head"><span class="card-title">{{ _('Manual grant') }}</span></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:8px">
+          <p style="font-size:12px;color:var(--ink-muted);margin:0">
+            {{ _('Full access (see_all) — for office/Planning (TMD role). Node access — for dev teams (e.g. own unit, HOU_ADD).') }}
+          </p>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input id="sc-manual-person_id" class="input sm" placeholder="person_id" style="width:200px" />
+            <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-dim)">
+              <input type="checkbox" id="sc-manual-see-all" /> {{ _('full access (see_all)') }}
+            </label>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input id="sc-manual-node" class="input sm" placeholder="{{ _('node (for targeted grant)') }}" style="flex:1" />
+            <input id="sc-manual-role" class="input sm" placeholder="{{ _('role') }}" style="width:120px" value="HOU_ADD" />
+          </div>
+          <div style="display:flex;gap:8px">
+            <button id="sc-manual-grant-btn" class="btn sm primary">{{ _('Grant') }}</button>
+            <button id="sc-manual-remove-btn" class="btn sm">{{ _('Clear all manual grants') }}</button>
+          </div>
+          <div id="sc-manual-status" class="mono" style="font-size:12px;color:var(--ink-dim)" hidden></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:24px;max-width:640px">
+        <div class="card-head"><span class="card-title">{{ _('What the user sees') }}</span></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:8px">
+          <div class="input-wrap">
+            <svg class="ico ico-12 leading"><use href="#ic-search"/></svg>
+            <input id="sc-lookup" class="input sm" placeholder="person_id…" autocomplete="off" />
+          </div>
+          <div id="sc-lookup-result" style="font-size:12px;color:var(--ink-dim)"></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/palette.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/hotkeys.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/admin-scopes.js?v={{ asset_v }}" defer></script>
+{% endblock %}

@@ -1,0 +1,28 @@
+{
+  "name": "slreport",
+  "version": "2.2.0",
+  "entrypoint": { "module": "slreport.engine" },
+  "deps": [
+    { "name": "pandas",          "version": "3.0.3" },
+    { "name": "python-calamine", "version": "0.8.2" }
+  ],
+  "inputs": [
+    { "match": "Stock_*.xlsx", "role": "data", "required": true,
+      "sheets": [ { "name": "Заказы", "columns": ["SKU", "Qty", "Date"] } ] },
+    { "match": "SL_NWD.xls", "role": "reference" }
+  ],
+  "outputs": {
+    "html": true,
+    "slots": [
+      { "index": 0, "name": "sl_bc_data.bin.gz", "type": "data" },
+      { "index": 1, "name": "sl_unassigned_reasons.xlsx",
+        "type": "xlsx", "write_back": true }
+    ]
+  },
+  "required_files": ["SL_NWD.xls"],
+  "data_scale": { "max_files": 500,
+                  "max_total_bytes": 524288000,
+                  "max_file_bytes": 36700160 },
+  "engine": "auto",
+  "write_back": true
+}

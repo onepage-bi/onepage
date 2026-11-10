@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block title %}{{ _('OnePage — Reference tables') }}{% endblock %}
+
+{% block body %}
+<div class="shell">
+  {% set active = 'reference' %}
+  {% include "components/sidebar.html" %}
+
+  {% set crumbs = [[_('Workspace'), '/', false], [_('Reference tables'), None, true]] %}
+  {% include "components/topbar.html" %}
+
+  <main class="main">
+    <div class="content fluid">
+
+      <div class="page-head">
+        <div class="titles">
+          <div class="page-eyebrow">{{ _('workspace · platform reference tables for generators') }}</div>
+          <h1 class="page-title">{{ _('Reference tables') }}</h1>
+        </div>
+        <div class="page-actions">
+          {% if can_create %}
+          <button type="button" class="btn sm primary" id="ref-create-btn">{{ _('Create reference table') }}</button>
+          {% endif %}
+        </div>
+      </div>
+
+      <div id="ref-root" data-tables="{{ tables_json }}" data-can-create="{{ 1 if can_create else 0 }}"></div>
+
+      <!-- Filter by the report/generator that consumes the table. The state
+           lives in the query (?generator=slreport) so a link from a report's
+           page lands on exactly its dictionaries, and in localStorage so a
+           plain visit remembers the last choice. -->
+      <div class="ref-toolbar">
+        <label class="ref-field-label" for="ref-filter-gen">{{ _('Report / generator') }}</label>
+        <select id="ref-filter-gen" class="input sm"></select>
+        <button type="button" class="btn xs ghost" id="ref-filter-clear" hidden>{{ _('Reset') }}</button>
+        <span id="ref-filter-count" class="ref-note mono"></span>
+      </div>
+
+      <div class="ref-table-wrap">
+        <table class="tbl ref-table">
+          <thead>
+            <tr>
+              <th>{{ _('Title') }}</th>
+              <th style="width:12%">{{ _('Slug') }}</th>
+              <th style="width:10%">{{ _('Key') }}</th>
+              <th class="numeric" style="width:8%">{{ _('Columns {ctx:2}') }}</th>
+              <th class="numeric" style="width:8%">{{ _('Rows') }}</th>
+              <th class="numeric" style="width:8%">{{ _('Version') }}</th>
+              <th style="width:14%">{{ _('Owner {ctx:2}') }}</th>
+              <th class="numeric" style="width:10%">{{ _('Consumers') }}</th>
+              <th style="width:10%">{{ _('Updated') }}</th>
+            </tr>
+          </thead>
+          <tbody id="ref-tbody"></tbody>
+        </table>
+      </div>
+      <div id="ref-empty" class="empty" hidden>
+        {{ _('No reference tables yet. Create one or register a generator with platform input.') }}
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div id="ref-scrim" class="ref-scrim" hidden></div>
+<aside id="ref-drawer" class="ref-drawer" role="dialog" aria-modal="true" aria-labelledby="ref-drawer-title" hidden>
+  <header class="ref-drawer-head">
+    <h2 id="ref-drawer-title" class="mono">{{ _('Create reference table') }}</h2>
+    <button type="button" class="btn xs ghost" id="ref-drawer-close" aria-label="{{ _('Close') }}">
+      <svg class="ico ico-12"><use href="#ic-x"/></svg>
+    </button>
+  </header>
+  <div class="ref-drawer-body">
+    <div class="ref-form">
+      <label class="ref-field-label" for="ref-c-slug">{{ _('Slug') }}</label>
+      <input id="ref-c-slug" class="input sm mono" type="text" placeholder="nwd_bv_map" />
+
+      <label class="ref-field-label" for="ref-c-title">{{ _('Title') }}</label>
+      <input id="ref-c-title" class="input sm" type="text" placeholder="{{ _('Reference table name') }}" />
+
+      <label class="ref-field-label" for="ref-c-desc">{{ _('Description') }}</label>
+      <textarea id="ref-c-desc" class="input sm" rows="2" placeholder="{{ _('Optional') }}"></textarea>
+
+      <label class="ref-field-label" for="ref-c-resp">{{ _('Owner {ctx:2}') }}</label>
+      <input id="ref-c-resp" class="input sm mono" type="text" placeholder="{{ _('Last name, first name or person_id…') }}" data-user-suggest />
+
+      <label class="ref-check-row">
+        <input id="ref-c-pin" type="checkbox" />
+        <span>{{ _('Allow pinning version on run') }}</span>
+      </label>
+
+      <label class="ref-field-label">{{ _('Columns') }}</label>
+      <div class="ref-inline-row">
+        <label class="ref-radio-row">
+          <input type="radio" name="ref-col-mode" id="ref-c-mode-manual" checked />
+          <span>{{ _('Manual input') }}</span>
+        </label>
+        <label class="ref-radio-row">
+          <input type="radio" name="ref-col-mode" id="ref-c-mode-gen" />
+          <span>{{ _('From generator') }}</span>
+        </label>
+      </div>
+
+      <div id="ref-c-manual-box">
+        <div id="ref-c-columns"></div>
+        <button type="button" class="btn xs ghost" id="ref-c-add-col">{{ _('+ column') }}</button>
+      </div>
+      <div id="ref-c-gen-box" hidden>
+        <select id="ref-c-gen-sel" class="input sm">
+          <option value="">{{ _('Select generator…') }}</option>
+        </select>
+      </div>
+
+      <button type="button" class="btn sm primary" id="ref-c-submit">{{ _('Create') }}</button>
+      <div id="ref-c-status" class="ref-status mono"></div>
+    </div>
+  </div>
+</aside>
+
+<style>
+  [hidden] { display: none !important; }
+</style>
+
+<script src="/static/js/user-suggest.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/reference.js?v={{ asset_v }}" defer></script>
+{% endblock %}

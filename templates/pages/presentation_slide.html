@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% block title %}{{ pres_ctx.title }} — OnePage{% endblock %}
+{% block mode %}standalone{% endblock %}
+
+{% block head %}
+<style>
+  /* Before the page's own CSS lands the document must already be dark —
+     the white flash between slides was this very gap. */
+  html { background: #0c0d10; }
+</style>
+<style>
+  /* Show mode for an image/pdf slide. The presenter bar is the same 36 px bar
+     the viewer draws for a dashboard slide (templates/pages/viewer.html) — the
+     two are duplicated markup on purpose: this page has no viewer chrome to
+     compose with, and a shared partial would be a third file for eleven lines.
+     Ids and classes are identical, so static/js/presentations.js drives both. */
+  body { overflow: hidden; background: #0c0d10; }
+  #pres-bar {
+    display: flex; position: fixed; top: 0; left: 0; right: 0; height: 36px;
+    z-index: 400; align-items: center; gap: 12px; padding: 0 12px;
+    background: #14161a; color: #e8eaed; font-size: 12px;
+    box-shadow: 0 1px 0 rgba(255,255,255,.06);
+  }
+  .pres-kicker {
+    flex: none; font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: .12em; text-transform: uppercase; color: #8b929c;
+  }
+  .pres-title { font-weight: 600; max-width: 26vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pres-dots { display: flex; gap: 5px; flex: none; }
+  .pres-dot { width: 6px; height: 6px; border-radius: 50%; background: #3a3f47; }
+  .pres-dot.on { background: #e8eaed; }
+  .pres-count { font-family: var(--font-mono); color: #8b929c; flex: none; }
+  .pres-fresh { font-family: var(--font-mono); font-size: 11px; color: #8b929c; }
+  .pres-fresh.stale { color: #f0a35e; }
+  .pres-nav { margin-left: auto; display: flex; align-items: center; gap: 8px; flex: none; }
+  .pres-btn {
+    display: inline-flex; align-items: center; padding: 4px 10px;
+    border: 1px solid #3a3f47; border-radius: 6px;
+    color: #e8eaed; text-decoration: none; font-size: 12px; white-space: nowrap;
+  }
+  .pres-btn:hover { background: #23272e; }
+  .pres-btn.is-off { opacity: .3; pointer-events: none; }
+
+  /* The stage. No scaling, by decision: the slide is shown at its own size,
+     bounded by the viewport so it can never need scrolling. */
+  .pres-stage {
+    position: fixed; top: 36px; left: 0; right: 0; bottom: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 12px; padding: 16px; background: #0c0d10;
+  }
+  .pres-stage img { max-width: 100%; max-height: calc(100vh - 36px); display: block; }
+  .pres-stage iframe { width: 100%; height: calc(100vh - 36px); border: none; background: #0c0d10; }
+  #pres-pdf-canvas { display: block; max-width: 100%; max-height: calc(100vh - 36px); box-shadow: 0 24px 60px rgba(0,0,0,.45); }
+  /* A PDF slide takes the whole stage: no padding, no note gap around it. */
+  .pres-stage.is-pdf { padding: 0; gap: 0; }
+  /* An HTML slide is a document of its own: full stage, its own scrolling. */
+  .pres-stage.is-html { padding: 0; gap: 0; }
+  .pres-stage.is-html iframe { width: 100%; height: calc(100vh - 36px); border: none; background: #fff; }
+  .pres-stage.is-html .pres-slide-note { position: fixed; left: 0; right: 0; bottom: 8px; }
+  .pres-stage.is-pdf .pres-slide-note { position: fixed; left: 0; right: 0; bottom: 8px; }
+  .pres-slide-note {
+    max-width: 900px; color: #c6cbd2; font-size: 13px; line-height: 1.5;
+    text-align: center; white-space: pre-wrap;
+  }
+  .pres-fallback { color: #8b929c; font-size: 13px; }
+  .pres-fallback a { color: #e8eaed; }
+  .pres-missing { color: #8b929c; font-family: var(--font-mono); font-size: 12px; }
+</style>
+{% endblock %}
+
+{% block body %}
+<div id="pres-bar">
+  <span class="pres-kicker">{{ _('Presentation') }}</span>
+  <span class="pres-title">{{ pres_ctx.title }}</span>
+  {% if pres_ctx.n <= 40 %}
+  <span class="pres-dots" aria-hidden="true">
+    {%- for k in range(pres_ctx.n) -%}
+    <span class="pres-dot{% if k == pres_ctx.i %} on{% endif %}"></span>
+    {%- endfor -%}
+  </span>
+  {% endif %}
+  <span class="pres-count">{{ pres_ctx.i + 1 }} / {{ pres_ctx.n }}</span>
+  <span class="pres-nav">
+    <a class="pres-btn{% if not pres_ctx.prev_url %} is-off{% endif %}" id="pres-prev"
+       href="{{ pres_ctx.prev_url or '#' }}">{{ _('← Back') }}</a>
+    <a class="pres-btn{% if not pres_ctx.next_url %} is-off{% endif %}" id="pres-next"
+       href="{{ pres_ctx.next_url or '#' }}">{{ _('Next →') }}</a>
+    <button type="button" class="pres-btn" id="pres-full" title="{{ _('Full screen (F)') }}"><svg class="ico ico-12"><use href="#ic-fullscreen"/></svg> {{ _('Full screen') }}</button>
+          <a class="pres-btn" id="pres-exit" href="{{ pres_ctx.builder_url }}">{{ _('Esc · exit') }}</a>
+  </span>
+</div>
+
+<div class="pres-stage{% if pres_ctx.item.kind == 'pdf' %} is-pdf{% elif pres_ctx.item.kind == 'html' %} is-html{% endif %}">
+  {% if not pres_ctx.item.file_url %}
+  <div class="pres-missing">{{ _('Slide file missing') }}</div>
+  {% elif pres_ctx.item.kind == 'pdf' %}
+  <!-- No sandbox: this is our own origin serving a file we sniffed by magic
+       bytes, stored under an id-built name and send with nosniff. A sandbox
+       here would only disable the browser's built-in PDF viewer. -->
+  <!-- Chrome's viewer honours the PDF open parameters: no toolbar, no
+       thumbnail pane, page fitted to the frame — a slide, not a print
+       preview. The fragment is ignored by viewers that don't know it. -->
+  <!-- The page is drawn by pdf.js into a canvas that always fits the stage
+       whole — a slide, never a print preview. The iframe (Chrome's own
+       viewer, fitted by width) is the fallback if pdf.js cannot load. -->
+  <canvas id="pres-pdf-canvas" data-src="{{ pres_ctx.item.file_url }}" aria-label="{{ pres_ctx.item.original_name or 'PDF' }}"></canvas>
+  <iframe id="pres-pdf" data-src="{{ pres_ctx.item.file_url }}#toolbar=0&navpanes=0&scrollbar=0&view=FitH" title="{{ pres_ctx.item.original_name or 'PDF' }}" hidden></iframe>
+  <div class="pres-fallback" id="pres-pdf-fallback" hidden>
+    {{ _('Browser not showing PDF —') }}
+    <a href="{{ pres_ctx.item.file_url }}" target="_blank" rel="noopener">{{ _('Open PDF') }}</a>
+  </div>
+  {% elif pres_ctx.item.kind == 'html' %}
+  <!-- User-authored HTML (a deck made in Claude). Sandboxed WITHOUT
+       allow-same-origin — the dashboard-iframe model — and the file itself is
+       served with `Content-Security-Policy: sandbox allow-scripts`, so the
+       script never runs in our origin, embedded or opened directly. -->
+  <iframe id="pres-html-frame" sandbox="allow-scripts" src="{{ pres_ctx.item.file_url }}"
+          title="{{ pres_ctx.item.original_name or _('HTML slide') }}"></iframe>
+  <script>
+    // Claude's deck player hides its own thumbnail rail when the HOST says a
+    // presentation is running (its documented `__omelette_presenting` message).
+    // Posted a few times because the deck attaches its listener after load;
+    // any other HTML simply ignores an unknown message.
+    (function () {
+      var f = document.getElementById('pres-html-frame');
+      function say() { try { f.contentWindow.postMessage({ __omelette_presenting: true }, '*'); } catch (e) {} }
+      f.addEventListener('load', function () { say(); setTimeout(say, 400); setTimeout(say, 1500); });
+    })();
+  </script>
+  {% else %}
+  <img id="pres-image" src="{{ pres_ctx.item.file_url }}" alt="{{ pres_ctx.item.original_name or _('Slide') }}" />
+  {% endif %}
+  {% if pres_ctx.item.note %}
+  <div class="pres-slide-note" id="pres-slide-note"></div>
+  {% endif %}
+</div>
+
+{% if pres_ctx.item.note %}
+<script id="pres-note-data" type="application/json">{{ pres_ctx.item.note | tojson }}</script>
+{% endif %}
+<script>
+  // User text via textContent, never innerHTML (tests/smoke_xss_escaping.py).
+  (function () {
+    var src = document.getElementById('pres-note-data');
+    var box = document.getElementById('pres-slide-note');
+    if (src && box) { try { box.textContent = JSON.parse(src.textContent); } catch (e) {} }
+  })();
+</script>
+<script type="module">
+  // Draw the PDF page to fit the stage (whole page, device pixels, redrawn
+  // on resize / fullscreen). Fallbacks in order: Chrome's viewer by width,
+  // then a plain link when the browser has no PDF viewer at all.
+  (async function () {
+    const canvas = document.getElementById('pres-pdf-canvas');
+    if (!canvas) return;
+    const frame = document.getElementById('pres-pdf');
+    const fb = document.getElementById('pres-pdf-fallback');
+    function fallback() {
+      try { if (window.parent !== window) window.parent.postMessage({ type: 'op_pres_ready' }, location.origin); } catch (e) {}
+      canvas.hidden = true;
+      if (navigator.pdfViewerEnabled === false) { if (fb) fb.hidden = false; return; }
+      if (frame) { frame.src = frame.dataset.src; frame.hidden = false; }
+    }
+    let pdfjs, page;
+    try {
+      pdfjs = await import('/static/vendor/pdfjs/pdf.min.mjs');
+      pdfjs.GlobalWorkerOptions.workerSrc = '/static/vendor/pdfjs/pdf.worker.min.mjs';
+      const doc = await pdfjs.getDocument({ url: canvas.dataset.src, withCredentials: true }).promise;
+      page = await doc.getPage(1);
+    } catch (e) { fallback(); return; }
+    let drawing = false, again = false;
+    async function draw() {
+      if (drawing) { again = true; return; }
+      drawing = true;
+      try {
+        const stageW = document.documentElement.clientWidth;
+        const stageH = window.innerHeight - 36;
+        const base = page.getViewport({ scale: 1 });
+        const scale = Math.min(stageW / base.width, stageH / base.height);
+        const dpr = Math.min(window.devicePixelRatio || 1, 3);
+        const vp = page.getViewport({ scale: scale * dpr });
+        canvas.width = Math.floor(vp.width); canvas.height = Math.floor(vp.height);
+        canvas.style.width = Math.floor(vp.width / dpr) + 'px';
+        canvas.style.height = Math.floor(vp.height / dpr) + 'px';
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+      } catch (e) { fallback(); }
+      drawing = false;
+      if (again) { again = false; draw(); }
+    }
+    await draw();
+    // The shell swaps frames only when the content is PAINTED.
+    try { if (window.parent !== window) window.parent.postMessage({ type: 'op_pres_ready' }, location.origin); } catch (e) {}
+    window.addEventListener('resize', draw);
+    document.addEventListener('fullscreenchange', draw);
+  })();
+</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/presentations.js?v={{ asset_v }}" defer></script>
+{% endblock %}
