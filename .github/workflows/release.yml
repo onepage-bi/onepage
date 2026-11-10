@@ -1,7 +1,8 @@
 name: Release image
 
 # Publishes the container image to GitHub Container Registry when a release is
-# published, so a server with internet can `docker pull` it. The offline
+# published, so a server with internet can `docker pull` it. `latest` moves
+# only on a release; a manual run publishes just the tag it is given. The offline
 # archive attached to the release is built separately (deploy/make-bundle.sh
 # --edition release).
 
@@ -23,9 +24,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
 
@@ -46,15 +47,15 @@ jobs:
           mkdir -p "$RUNNER_TEMP/engine-assets"
           cp -R static/pyodide "$RUNNER_TEMP/engine-assets/pyodide"
 
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
 
-      - uses: docker/login-action@v3
+      - uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: docker/build-push-action@v6
+      - uses: docker/build-push-action@v7
         with:
           context: .
           platforms: linux/amd64
@@ -64,4 +65,4 @@ jobs:
             engine-assets=${{ runner.temp }}/engine-assets
           tags: |
             ghcr.io/${{ github.repository }}:${{ steps.v.outputs.version }}
-            ghcr.io/${{ github.repository }}:latest
+            ${{ github.event_name == 'release' && format('ghcr.io/{0}:latest', github.repository) || '' }}
