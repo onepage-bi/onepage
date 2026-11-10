@@ -117,9 +117,14 @@ class ChromeSession:
                             # The page probes the optional desktop agent on
                             # 127.0.0.1:47113-47115; with no agent running
                             # (always, in CI) the browser logs a refused
-                            # connection. That is expected, not a page bug.
+                            # connection. With SOMEONE's agent on that port
+                            # (another test's, or a real one on a developer
+                            # machine) it logs a CORS refusal instead: that
+                            # agent does not know this stand's origin. Both
+                            # are expected, neither is a page bug.
                             if (re.search(r"127\.0\.0\.1:4711[3-5]/health", url + " " + text)
-                                    and "ERR_CONNECTION_REFUSED" in text + url):
+                                    and re.search(r"ERR_CONNECTION_REFUSED|ERR_FAILED|CORS policy",
+                                                  text + url)):
                                 continue
                             self.console_errors.append(f"{text} {url}".strip() if url else text)
         except websockets.exceptions.ConnectionClosed:

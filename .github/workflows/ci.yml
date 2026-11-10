@@ -81,7 +81,7 @@ jobs:
       # agent/tests/smoke_r2host import it, but requirements.txt does not
       # carry it (the app does not need it at runtime).
       - name: Install test-only dependencies
-        run: pip install python-calamine==0.9.0
+        run: pip install python-calamine==0.9.1
       - name: Python smokes
         run: python tests/run_all.py --only python --junit junit-python.xml
       - name: Upload JUnit report

@@ -28,6 +28,12 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: pandas
         update-types: ["version-update:semver-major"]
+      # pandas 3.1 routes read_excel past ExcelFile.parse, which the lineage
+      # hook in static/py/_lineage.py relies on to resolve a sheet number to
+      # its name (tests/smoke_lineage_py.py fails on it). Held at 3.0 until
+      # the hook stops depending on that internal.
+      - dependency-name: pandas
+        versions: [">=3.1"]
       - dependency-name: numpy
         update-types: ["version-update:semver-major"]
       - dependency-name: openpyxl
