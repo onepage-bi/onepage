@@ -1,3 +1,3 @@
-ruff==0.17.3
+ruff==0.17.4
 # tools/semantics_gate.py and the lineage/agent smoke tests import it.
-python-calamine==0.9.0
+python-calamine==0.9.1
