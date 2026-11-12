@@ -1683,7 +1683,8 @@
 
   // ── Initial load ────────────────────────────────────────────────────
   if (CAN_MANAGE) loadPermissions();
-  if (CAN_MANAGE || CAN_UPDATE_DATA) loadShareLinks(); // share follows the update right
+  // share follows the update right; no list on the page = links are off here (RLS)
+  if ((CAN_MANAGE || CAN_UPDATE_DATA) && document.getElementById('share-list')) loadShareLinks();
 
   // ── Deep-link to a dock tab (e.g. /d/{id}?dock=colors from the Themes page).
   //    Runs after ANNOT/THEME are defined so the tab handler can reach them. ──

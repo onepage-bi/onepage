@@ -8547,6 +8547,12 @@
       "static/js/reference.js:773"
     ]
   },
+  "Share links are off": {
+    "plural": false,
+    "refs": [
+      "templates/pages/viewer.html:790"
+    ]
+  },
   "Share, %": {
     "plural": false,
     "refs": [
@@ -10124,6 +10130,12 @@
     "plural": false,
     "refs": [
       "app/api/learn.py:205"
+    ]
+  },
+  "This report shows each reader only their own rows, and a share link opens without signing in, so it would show every row to anyone who has it. To show the report to someone, give them access instead.": {
+    "plural": false,
+    "refs": [
+      "templates/pages/viewer.html:792"
     ]
   },
   "This report's index has not been published yet — recalculate the report (Run) to build the index across all folders.": {

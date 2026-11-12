@@ -230,6 +230,14 @@ def main():
         check("share-tokens: owner also 403 under RLS", r.status_code == 403, f"{r.status_code} {r.text[:150]}")
         r = c.post(f"/api/dashboards/{did}/share-links", json={"expires_in_days": 7, "label": "x"})
         check("share-links: owner also 403 under RLS", r.status_code == 403, f"{r.status_code} {r.text[:150]}")
+        # The page must not offer what the server refuses: the owner and the
+        # administrator see everything (see_all), and the Share form used to be
+        # shown to them, so "Generate" ended in a bare "Could not generate link".
+        page = c.get(f"/d/{did}").text
+        check("viewer: no Generate button on an RLS report, even for see_all",
+              'id="btn-gen-share"' not in page)
+        check("viewer: the Share panel says why links are off",
+              'id="share-off-rls"' in page)
 
         # ---------------------------------------------------------------
         # Owner (see_all): byte-for-byte, unfiltered
